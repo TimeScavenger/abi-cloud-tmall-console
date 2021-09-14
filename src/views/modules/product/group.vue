@@ -135,7 +135,7 @@ export default {
       }).then(({data}) => {
         console.log('查询 -----> 分组分页列表 -----> 请求路径: /product/group/page')
         console.log('查询 -----> 分组分页列表 -----> 返回结果:', data)
-        if (data && data.code === 200000000) {
+        if (data && data.code === 200000) {
           this.dataList = data.data.records
           this.totalPage = data.data.total
         } else {
@@ -171,7 +171,7 @@ export default {
         }).then(({data}) => {
           console.log('删除 -----> 分组信息 -----> 请求路径: /product/group/remove')
           console.log('删除 -----> 分组信息 -----> 返回结果:', data)
-          if (data && data.code === 200000000) {
+          if (data && data.code === 200000) {
             this.$message({
               message: '操作成功',
               type: 'success',
