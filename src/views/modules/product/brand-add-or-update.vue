@@ -119,7 +119,7 @@ export default {
           }).then(({data}) => {
             console.log(`初始化 -----> 添加/修改品牌信息 -----> 请求路径: /product/brand/info/${this.dataForm.brandId}`)
             console.log('初始化 -----> 添加/修改品牌信息 -----> 返回结果:', data)
-            if (data && data.code === 200) {
+            if (data && data.code === 200000) {
               this.dataForm.brandName = data.data.brandName
               this.dataForm.logo = data.data.logo
               this.dataForm.description = data.data.description
@@ -151,7 +151,7 @@ export default {
           }).then(({data}) => {
             console.log('表单提交 -----> 添加/修改品牌信息 -----> 请求路径: /product/brand/save /product/brand/modify')
             console.log('表单提交 -----> 添加/修改品牌信息 -----> 返回结果:', data)
-            if (data && data.code === 200) {
+            if (data && data.code === 200000) {
               this.$message({
                 message: '操作成功',
                 type: 'success',

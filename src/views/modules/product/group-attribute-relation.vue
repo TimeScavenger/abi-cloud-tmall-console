@@ -154,7 +154,7 @@ export default {
       }).then(({data}) => {
         console.log('查询 -----> 分组属性关联关系分页列表 -----> 提交路径: /product/relation/group-attribute/list/attributes/by/groupId')
         console.log('查询 -----> 分组属性关联关系分页列表 -----> 返回数据:', data)
-        if (data && data.code === 200) {
+        if (data && data.code === 200000) {
           this.relationAttrs = data.data.records
         } else {
           this.dataList = []
@@ -178,7 +178,7 @@ export default {
       }).then(({data}) => {
         console.log('查询 -----> 分组未给关联属性分页列表 -----> 提交路径: /product/relation/group-attribute/page/no-attributes/by/groupId')
         console.log('查询 -----> 分组未给关联属性分页列表 -----> 返回数据:', data)
-        if (data && data.code === 200) {
+        if (data && data.code === 200000) {
           this.dataList = data.data.records
           this.totalPage = data.data.total
         } else {
@@ -231,7 +231,7 @@ export default {
       }).then(({data}) => {
         console.log('移除 -----> 分组属性关联关系 -----> 提交路径: /product/relation/group-attribute/remove')
         console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', data)
-        if (data.code === 200) {
+        if (data.code === 200000) {
           this.$message({type: 'success', message: '删除成功'})
           this.dataInit(this.groupId)
         } else {
@@ -253,7 +253,7 @@ export default {
       }).then(({data}) => {
         console.log('移除 -----> 分组属性关联关系 -----> 提交路径: /product/relation/group-attribute/remove')
         console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', data)
-        if (data.code === 200) {
+        if (data.code === 200000) {
           this.$message({type: 'success', message: '删除成功'})
           this.dataInit(this.groupId)
         } else {

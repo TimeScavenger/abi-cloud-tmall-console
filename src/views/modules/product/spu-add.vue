@@ -431,6 +431,7 @@ export default {
     }
   },
   methods: {
+    // 查询 会员等级分页列表
     getMemberLevels () {
       console.log('查询 -----> 会员等级分页列表 -----> 提交参数:')
       this.$http({
@@ -448,14 +449,17 @@ export default {
         console.log(e)
       })
     },
-    showBaseAttrs () {
+    // 查询 当前分类可以使用的规格参数
+    getBaseAttributes () {
       if (!this.dataResp.steped[0]) {
+        console.log('查询 -----> 当前分类可以使用的规格参数 -----> 提交参数:', this.spu.categoryId)
         this.$http({
-          url: this.$http.adornUrl(`/product/group/list/groupswithattribute/${this.spu.categoryId}`),
+          url: this.$http.adornUrl(`/product/group/list/${this.spu.categoryId}`),
           method: 'get',
           params: this.$http.adornParams({})
         }).then(({data}) => {
-          console.log('获取分组及关联的属性成功', data.data)
+          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/group/list/', this.spu.categoryId)
+          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 返回结果:', data)
           // 先对表单的baseAttrs进行初始化
           data.data.forEach(item => {
             let attrArray = []
@@ -473,18 +477,20 @@ export default {
         })
       }
     },
-    getShowSaleAttr () {
-      // 获取当前分类可以使用的销售属性
+    // 查询 当前分类可以使用的销售属性
+    getSaleAttributes () {
       if (!this.dataResp.steped[1]) {
+        console.log('查询 -----> 当前分类可以使用的销售属性 -----> 提交参数:', this.spu.categoryId)
         this.$http({
-          url: this.$http.adornUrl(`/product/group/list/groupswithattribute/${this.spu.categoryId}`),
+          url: this.$http.adornUrl(`/product/group/list/${this.spu.categoryId}`),
           method: 'get',
           params: this.$http.adornParams({
             page: 1,
             size: 500
           })
         }).then(({data}) => {
-          console.log('获取分组及关联的属性成功', data.data)
+          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 请求路径: /product/group/list/', this.spu.categoryId)
+          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 返回结果:', data)
           this.dataResp.saleAttrs = data.data
           data.data.forEach(item => {
             console.log(item)
@@ -562,7 +568,7 @@ export default {
       this.$refs.spuBaseForm.validate(valid => {
         if (valid) {
           this.step = 1
-          this.showBaseAttrs()
+          this.getBaseAttributes()
         } else {
           return false
         }
@@ -586,7 +592,7 @@ export default {
       })
       console.log('baseAttrs', this.spu.baseAttrs)
       this.step = 2
-      this.getShowSaleAttr()
+      this.getSaleAttributes()
     },
     generateSkus () {
       this.step = 3
@@ -691,7 +697,7 @@ export default {
             method: 'post',
             data: this.$http.adornData(this.spu, false)
           }).then(({data}) => {
-            if (data.code === 200) {
+            if (data.code === 200000) {
               this.$message({
                 type: 'success',
                 message: '新增商品成功!'
