@@ -433,7 +433,6 @@ export default {
   methods: {
     // 查询 会员等级分页列表
     getMemberLevels () {
-      console.log('查询 -----> 会员等级分页列表 -----> 提交参数:')
       this.$http({
         url: this.$http.adornUrl('/member/memberlevel/page'),
         method: 'post',
@@ -452,7 +451,6 @@ export default {
     // 查询 当前分类可以使用的规格参数
     getBaseAttributes () {
       if (!this.dataResp.steped[0]) {
-        console.log('查询 -----> 当前分类可以使用的规格参数 -----> 提交参数:')
         this.$http({
           url: this.$http.adornUrl(`/product/attribute/list/basic`),
           method: 'post',
@@ -483,7 +481,6 @@ export default {
     // 查询 当前分类可以使用的销售属性
     getSaleAttributes () {
       if (!this.dataResp.steped[1]) {
-        console.log('查询 -----> 当前分类可以使用的规格参数 -----> 提交参数:')
         this.$http({
           url: this.$http.adornUrl(`/product/attribute/list/sales`),
           method: 'post',

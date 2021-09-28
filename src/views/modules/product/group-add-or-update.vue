@@ -99,7 +99,6 @@ export default {
     },
     // 查询分类级联关系
     getCategorys () {
-      console.log('查询 -----> 分类列表 -----> 提交参数:')
       this.$http({
         url: this.$http.adornUrl('/product/category/list/tree'),
         method: 'post',
@@ -113,7 +112,6 @@ export default {
     dataInit (id) {
       this.dataForm.groupId = id || 0
       this.visible = true
-      console.log('初始化 -----> 添加/修改分组信息 -----> 提交参数:', this.dataForm.groupId)
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
         if (this.dataForm.groupId) {
@@ -142,7 +140,6 @@ export default {
     dataFormSubmit () {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          console.log('表单提交 -----> 添加/修改分组信息 -----> 提交参数:', this.dataForm)
           this.$http({
             url: this.$http.adornUrl(`/product/group/${!this.dataForm.groupId ? 'save' : 'modify'}`),
             method: 'post',

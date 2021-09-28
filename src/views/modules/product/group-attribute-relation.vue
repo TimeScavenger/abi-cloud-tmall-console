@@ -141,7 +141,6 @@ export default {
     dataInit (id) {
       this.groupId = id || 0
       this.visible = true
-      console.log('查询 -----> 分组属性关联关系分页列表 -----> 提交参数:', this.groupId)
       this.$http({
         url: this.$http.adornUrl('/product/relation/group-attribute/list/attributes/by/groupId'),
         method: 'post',
@@ -165,7 +164,6 @@ export default {
     // 查询 分组未关联属性分页列表
     getDataList () {
       this.dataListLoading = true
-      console.log('查询 -----> 分组未给关联属性分页列表 -----> 提交参数:', this.groupId)
       this.$http({
         url: this.$http.adornUrl('/product/relation/group-attribute/page/no-attributes/by/groupId'),
         method: 'post',
@@ -202,7 +200,6 @@ export default {
         this.innerdataListSelections.forEach(item => {
           postData.push({attributeId: item.attributeId, groupId: this.groupId})
         })
-        console.log('提交 -----> 分组属性关联关系 -----> 提交参数:', postData)
         this.$http({
           url: this.$http.adornUrl('/product/relation/group-attribute/save/batch'),
           method: 'post',
@@ -223,7 +220,6 @@ export default {
     deleteHandle (attributeId) {
       let data = []
       data.push({attributeId: attributeId, groupId: this.groupId})
-      console.log('移除 -----> 分组属性关联关系 -----> 提交参数:', JSON.stringify(data))
       this.$http({
         url: this.$http.adornUrl('/product/relation/group-attribute/remove'),
         method: 'post',
@@ -245,7 +241,6 @@ export default {
       this.dataListSelections.forEach(item => {
         postData.push({attributeId: item.attributeId, groupId: this.groupId})
       })
-      console.log('批量移除 -----> 分组属性关联关系 -----> 提交参数:', postData)
       this.$http({
         url: this.$http.adornUrl('/product/relation/group-attribute/remove'),
         method: 'post',

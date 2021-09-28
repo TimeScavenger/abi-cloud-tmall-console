@@ -153,7 +153,6 @@ export default {
     // 查询 规格参数分页列表
     getDataList () {
       this.dataListLoading = true
-      console.log('查询 -----> 规格参数分页列表 -----> 提交参数:')
       this.$http({
         url: this.$http.adornUrl(`/product/attribute/page`),
         method: 'post',
@@ -198,7 +197,6 @@ export default {
           type: 'warning'
         }
       ).then(() => {
-        console.log('删除 -----> 规格参数 -----> 提交参数:', ids)
         this.$http({
           url: this.$http.adornUrl('/product/attribute/remove'),
           method: 'post',

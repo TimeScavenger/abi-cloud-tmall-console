@@ -167,7 +167,6 @@ export default {
     // 查询 品牌分页列表
     getDataList () {
       this.dataListLoading = true
-      console.log('查询 -----> 品牌分页列表 -----> 提交参数:')
       this.$http({
         url: this.$http.adornUrl('/product/brand/page'),
         method: 'post',
@@ -201,7 +200,6 @@ export default {
       this.brandSub.brandIds = id ? [id] : this.dataListSelections.map(item => {
         return item.brandId
       })
-      console.log('删除 -----> 品牌信息 -----> 提交参数:', this.brandSub.brandIds)
       this.$confirm(`确定对[id=${this.brandSub.brandIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -233,7 +231,6 @@ export default {
     // 更新 品牌状态信息
     updateBrandStatusHandle (data) {
       let {brandId, showed} = data
-      console.log('更新 -----> 品牌的状态信息 -----> 提交参数:', JSON.stringify(data))
       // 发送请求修改状态
       this.$http({
         url: this.$http.adornUrl('/product/brand/modify/showed'),
@@ -250,7 +247,6 @@ export default {
     },
     // 查询 品牌分类关联关系列表
     getRelationHandle () {
-      console.log('查询 -----> 品牌关联的分类 -----> 提交参数:', this.brandId)
       this.$http({
         url: this.$http.adornUrl('/product/relation/brand-category/list/categorys/by/brandId'),
         method: 'post',
@@ -267,7 +263,6 @@ export default {
     addRelationSelectHandle () {
       // {"brandId":1,"categoryId":2}
       this.popCategorySelectVisible = false
-      console.log('添加 -----> 品牌关联的分类 -----> 提交参数:')
       this.$http({
         url: this.$http.adornUrl('/product/relation/brand-category/save'),
         method: 'post',
@@ -283,7 +278,6 @@ export default {
     },
     // 删除 品牌分类关联关系
     deleteRelationHandle (id, brandId) {
-      console.log('删除 -----> 品牌关联的分类 -----> 提交参数:', id, brandId)
       this.$http({
         url: this.$http.adornUrl('/product/relation/brand-category/remove'),
         method: 'delete',

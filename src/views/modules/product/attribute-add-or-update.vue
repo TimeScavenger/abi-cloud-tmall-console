@@ -118,7 +118,6 @@ export default {
   watch: {
     categoryPath (path) {
       // 监听到路径变化需要查出这个三级分类的分组信息
-      console.log('监听查询 -----> 三级分类路径 -----> 提交参数:', path)
       this.attrGroups = []
       this.dataForm.groupId = ''
       this.dataForm.categoryId = path[path.length - 1]
@@ -155,7 +154,6 @@ export default {
       this.dataForm.attributeId = id || 0
       this.dataForm.type = this.type
       this.visible = true
-      console.log('初始化 -----> 添加/修改属性信息 -----> 提交参数:', this.dataForm.attributeId)
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
         if (this.dataForm.attributeId) {
@@ -189,7 +187,6 @@ export default {
     dataFormSubmit () {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          console.log('表单提交 -----> 添加/修改属性信息 -----> 提交参数:', this.dataForm)
           this.$http({
             url: this.$http.adornUrl(`/product/attribute/${!this.dataForm.attributeId ? 'save' : 'modify'}`),
             method: 'post',

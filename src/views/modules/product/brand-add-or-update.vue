@@ -108,7 +108,6 @@ export default {
     dataInit (id) {
       this.dataForm.brandId = id || 0
       this.visible = true
-      console.log('初始化 -----> 添加/修改品牌信息 -----> 提交参数:', this.dataForm.brandId)
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
         if (this.dataForm.brandId) {
@@ -135,7 +134,6 @@ export default {
     dataFormSubmit () {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          console.log('表单提交 -----> 添加/修改品牌信息 -----> 提交参数:', this.dataForm)
           this.$http({
             url: this.$http.adornUrl(`/product/brand/${!this.dataForm.brandId ? 'save' : 'modify'}`),
             method: 'post',

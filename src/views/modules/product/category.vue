@@ -110,7 +110,6 @@ export default {
   methods: {
     // 查询 分类树形列表
     getDataList () {
-      console.log('查询 -----> 分类树形列表 -----> 请求参数:')
       this.$http({
         url: this.$http.adornUrl('/product/category/list/tree'),
         method: 'post',
@@ -123,7 +122,6 @@ export default {
     },
     // 初始化 添加分类信息
     dataAddInit (data) {
-      console.log('初始化 -----> 添加分类信息 -----> 请求参数:', JSON.stringify(data))
       this.dialogType = 'save'
       this.title = '添加分类信息'
       this.dialogVisible = true
@@ -139,7 +137,6 @@ export default {
     },
     // 表单提交 添加分类信息
     dataAddFormSubmit () {
-      console.log('添加 -----> 分类信息 -----> 请求参数:', this.category)
       this.$http({
         url: this.$http.adornUrl('/product/category/save'),
         method: 'post',
@@ -161,7 +158,6 @@ export default {
     },
     // 初始化 修改分类信息
     dataUpdateInit (data) {
-      console.log('初始化 -----> 修改分类信息 -----> 请求参数:', JSON.stringify(data))
       this.dialogType = 'update'
       this.title = '修改分类信息'
       this.dialogVisible = true
@@ -184,7 +180,6 @@ export default {
     },
     // 表单提交 修改分类信息
     dataUpdateFormSubmit () {
-      console.log('修改 -----> 分类信息 -----> 请求参数:', this.category)
       this.$http({
         url: this.$http.adornUrl('/product/category/modify'),
         method: 'post',
@@ -216,7 +211,6 @@ export default {
     // 删除 分类信息
     deleteHandle (node, data) {
       this.categorySub.categoryIds = [data.categoryId]
-      console.log('删除 -----> 分类信息 -----> 请求参数:', this.categorySub)
       this.$confirm(`是否删除【${data.categoryName}】分类?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -247,7 +241,6 @@ export default {
       for (let i = 0; i < checkedNodes.length; i++) {
         this.categorySub.categoryIds.push(checkedNodes[i].categoryId)
       }
-      console.log('批量删除 -----> 分类信息 -----> 请求参数:', this.categorySub)
       this.$confirm(`是否批量删除【${this.categorySub.categoryIds}】分类?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -272,7 +265,6 @@ export default {
     // ========================================== 以下命名未统一 ====================
     // 批量修改 分类信息排序
     batchModifySort () {
-      console.log('批量修改 -----> 分类信息排序 -----> 请求参数:', this.updateNodes)
       this.$http({
         url: this.$http.adornUrl('/product/category/modify/sort'),
         method: 'post',
