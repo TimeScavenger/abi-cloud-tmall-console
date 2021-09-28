@@ -117,7 +117,7 @@ export default {
             params: this.$http.adornParams()
           }).then(({data}) => {
             console.log(`初始化 -----> 添加/修改品牌信息 -----> 请求路径: /product/brand/info/${this.dataForm.brandId}`)
-            console.log('初始化 -----> 添加/修改品牌信息 -----> 返回结果:', JSON.stringify(data))
+            console.log('初始化 -----> 添加/修改品牌信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.dataForm.brandName = data.data.brandName
               this.dataForm.logo = data.data.logo
@@ -148,7 +148,7 @@ export default {
             })
           }).then(({data}) => {
             console.log('表单提交 -----> 添加/修改品牌信息 -----> 请求路径: /product/brand/save /product/brand/modify')
-            console.log('表单提交 -----> 添加/修改品牌信息 -----> 返回结果:', JSON.stringify(data))
+            console.log('表单提交 -----> 添加/修改品牌信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.$message({
                 message: '操作成功',

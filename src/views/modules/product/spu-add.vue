@@ -128,7 +128,7 @@
               </el-form>
             </div>
             <el-button type="primary" @click="step = 1">上一步</el-button>
-            <el-button type="success" @click="generateSkus">下一步：设置SKU信息</el-button>
+            <el-button type="success" @click="generateSkuList">下一步：设置SKU信息</el-button>
           </el-card>
         </el-card>
       </el-col>
@@ -416,7 +416,6 @@ export default {
       let imgArr = Array.from(new Set(this.spu.images.concat(val)))
 
       // {imgUrl:"",defaultImg:0} 由于concat每次迭代上次，有很多重复。所以我们必须得到上次+这次的总长
-
       this.spu.skus.forEach((item, index) => {
         let len = imgArr.length - this.spu.skus[index].images.length // 还差这么多
         if (len > 0) {
@@ -442,7 +441,7 @@ export default {
         })
       }).then(({data}) => {
         console.log('查询 -----> 会员等级分页列表 -----> 请求路径: /member/memberlevel/page')
-        console.log('查询 -----> 会员等级分页列表 -----> 返回结果:', JSON.stringify(data))
+        console.log('查询 -----> 会员等级分页列表 -----> 返回结果:', data)
         this.dataResp.memberLevels = data.data.records
       }).catch(e => {
         console.log(e)
@@ -460,7 +459,7 @@ export default {
           })
         }).then(({data}) => {
           console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/attribute/list/basic')
-          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 返回结果:', JSON.stringify(data))
+          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 返回结果:', data)
           // 先对表单的baseAttrs进行初始化
           data.data.forEach(item => {
             let attrArray = []
@@ -479,7 +478,7 @@ export default {
       }
     },
     // 查询 当前分类可以使用的销售属性
-    getSaleAttributes () {
+    getSalesAttributes () {
       if (!this.dataResp.steped[1]) {
         this.$http({
           url: this.$http.adornUrl(`/product/attribute/list/sales`),
@@ -490,7 +489,7 @@ export default {
           })
         }).then(({data}) => {
           console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/attribute/list/sales')
-          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 返回结果:', JSON.stringify(data))
+          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 返回结果:', data)
           this.dataResp.saleAttrs = data.data
           data.data.forEach(item => {
             console.log(item)
@@ -506,7 +505,7 @@ export default {
         })
       }
     },
-    generateSkus () {
+    generateSkuList () {
       this.step = 3
 
       // 根据笛卡尔积运算进行生成sku
@@ -518,7 +517,7 @@ export default {
           this.dataResp.tableAttrColumn.push(item)
         }
       })
-      console.log('选中的SKU参数列表', JSON.stringify(selectValues))
+      console.log('选中的SKU参数列表：', JSON.stringify(selectValues))
 
       // [
       //    ["黑色","6GB","移动"],["黑色","6GB","联通"],["黑色","8GB","移动"],["黑色","8GB","联通"],
@@ -526,7 +525,7 @@ export default {
       //    ["蓝色","6GB","移动"],["蓝色","6GB","联通"],["蓝色","8GB","移动"],["蓝色","8GB","联通"]
       // ]
       let descartes = this.descartes(selectValues)
-      console.log('生成的组合', JSON.stringify(descartes))
+      console.log('生成的SKU组合列表：', JSON.stringify(descartes))
       // 有多少descartes就有多少sku
       let skus = []
 
@@ -546,7 +545,6 @@ export default {
         this.spu.images.forEach((img, idx) => {
           imgs.push({imgUrl: '', defaultImg: 0})
         })
-
         // 会员价，也必须在循环里面生成，否则会导致数据绑定问题
         let memberPrices = []
         if (this.dataResp.memberLevels.length > 0) {
@@ -560,7 +558,7 @@ export default {
             }
           }
         }
-        // ;descaridx，判断如果之前有就用之前的值;
+        // descaridx，判断如果之前有就用之前的值;
         let res = this.hasAndReturnSku(this.spu.skus, descar)
         if (res === null) {
           skus.push({
@@ -584,13 +582,12 @@ export default {
         }
       })
       this.spu.skus = skus
-      console.log('结果!!!', this.spu.skus, this.dataResp.tableAttrColumn)
+      console.log('SKU列表：', this.spu.skus, this.dataResp.tableAttrColumn)
     },
-    // 笛卡尔积运算
+    // 笛卡尔积运算 TODO 此处有BUG 生成的SKU组合会少
     descartes (list) {
       // parent上一级索引;count指针计数
       var point = {}
-
       var result = []
       var pIndex = null
       var tempCount = 0
@@ -724,9 +721,8 @@ export default {
       })
       console.log('baseAttrs', this.spu.baseAttrs)
       this.step = 2
-      this.getSaleAttributes()
+      this.getSalesAttributes()
     },
-
     // 判断如果包含之前的sku的descar组合，就返回这个sku的详细信息；
     hasAndReturnSku (skus, descar) {
       let res = null

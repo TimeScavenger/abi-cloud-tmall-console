@@ -152,7 +152,7 @@ export default {
         })
       }).then(({data}) => {
         console.log('查询 -----> 分组属性关联关系分页列表 -----> 提交路径: /product/relation/group-attribute/list/attributes/by/groupId')
-        console.log('查询 -----> 分组属性关联关系分页列表 -----> 返回数据:', JSON.stringify(data))
+        console.log('查询 -----> 分组属性关联关系分页列表 -----> 返回数据:', data)
         if (data && data.code === 200000) {
           this.relationAttrs = data.data.records
         } else {
@@ -175,7 +175,7 @@ export default {
         })
       }).then(({data}) => {
         console.log('查询 -----> 分组未给关联属性分页列表 -----> 提交路径: /product/relation/group-attribute/page/no-attributes/by/groupId')
-        console.log('查询 -----> 分组未给关联属性分页列表 -----> 返回数据:', JSON.stringify(data))
+        console.log('查询 -----> 分组未给关联属性分页列表 -----> 返回数据:', data)
         if (data && data.code === 200000) {
           this.dataList = data.data.records
           this.totalPage = data.data.total
@@ -206,7 +206,7 @@ export default {
           data: this.$http.adornData(postData, false)
         }).then(({data}) => {
           console.log('提交 -----> 分组属性关联关系 -----> 提交路径: /product/relation/group-attribute/save/batch')
-          console.log('提交 -----> 分组属性关联关系 -----> 返回数据:', JSON.stringify(data))
+          console.log('提交 -----> 分组属性关联关系 -----> 返回数据:', data)
           if (data.code === 220) {
             this.$message({type: 'success', message: '新增关联成功'})
           }
@@ -226,7 +226,7 @@ export default {
         data: this.$http.adornData(data, false)
       }).then(({data}) => {
         console.log('移除 -----> 分组属性关联关系 -----> 提交路径: /product/relation/group-attribute/remove')
-        console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', JSON.stringify(data))
+        console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', data)
         if (data.code === 200000) {
           this.$message({type: 'success', message: '删除成功'})
           this.dataInit(this.groupId)
@@ -247,7 +247,7 @@ export default {
         data: this.$http.adornData(postData, false)
       }).then(({data}) => {
         console.log('移除 -----> 分组属性关联关系 -----> 提交路径: /product/relation/group-attribute/remove')
-        console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', JSON.stringify(data))
+        console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', data)
         if (data.code === 200000) {
           this.$message({type: 'success', message: '删除成功'})
           this.dataInit(this.groupId)
