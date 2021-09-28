@@ -99,7 +99,7 @@
             <div slot="header" class="clearfix">
               <span>选择销售属性</span>
               <el-form ref="saleform" :model="spu">
-                <el-form-item :label="attr.attributeName" v-for="(attr,aidx) in dataResp.saleAttrs"
+                <el-form-item :label="attr.attributeName" v-for="(attr, aidx) in dataResp.saleAttrs"
                               :key="attr.attributeId">
                   <el-input
                     v-model="dataResp.tempSaleAttrs[aidx].attributeId"
@@ -443,7 +443,7 @@ export default {
         })
       }).then(({data}) => {
         console.log('查询 -----> 会员等级分页列表 -----> 请求路径: /member/memberlevel/page')
-        console.log('查询 -----> 会员等级分页列表 -----> 返回结果:', data)
+        console.log('查询 -----> 会员等级分页列表 -----> 返回结果:', JSON.stringify(data))
         this.dataResp.memberLevels = data.data.records
       }).catch(e => {
         console.log(e)
@@ -452,14 +452,17 @@ export default {
     // 查询 当前分类可以使用的规格参数
     getBaseAttributes () {
       if (!this.dataResp.steped[0]) {
-        console.log('查询 -----> 当前分类可以使用的规格参数 -----> 提交参数:', this.spu.categoryId)
+        console.log('查询 -----> 当前分类可以使用的规格参数 -----> 提交参数:')
         this.$http({
-          url: this.$http.adornUrl(`/product/group/list/${this.spu.categoryId}`),
-          method: 'get',
-          params: this.$http.adornParams({})
+          url: this.$http.adornUrl(`/product/attribute/list/basic`),
+          method: 'post',
+          data: this.$http.adornData({
+            type: 0,
+            categoryId: this.spu.categoryId
+          })
         }).then(({data}) => {
-          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/group/list/', this.spu.categoryId)
-          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 返回结果:', data)
+          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/attribute/list/basic')
+          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 返回结果:', JSON.stringify(data))
           // 先对表单的baseAttrs进行初始化
           data.data.forEach(item => {
             let attrArray = []
@@ -480,17 +483,17 @@ export default {
     // 查询 当前分类可以使用的销售属性
     getSaleAttributes () {
       if (!this.dataResp.steped[1]) {
-        console.log('查询 -----> 当前分类可以使用的销售属性 -----> 提交参数:', this.spu.categoryId)
+        console.log('查询 -----> 当前分类可以使用的规格参数 -----> 提交参数:')
         this.$http({
-          url: this.$http.adornUrl(`/product/group/list/${this.spu.categoryId}`),
-          method: 'get',
-          params: this.$http.adornParams({
-            page: 1,
-            size: 500
+          url: this.$http.adornUrl(`/product/attribute/list/sales`),
+          method: 'post',
+          data: this.$http.adornData({
+            type: 1,
+            categoryId: this.spu.categoryId
           })
         }).then(({data}) => {
-          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 请求路径: /product/group/list/', this.spu.categoryId)
-          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 返回结果:', data)
+          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/attribute/list/sales')
+          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 返回结果:', JSON.stringify(data))
           this.dataResp.saleAttrs = data.data
           data.data.forEach(item => {
             console.log(item)
@@ -504,6 +507,138 @@ export default {
           })
           this.dataResp.steped[1] = true
         })
+      }
+    },
+    generateSkus () {
+      this.step = 3
+
+      // 根据笛卡尔积运算进行生成sku
+      let selectValues = []
+      this.dataResp.tableAttrColumn = []
+      this.dataResp.tempSaleAttrs.forEach(item => {
+        if (item.attrValues.length > 0) {
+          selectValues.push(item.attrValues)
+          this.dataResp.tableAttrColumn.push(item)
+        }
+      })
+      console.log('选中的SKU参数列表', JSON.stringify(selectValues))
+
+      // [
+      //    ["黑色","6GB","移动"],["黑色","6GB","联通"],["黑色","8GB","移动"],["黑色","8GB","联通"],
+      //    ["白色","6GB","移动"],["白色","6GB","联通"],["白色","8GB","移动"],["白色","8GB","联通"],
+      //    ["蓝色","6GB","移动"],["蓝色","6GB","联通"],["蓝色","8GB","移动"],["蓝色","8GB","联通"]
+      // ]
+      let descartes = this.descartes(selectValues)
+      console.log('生成的组合', JSON.stringify(descartes))
+      // 有多少descartes就有多少sku
+      let skus = []
+
+      descartes.forEach((descar, descaridx) => {
+        let attrArray = [] // sku属性组
+        descar.forEach((de, index) => {
+          // 构造saleAttr信息
+          let saleAttrItem = {
+            attributeId: this.dataResp.tableAttrColumn[index].attributeId,
+            attributeName: this.dataResp.tableAttrColumn[index].attributeName,
+            attrValue: de
+          }
+          attrArray.push(saleAttrItem)
+        })
+        // 先初始化几个images，后面的上传还要加
+        let imgs = []
+        this.spu.images.forEach((img, idx) => {
+          imgs.push({imgUrl: '', defaultImg: 0})
+        })
+
+        // 会员价，也必须在循环里面生成，否则会导致数据绑定问题
+        let memberPrices = []
+        if (this.dataResp.memberLevels.length > 0) {
+          for (let i = 0; i < this.dataResp.memberLevels.length; i++) {
+            if (this.dataResp.memberLevels[i].priviledgeMemberPrice === 1) {
+              memberPrices.push({
+                id: this.dataResp.memberLevels[i].id,
+                name: this.dataResp.memberLevels[i].name,
+                price: 0
+              })
+            }
+          }
+        }
+        // ;descaridx，判断如果之前有就用之前的值;
+        let res = this.hasAndReturnSku(this.spu.skus, descar)
+        if (res === null) {
+          skus.push({
+            attr: attrArray,
+            skuName: this.spu.spuName + ' ' + descar.join(' '),
+            price: 0,
+            skuTitle: this.spu.spuName + ' ' + descar.join(' '),
+            skuSubtitle: '',
+            images: imgs,
+            descar: descar,
+            fullCount: 0,
+            discount: 0,
+            countStatus: 0,
+            fullPrice: 0.0,
+            reducePrice: 0.0,
+            priceStatus: 0,
+            memberPrice: [].concat(memberPrices)
+          })
+        } else {
+          skus.push(res)
+        }
+      })
+      this.spu.skus = skus
+      console.log('结果!!!', this.spu.skus, this.dataResp.tableAttrColumn)
+    },
+    // 笛卡尔积运算
+    descartes (list) {
+      // parent上一级索引;count指针计数
+      var point = {}
+
+      var result = []
+      var pIndex = null
+      var tempCount = 0
+      var temp = []
+
+      // 根据参数列生成指针对象
+      for (var index in list) {
+        if (typeof list[index] === 'object') {
+          point[index] = {parent: pIndex, count: 0}
+          pIndex = index
+        }
+      }
+
+      // 单维度数据结构直接返回
+      if (pIndex == null) {
+        return list
+      }
+
+      // 动态生成笛卡尔积
+      while (true) {
+        for (var item in list) {
+          tempCount = point[item]['count']
+          temp.push(list[item][tempCount])
+        }
+
+        // 压入结果数组
+        result.push(temp)
+        temp = []
+
+        // 检查指针最大值问题
+        while (true) {
+          if (point[index]['count'] + 1 >= list[index].length) {
+            point[index]['count'] = 0
+            pIndex = point[index]['parent']
+            if (pIndex == null) {
+              return result
+            }
+
+            // 赋值parent进行再次检查
+            index = pIndex
+          } else {
+            point[index]['count']++
+            break
+          }
+        }
       }
     },
     // ========================================== 以下命名未统一 ====================
@@ -594,83 +729,7 @@ export default {
       this.step = 2
       this.getSaleAttributes()
     },
-    generateSkus () {
-      this.step = 3
 
-      // 根据笛卡尔积运算进行生成sku
-      let selectValues = []
-      this.dataResp.tableAttrColumn = []
-      this.dataResp.tempSaleAttrs.forEach(item => {
-        if (item.attrValues.length > 0) {
-          selectValues.push(item.attrValues)
-          this.dataResp.tableAttrColumn.push(item)
-        }
-      })
-
-      let descartes = this.descartes(selectValues)
-      // [["黑色","6GB","移动"],["黑色","6GB","联通"],["黑色","8GB","移动"],["黑色","8GB","联通"],
-      // ["白色","6GB","移动"],["白色","6GB","联通"],["白色","8GB","移动"],["白色","8GB","联通"],
-      // ["蓝色","6GB","移动"],["蓝色","6GB","联通"],["蓝色","8GB","移动"],["蓝色","8GB","联通"]]
-      console.log('生成的组合', JSON.stringify(descartes))
-      // 有多少descartes就有多少sku
-      let skus = []
-
-      descartes.forEach((descar, descaridx) => {
-        let attrArray = [] // sku属性组
-        descar.forEach((de, index) => {
-          // 构造saleAttr信息
-          let saleAttrItem = {
-            attributeId: this.dataResp.tableAttrColumn[index].attributeId,
-            attributeName: this.dataResp.tableAttrColumn[index].attributeName,
-            attrValue: de
-          }
-          attrArray.push(saleAttrItem)
-        })
-        // 先初始化几个images，后面的上传还要加
-        let imgs = []
-        this.spu.images.forEach((img, idx) => {
-          imgs.push({imgUrl: '', defaultImg: 0})
-        })
-
-        // 会员价，也必须在循环里面生成，否则会导致数据绑定问题
-        let memberPrices = []
-        if (this.dataResp.memberLevels.length > 0) {
-          for (let i = 0; i < this.dataResp.memberLevels.length; i++) {
-            if (this.dataResp.memberLevels[i].priviledgeMemberPrice === 1) {
-              memberPrices.push({
-                id: this.dataResp.memberLevels[i].id,
-                name: this.dataResp.memberLevels[i].name,
-                price: 0
-              })
-            }
-          }
-        }
-        // ;descaridx，判断如果之前有就用之前的值;
-        let res = this.hasAndReturnSku(this.spu.skus, descar)
-        if (res === null) {
-          skus.push({
-            attr: attrArray,
-            skuName: this.spu.spuName + ' ' + descar.join(' '),
-            price: 0,
-            skuTitle: this.spu.spuName + ' ' + descar.join(' '),
-            skuSubtitle: '',
-            images: imgs,
-            descar: descar,
-            fullCount: 0,
-            discount: 0,
-            countStatus: 0,
-            fullPrice: 0.0,
-            reducePrice: 0.0,
-            priceStatus: 0,
-            memberPrice: [].concat(memberPrices)
-          })
-        } else {
-          skus.push(res)
-        }
-      })
-      this.spu.skus = skus
-      console.log('结果!!!', this.spu.skus, this.dataResp.tableAttrColumn)
-    },
     // 判断如果包含之前的sku的descar组合，就返回这个sku的详细信息；
     hasAndReturnSku (skus, descar) {
       let res = null
@@ -718,59 +777,8 @@ export default {
             message: '已取消'
           })
         })
-    },
-    // 笛卡尔积运算
-    descartes (list) {
-      // parent上一级索引;count指针计数
-      var point = {}
-
-      var result = []
-      var pIndex = null
-      var tempCount = 0
-      var temp = []
-
-      // 根据参数列生成指针对象
-      for (var index in list) {
-        if (typeof list[index] === 'object') {
-          point[index] = {parent: pIndex, count: 0}
-          pIndex = index
-        }
-      }
-
-      // 单维度数据结构直接返回
-      if (pIndex == null) {
-        return list
-      }
-
-      // 动态生成笛卡尔积
-      while (true) {
-        for (var item in list) {
-          tempCount = point[item]['count']
-          temp.push(list[item][tempCount])
-        }
-
-        // 压入结果数组
-        result.push(temp)
-        temp = []
-
-        // 检查指针最大值问题
-        while (true) {
-          if (point[index]['count'] + 1 >= list[index].length) {
-            point[index]['count'] = 0
-            pIndex = point[index]['parent']
-            if (pIndex == null) {
-              return result
-            }
-
-            // 赋值parent进行再次检查
-            index = pIndex
-          } else {
-            point[index]['count']++
-            break
-          }
-        }
-      }
     }
+
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
   created () {

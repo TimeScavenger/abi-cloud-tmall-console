@@ -117,13 +117,13 @@ export default {
         data: this.$http.adornData(this.categoryTree, false)
       }).then(({data}) => {
         console.log('查询 -----> 分类树形列表 -----> 请求路径: /product/category/list/tree')
-        console.log('查询 -----> 分类树形列表 -----> 返回结果:', data)
+        console.log('查询 -----> 分类树形列表 -----> 返回结果:', JSON.stringify(data))
         this.menus = data.data
       })
     },
     // 初始化 添加分类信息
     dataAddInit (data) {
-      console.log('初始化 -----> 添加分类信息 -----> 请求参数:', data)
+      console.log('初始化 -----> 添加分类信息 -----> 请求参数:', JSON.stringify(data))
       this.dialogType = 'save'
       this.title = '添加分类信息'
       this.dialogVisible = true
@@ -146,7 +146,7 @@ export default {
         data: this.$http.adornData(this.category, false)
       }).then(({data}) => {
         console.log('添加 -----> 分类信息 -----> 请求路径: /product/category/save')
-        console.log('添加 -----> 分类信息 -----> 返回结果:', data)
+        console.log('添加 -----> 分类信息 -----> 返回结果:', JSON.stringify(data))
         this.$message({
           message: '添加分类信息成功',
           type: 'success'
@@ -161,7 +161,7 @@ export default {
     },
     // 初始化 修改分类信息
     dataUpdateInit (data) {
-      console.log('初始化 -----> 修改分类信息 -----> 请求参数:', data)
+      console.log('初始化 -----> 修改分类信息 -----> 请求参数:', JSON.stringify(data))
       this.dialogType = 'update'
       this.title = '修改分类信息'
       this.dialogVisible = true
@@ -171,7 +171,7 @@ export default {
         method: 'get'
       }).then(({data}) => {
         console.log(`初始化 -----> 修改分类信息 -----> 请求路径: /product/category/find/${data.categoryId}`)
-        console.log('初始化 -----> 修改分类信息 -----> 返回结果:', data)
+        console.log('初始化 -----> 修改分类信息 -----> 返回结果:', JSON.stringify(data))
         this.category.categoryId = data.data.categoryId
         this.category.categoryName = data.data.categoryName
         this.category.parentId = data.data.parentId
@@ -191,7 +191,7 @@ export default {
         data: this.$http.adornData(this.category, false)
       }).then(({data}) => {
         console.log('修改 -----> 分类信息 -----> 请求路径: /product/category/modify')
-        console.log('修改 -----> 分类信息 -----> 返回结果:', data)
+        console.log('修改 -----> 分类信息 -----> 返回结果:', JSON.stringify(data))
         this.$message({
           message: '修改分类信息成功',
           type: 'success'
@@ -228,7 +228,7 @@ export default {
           data: this.$http.adornData(this.categorySub, false)
         }).then(({data}) => {
           console.log('删除 -----> 分类信息 -----> 请求路径: /product/category/remove')
-          console.log('删除 -----> 分类信息 -----> 返回结果:', data)
+          console.log('删除 -----> 分类信息 -----> 返回结果:', JSON.stringify(data))
           this.$message({
             message: '分类删除成功',
             type: 'success'
@@ -259,7 +259,7 @@ export default {
           data: this.$http.adornData(this.categorySub, false)
         }).then(({data}) => {
           console.log('批量删除 -----> 分类信息 -----> 请求路径: /product/category/remove')
-          console.log('批量删除 -----> 分类信息 -----> 返回结果:', data)
+          console.log('批量删除 -----> 分类信息 -----> 返回结果:', JSON.stringify(data))
           this.$message({
             message: '分类批量删除成功',
             type: 'success'
@@ -279,7 +279,7 @@ export default {
         data: this.$http.adornData(this.updateNodes, false)
       }).then(({data}) => {
         console.log('批量修改 -----> 分类信息排序 -----> 请求路径: /product/category/modify/sort')
-        console.log('批量修改 -----> 分类信息排序 -----> 返回结果:', data)
+        console.log('批量修改 -----> 分类信息排序 -----> 返回结果:', JSON.stringify(data))
         this.$message({
           message: '分类顺序修改成功',
           type: 'success'

@@ -166,7 +166,7 @@ export default {
         })
       }).then(({data}) => {
         console.log('查询 -----> 规格参数分页列表 -----> 请求路径: /product/attribute/page')
-        console.log('查询 -----> 规格参数分页列表 -----> 返回结果:', data)
+        console.log('查询 -----> 规格参数分页列表 -----> 返回结果:', JSON.stringify(data))
         if (data && data.code === 200000) {
           this.dataList = data.data.records
           this.totalPage = data.data.total
@@ -205,7 +205,7 @@ export default {
           data: this.$http.adornData(ids, false)
         }).then(({data}) => {
           console.log('删除 -----> 规格参数 -----> 请求路径: /product/attribute/remove')
-          console.log('删除 -----> 规格参数 -----> 返回结果:', data)
+          console.log('删除 -----> 规格参数 -----> 返回结果:', JSON.stringify(data))
           if (data && data.code === 200000) {
             this.$message({
               message: '操作成功',

@@ -105,7 +105,7 @@ export default {
         method: 'post',
         data: this.$http.adornData(this.categoryTree, false)
       }).then(({data}) => {
-        console.log('查询 -----> 分类列表 -----> 返回数据:', data)
+        console.log('查询 -----> 分类列表 -----> 返回数据:', JSON.stringify(data))
         this.categorys = data.data
       })
     },
@@ -123,7 +123,7 @@ export default {
             params: this.$http.adornParams()
           }).then(({data}) => {
             console.log(`初始化 -----> 添加/修改分组信息 -----> 请求路径: /product/group/find/${this.dataForm.groupId}`)
-            console.log('初始化 -----> 添加/修改分组信息 -----> 返回结果:', data)
+            console.log('初始化 -----> 添加/修改分组信息 -----> 返回结果:', JSON.stringify(data))
             if (data && data.code === 200000) {
               this.dataForm.groupName = data.data.groupName
               this.dataForm.sort = data.data.sort
@@ -156,7 +156,7 @@ export default {
             })
           }).then(({data}) => {
             console.log('表单提交 -----> 添加/修改分组信息 -----> 请求路径: /product/group/save /product/group/modify')
-            console.log('表单提交 -----> 添加/修改分组信息 -----> 返回数据:', data)
+            console.log('表单提交 -----> 添加/修改分组信息 -----> 返回数据:', JSON.stringify(data))
             if (data && data.code === 200000) {
               this.$message({
                 message: '操作成功',

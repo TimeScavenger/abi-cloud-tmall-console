@@ -178,7 +178,7 @@ export default {
         })
       }).then(({data}) => {
         console.log('查询 -----> 品牌分页列表 -----> 请求路径: /product/brand/page')
-        console.log('查询 -----> 品牌分页列表 -----> 返回结果:', data)
+        console.log('查询 -----> 品牌分页列表 -----> 返回结果:', JSON.stringify(data))
         if (data && data.code === 200000) {
           this.dataList = data.data.records
           this.totalPage = data.data.total
@@ -214,7 +214,7 @@ export default {
           data: this.$http.adornData(this.brandSub.brandIds, false)
         }).then(({data}) => {
           console.log('删除 -----> 品牌信息 -----> 请求路径: /product/brand/remove')
-          console.log('删除 -----> 品牌信息 -----> 返回结果:', data)
+          console.log('删除 -----> 品牌信息 -----> 返回结果:', JSON.stringify(data))
           if (data && data.code === 200000) {
             this.$message({
               message: '操作成功',
@@ -233,7 +233,7 @@ export default {
     // 更新 品牌状态信息
     updateBrandStatusHandle (data) {
       let {brandId, showed} = data
-      console.log('更新 -----> 品牌的状态信息 -----> 提交参数:', data)
+      console.log('更新 -----> 品牌的状态信息 -----> 提交参数:', JSON.stringify(data))
       // 发送请求修改状态
       this.$http({
         url: this.$http.adornUrl('/product/brand/modify/showed'),
@@ -241,7 +241,7 @@ export default {
         data: this.$http.adornData({brandId, showed}, false)
       }).then(({data}) => {
         console.log('更新 -----> 品牌的状态信息 -----> 请求路径: /product/brand/modify/showed')
-        console.log('更新 -----> 品牌的状态信息 -----> 返回数据:', data)
+        console.log('更新 -----> 品牌的状态信息 -----> 返回数据:', JSON.stringify(data))
         this.$message({
           type: 'success',
           message: '状态更新成功'
@@ -259,7 +259,7 @@ export default {
         }, false)
       }).then(({data}) => {
         console.log('查询 -----> 品牌关联的分类 -----> 请求路径: /product/relation/brand-category/list/categorys/by/brandId')
-        console.log('查询 -----> 品牌关联的分类 -----> 返回数据:', data)
+        console.log('查询 -----> 品牌关联的分类 -----> 返回数据:', JSON.stringify(data))
         this.cateRelationTableData = data.data
       })
     },
@@ -277,7 +277,7 @@ export default {
         }, false)
       }).then(({data}) => {
         console.log('添加 -----> 品牌关联的分类 -----> 请求路径: /product/relation/brand-category/save')
-        console.log('添加 -----> 品牌关联的分类 -----> 返回数据:', data)
+        console.log('添加 -----> 品牌关联的分类 -----> 返回数据:', JSON.stringify(data))
         this.getRelationHandle()
       })
     },
@@ -290,7 +290,7 @@ export default {
         data: this.$http.adornData([id], false)
       }).then(({data}) => {
         console.log('删除 -----> 品牌关联的分类 -----> 请求路径: /product/relation/brand-category/remove')
-        console.log('删除 -----> 品牌关联的分类 -----> 返回数据:', data)
+        console.log('删除 -----> 品牌关联的分类 -----> 返回数据:', JSON.stringify(data))
         this.getRelationHandle()
       })
     },

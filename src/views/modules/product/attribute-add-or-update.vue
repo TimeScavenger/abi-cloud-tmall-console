@@ -133,7 +133,7 @@ export default {
           })
         }).then(({data}) => {
           console.log('监听查询 -----> 三级分类路径 -----> 提交路径: /product/group/page/')
-          console.log('监听查询 -----> 三级分类路径 -----> 返回数据:', data)
+          console.log('监听查询 -----> 三级分类路径 -----> 返回数据:', JSON.stringify(data))
           if (data && data.code === 200000) {
             this.attrGroups = data.data.records
           } else {
@@ -165,7 +165,7 @@ export default {
             params: this.$http.adornParams()
           }).then(({data}) => {
             console.log(`初始化 -----> 添加/修改属性信息 -----> 请求路径: /product/attribute/find/${this.dataForm.attributeId}`)
-            console.log('初始化 -----> 添加/修改属性信息 -----> 返回结果:', data)
+            console.log('初始化 -----> 添加/修改属性信息 -----> 返回结果:', JSON.stringify(data))
             if (data && data.code === 200000) {
               this.dataForm.attributeName = data.data.attributeName
               this.dataForm.searchType = data.data.searchType
@@ -208,7 +208,7 @@ export default {
             })
           }).then(({data}) => {
             console.log('表单提交 -----> 添加/修改属性信息 -----> 请求路径: /product/attribute/save /product/attribute/modify')
-            console.log('表单提交 -----> 添加/修改属性信息 -----> 返回结果:', data)
+            console.log('表单提交 -----> 添加/修改属性信息 -----> 返回结果:', JSON.stringify(data))
             if (data && data.code === 200000) {
               this.$message({
                 message: '操作成功',
