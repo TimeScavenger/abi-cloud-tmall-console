@@ -12,7 +12,7 @@
         </el-steps>
       </el-col>
 
-      <el-col :span="24" v-show="step==0">
+      <el-col :span="24" v-show="step===0">
         <el-card class="box-card" style="width:80%;margin:20px auto">
           <el-form ref="spuBaseForm" :model="spu" label-width="120px" :rules="spuBaseInfoRules">
             <el-form-item label="商品名称" prop="spuName">
@@ -64,7 +64,7 @@
         </el-card>
       </el-col>
 
-      <el-col :span="24" v-show="step==1">
+      <el-col :span="24" v-show="step===1">
         <el-card class="box-card" style="width:80%;margin:20px auto">
           <el-tabs tab-position="left" style="width:98%">
             <el-tab-pane :label="group.groupName" v-for="(group, gidx) in dataResp.attrGroups"
@@ -75,7 +75,7 @@
                               :key="attr.attributeId">
                   <el-input v-model="dataResp.baseAttrs[gidx][aidx].attributeId" type="hidden"
                             v-show="false"></el-input>
-                  <el-select v-model="dataResp.baseAttrs[gidx][aidx].attrValues" :multiple="attr.valueType == 1"
+                  <el-select v-model="dataResp.baseAttrs[gidx][aidx].attrValues" :multiple="attr.valueType === 1"
                              filterable allow-create default-first-option placeholder="请选择或输入值">
                     <el-option v-for="(val,vidx) in attr.valueList.split(';')" :key="vidx" :label="val"
                                :value="val"></el-option>
@@ -93,7 +93,7 @@
         </el-card>
       </el-col>
 
-      <el-col :span="24" v-show="step==2">
+      <el-col :span="24" v-show="step===2">
         <el-card class="box-card" style="width:80%;margin:20px auto">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
@@ -107,7 +107,7 @@
                     v-show="false"
                   ></el-input>
                   <el-checkbox-group v-model="dataResp.tempSaleAttrs[aidx].attrValues">
-                    <el-checkbox v-if="dataResp.saleAttrs[aidx].valueList != ''" :label="val"
+                    <el-checkbox v-if="dataResp.saleAttrs[aidx].valueList !== ''" :label="val"
                                  v-for="val in dataResp.saleAttrs[aidx].valueList.split(';')" :key="val"></el-checkbox>
                     <div style="margin-left:20px;display:inline">
                       <el-button v-show="!inputVisible[aidx].view" class="button-new-tag" size="mini"
@@ -133,7 +133,7 @@
         </el-card>
       </el-col>
 
-      <el-col :span="24" v-show="step==3">
+      <el-col :span="24" v-show="step===3">
         <el-card class="box-card" style="width:80%;margin:20px auto">
           <el-table :data="spu.skus" style="width: 100%">
             <el-table-column label="属性组合">
@@ -189,7 +189,7 @@
                       v-for="(img,index) in spu.images"
                       :key="index"
                     >
-                      <img :src="img" style="width:160px;height:120px"/>
+                      <img :src="img" style="width:160px;height:120px" alt="商品图集"/>
                       <div style="padding: 14px;">
                         <el-row>
                           <el-col :span="12">
@@ -200,7 +200,7 @@
                             ></el-checkbox>
                           </el-col>
                           <el-col :span="12">
-                            <el-tag v-if="scope.row.images[index].defaultImg == 1">
+                            <el-tag v-if="scope.row.images[index].defaultImg === 1">
                               <input
                                 type="radio"
                                 checked
@@ -309,7 +309,7 @@
         </el-card>
       </el-col>
 
-      <el-col :span="24" v-show="step==4">
+      <el-col :span="24" v-show="step===4">
         <el-card class="box-card" style="width:80%;margin:20px auto">
           <h1>保存成功</h1>
           <el-button type="primary" @click="addAgian">继续添加</el-button>

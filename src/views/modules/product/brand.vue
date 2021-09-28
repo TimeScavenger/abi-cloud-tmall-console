@@ -33,7 +33,7 @@
       <el-table-column prop="logo" header-align="center" align="center" label="品牌logo">
         <template slot-scope="scope">
           <el-popover placement="right" trigger="hover">
-            <img :src="scope.row.logo" style="width: 100%"/>
+            <img :src="scope.row.logo" style="width: 100%" alt="logo图标"/>
             <img :src="scope.row.logo" :alt="scope.row.logo" slot="reference"
                  style="width: 50%;cursor: pointer">
           </el-popover>
