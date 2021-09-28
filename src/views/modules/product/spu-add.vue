@@ -50,8 +50,8 @@
                 <template slot="prepend">成长值</template>
               </el-input-number>
             </el-form-item>
-            <el-form-item label="商品介绍" prop="decript">
-              <multi-upload v-model="spu.decript"></multi-upload>
+            <el-form-item label="商品介绍" prop="introduceImgs">
+              <multi-upload v-model="spu.introduceImgs"></multi-upload>
             </el-form-item>
 
             <el-form-item label="商品图集" prop="images">
@@ -355,14 +355,14 @@ export default {
         brandId: '',
         weight: '',
         publishStatus: 0,
-        decript: [], // 商品详情
+        introduceImgs: [], // 商品详情
         images: [], // 商品图集，最后sku也可以新增
         bounds: {
           // 积分
           buyBounds: 0,
           growBounds: 0
         },
-        baseAttrs: [], // 基本属性
+        baseAttributes: [], // 基本属性
         skus: [] // 所有sku信息
       },
       spuBaseInfoRules: {
@@ -378,10 +378,10 @@ export default {
         brandId: [
           {required: true, message: '请选择一个品牌', trigger: 'blur'}
         ],
-        // decript: [
+        // introduceImgs: [
         //   {required: true, message: '请上传商品详情图集', trigger: 'blur'}
         // ],
-        // images: [
+        // detailImgs: [
         //   {required: true, message: '请上传商品图片集', trigger: 'blur'}
         // ],
         weight: [
@@ -634,6 +634,42 @@ export default {
         }
       }
     },
+    submitSkus () {
+      console.log('~~~~~', JSON.stringify(this.spu))
+      this.$confirm('将要提交商品数据，需要一小段时间，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/product/spuinfo/save'),
+          method: 'post',
+          data: this.$http.adornData(this.spu, false)
+        }).then(({data}) => {
+          console.log('新增 -----> Spu信息 -----> 请求路径: /product/spuinfo/save')
+          console.log('新增 -----> Spu信息 -----> 返回结果:', data)
+          if (data.code === 200000) {
+            this.$message({
+              type: 'success',
+              message: '新增商品成功!'
+            })
+            this.step = 4
+          } else {
+            this.$message({
+              type: 'error',
+              message: '保存失败，原因【' + data.msg + '】'
+            })
+          }
+        })
+      })
+        .catch(e => {
+          console.log(e)
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
+    },
     // ========================================== 以下命名未统一 ====================
     addAgian () {
       this.step = 0
@@ -647,7 +683,7 @@ export default {
         brandId: '',
         weight: '',
         publishStatus: 0,
-        decript: [],
+        introduceImgs: [],
         images: [],
         bounds: {
           buyBounds: 0,
@@ -733,42 +769,6 @@ export default {
         }
       }
       return res
-    },
-
-    submitSkus () {
-      console.log('~~~~~', JSON.stringify(this.spu))
-      this.$confirm('将要提交商品数据，需要一小段时间，是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/product/spuinfo/save'),
-            method: 'post',
-            data: this.$http.adornData(this.spu, false)
-          }).then(({data}) => {
-            if (data.code === 200000) {
-              this.$message({
-                type: 'success',
-                message: '新增商品成功!'
-              })
-              this.step = 4
-            } else {
-              this.$message({
-                type: 'error',
-                message: '保存失败，原因【' + data.msg + '】'
-              })
-            }
-          })
-        })
-        .catch(e => {
-          console.log(e)
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          })
-        })
     }
 
   },
