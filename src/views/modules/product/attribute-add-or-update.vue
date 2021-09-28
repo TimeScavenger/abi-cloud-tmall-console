@@ -43,9 +43,9 @@
           :active-value="1"
           :inactive-value="0"></el-switch>
       </el-form-item>
-      <el-form-item label="快速展示" prop="showDesc" v-if="type === 0">
+      <el-form-item label="快速展示" prop="quickShow" v-if="type === 0">
         <el-switch
-          v-model="dataForm.showDesc"
+          v-model="dataForm.quickShow"
           active-color="#13ce66"
           inactive-color="#ff4949"
           :active-value="1"
@@ -93,7 +93,7 @@ export default {
         enabled: 0,
         categoryId: 0,
         groupId: '',
-        showDesc: 0
+        quickShow: 0
       },
       categoryPath: [],
       attrGroups: [],
@@ -105,7 +105,7 @@ export default {
         type: [{required: true, message: '属性类型不能为空', trigger: 'blur'}],
         enabled: [{required: true, message: '启用状态不能为空', trigger: 'blur'}],
         categoryId: [{required: true, message: '需要选择正确的三级分类数据', trigger: 'blur'}],
-        showDesc: [{required: true, message: '快速展示不能为空', trigger: 'blur'}]
+        quickShow: [{required: true, message: '快速展示不能为空', trigger: 'blur'}]
       }
     }
   },
@@ -173,7 +173,7 @@ export default {
               this.dataForm.type = data.data.type
               this.dataForm.enabled = data.data.enabled
               this.dataForm.categoryId = data.data.categoryId
-              this.dataForm.showDesc = data.data.showDesc
+              this.dataForm.quickShow = data.data.quickShow
               this.categoryPath = data.data.categoryPath
               this.$nextTick(() => {
                 this.dataForm.groupId = data.data.groupId
@@ -201,7 +201,7 @@ export default {
               enabled: this.dataForm.enabled,
               categoryId: this.dataForm.categoryId,
               groupId: this.dataForm.groupId,
-              showDesc: this.dataForm.showDesc
+              quickShow: this.dataForm.quickShow
             })
           }).then(({data}) => {
             console.log('表单提交 -----> 添加/修改属性信息 -----> 请求路径: /product/attribute/save /product/attribute/modify')

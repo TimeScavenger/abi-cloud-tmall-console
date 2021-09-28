@@ -37,7 +37,7 @@
                     ></el-option>
                   </el-select>
                   <el-checkbox
-                    v-model="dataResp.baseAttrs[gidx][aidx].showDesc"
+                    v-model="dataResp.baseAttrs[gidx][aidx].quickShow"
                     :true-label="1"
                     :false-label="0"
                   >快速展示
@@ -118,9 +118,9 @@ export default {
               attrId: attr.attrId,
               attrName: attr.attrName,
               attrValues: v,
-              showDesc: _this.spuAttrsMap['' + attr.attrId]
+              quickShow: _this.spuAttrsMap['' + attr.attrId]
                 ? _this.spuAttrsMap['' + attr.attrId].quickShow
-                : attr.showDesc
+                : attr.quickShow
             })
           })
           this.dataResp.baseAttrs.push(attrArray)
@@ -146,7 +146,7 @@ export default {
               attrId: attr.attrId,
               attrName: attr.attrName,
               attrValue: val,
-              quickShow: attr.showDesc
+              quickShow: attr.quickShow
             })
           }
         })

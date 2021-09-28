@@ -80,7 +80,7 @@
                     <el-option v-for="(val,vidx) in attr.valueList.split(';')" :key="vidx" :label="val"
                                :value="val"></el-option>
                   </el-select>
-                  <el-checkbox v-model="dataResp.baseAttrs[gidx][aidx].showDesc" :true-label="1" :false-label="0">快速展示
+                  <el-checkbox v-model="dataResp.baseAttrs[gidx][aidx].quickShow" :true-label="1" :false-label="0">快速展示
                   </el-checkbox>
                 </el-form-item>
               </el-form>
@@ -467,7 +467,7 @@ export default {
               attrArray.push({
                 attributeId: attr.attributeId,
                 attrValues: '',
-                showDesc: attr.showDesc
+                quickShow: attr.quickShow
               })
             })
             this.dataResp.baseAttrs.push(attrArray)
@@ -488,11 +488,10 @@ export default {
             categoryId: this.spu.categoryId
           })
         }).then(({data}) => {
-          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/attribute/list/sales')
+          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 请求路径: /product/attribute/list/sales')
           console.log('查询 -----> 当前分类可以使用的销售属性 -----> 返回结果:', data)
           this.dataResp.saleAttrs = data.data
           data.data.forEach(item => {
-            console.log(item)
             this.dataResp.tempSaleAttrs.push({
               attributeId: item.attributeId,
               attrValues: [],
@@ -708,14 +707,14 @@ export default {
       this.spu.baseAttrs = []
       this.dataResp.baseAttrs.forEach(item => {
         item.forEach(attr => {
-          let {attributeId, attrValues, showDesc} = attr
+          let {attributeId, attrValues, quickShow} = attr
           // 跳过没有录入值的属性
           if (attrValues !== '') {
             if (attrValues instanceof Array) {
               // 多个值用;隔开
               attrValues = attrValues.join(';')
             }
-            this.spu.baseAttrs.push({attributeId, attrValues, showDesc})
+            this.spu.baseAttrs.push({attributeId, attrValues, quickShow})
           }
         })
       })

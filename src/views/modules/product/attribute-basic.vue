@@ -50,9 +50,9 @@
               <i class="el-icon-error" v-else></i>
             </template>
           </el-table-column>
-          <el-table-column v-if="attrtype === 0" prop="showDesc" header-align="center" align="center" label="快速展示">
+          <el-table-column v-if="attrtype === 0" prop="quickShow" header-align="center" align="center" label="快速展示">
             <template slot-scope="scope">
-              <i class="el-icon-success" v-if="scope.row.showDesc === 1"></i>
+              <i class="el-icon-success" v-if="scope.row.quickShow === 1"></i>
               <i class="el-icon-error" v-else></i>
             </template>
           </el-table-column>
