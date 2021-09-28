@@ -56,7 +56,6 @@ export default {
       return data.categoryName.indexOf(value) !== -1
     },
     getCategorys () {
-      console.log('查询 -----> 分类列表 -----> 提交参数:')
       this.$http({
         url: this.$http.adornUrl('/product/category/list/tree'),
         method: 'post',
