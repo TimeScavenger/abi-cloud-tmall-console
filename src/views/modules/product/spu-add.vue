@@ -18,8 +18,8 @@
             <el-form-item label="商品名称" prop="spuName">
               <el-input v-model="spu.spuName"></el-input>
             </el-form-item>
-            <el-form-item label="商品描述" prop="spuDescription">
-              <el-input v-model="spu.spuDescription"></el-input>
+            <el-form-item label="商品描述" prop="spuDesc">
+              <el-input v-model="spu.spuDesc"></el-input>
             </el-form-item>
             <el-form-item label="选择分类" prop="categoryId">
               <category-cascader></category-cascader>
@@ -54,8 +54,8 @@
               <multi-upload v-model="spu.introduceImgs"></multi-upload>
             </el-form-item>
 
-            <el-form-item label="商品图集" prop="images">
-              <multi-upload v-model="spu.images"></multi-upload>
+            <el-form-item label="商品图集" prop="detailImgs">
+              <multi-upload v-model="spu.detailImgs"></multi-upload>
             </el-form-item>
             <el-form-item>
               <el-button type="success" @click="collectSpuBaseInfo">下一步：设置基本参数</el-button>
@@ -69,18 +69,19 @@
           <el-tabs tab-position="left" style="width:98%">
             <el-tab-pane :label="group.groupName" v-for="(group, gidx) in dataResp.attrGroups"
                          :key="group.groupId">
-              <!-- 遍历属性,每个tab-pane对应一个表单，每个属性是一个表单项  spu.baseAttrs[0] = [{attributeId:xx,val:}]-->
+              <!-- 遍历属性,每个tab-pane对应一个表单，每个属性是一个表单项  spu.baseAttributes[0] = [{attributeId:xx,val:}]-->
               <el-form ref="form" :model="spu">
                 <el-form-item :label="attr.attributeName" v-for="(attr, aidx) in group.attributeList"
                               :key="attr.attributeId">
-                  <el-input v-model="dataResp.baseAttrs[gidx][aidx].attributeId" type="hidden"
+                  <el-input v-model="dataResp.baseAttributes[gidx][aidx].attributeId" type="hidden"
                             v-show="false"></el-input>
-                  <el-select v-model="dataResp.baseAttrs[gidx][aidx].attrValues" :multiple="attr.valueType === 1"
+                  <el-select v-model="dataResp.baseAttributes[gidx][aidx].valueList" :multiple="attr.valueType === 1"
                              filterable allow-create default-first-option placeholder="请选择或输入值">
                     <el-option v-for="(val,vidx) in attr.valueList.split(';')" :key="vidx" :label="val"
                                :value="val"></el-option>
                   </el-select>
-                  <el-checkbox v-model="dataResp.baseAttrs[gidx][aidx].quickShow" :true-label="1" :false-label="0">快速展示
+                  <el-checkbox v-model="dataResp.baseAttributes[gidx][aidx].quickShow" :true-label="1" :false-label="0">
+                    快速展示
                   </el-checkbox>
                 </el-form-item>
               </el-form>
@@ -106,7 +107,7 @@
                     type="hidden"
                     v-show="false"
                   ></el-input>
-                  <el-checkbox-group v-model="dataResp.tempSaleAttrs[aidx].attrValues">
+                  <el-checkbox-group v-model="dataResp.tempSaleAttrs[aidx].valueList">
                     <el-checkbox v-if="dataResp.saleAttrs[aidx].valueList !== ''" :label="val"
                                  v-for="val in dataResp.saleAttrs[aidx].valueList.split(';')" :key="val"></el-checkbox>
                     <div style="margin-left:20px;display:inline">
@@ -135,7 +136,7 @@
 
       <el-col :span="24" v-show="step===3">
         <el-card class="box-card" style="width:80%;margin:20px auto">
-          <el-table :data="spu.skus" style="width: 100%">
+          <el-table :data="spu.skuInfos" style="width: 100%">
             <el-table-column label="属性组合">
               <el-table-column
                 :label="item.attributeName"
@@ -186,7 +187,7 @@
                     <el-card
                       style="width:170px;float:left;margin-left:15px;margin-top:15px;"
                       :body-style="{ padding: '0px' }"
-                      v-for="(img,index) in spu.images"
+                      v-for="(img,index) in spu.detailImgs"
                       :key="index"
                     >
                       <img :src="img" style="width:160px;height:120px" alt="商品图集"/>
@@ -349,27 +350,26 @@ export default {
       // spu_name  spu_description  catalog_id  brand_id  weight  publish_status
       spu: {
         // 要提交的数据
-        spuName: '',
-        spuDescription: '',
-        categoryId: 0,
-        brandId: '',
-        weight: '',
-        publishStatus: 0,
-        introduceImgs: [], // 商品详情
-        images: [], // 商品图集，最后sku也可以新增
-        bounds: {
-          // 积分
-          buyBounds: 0,
-          growBounds: 0
+        spuName: '', // SPU名字
+        spuDesc: '', // SPU描述
+        categoryId: 0, // 分类
+        brandId: '', // 品牌
+        weight: '', // 重量
+        publishStatus: 0, // 商家状态
+        introduceImgs: [], // 商品介绍图集
+        detailImgs: [], // 商品详情图集，最后sku也可以新增
+        bounds: { // 积分
+          buyBounds: 0, // 购物积分
+          growBounds: 0 // 成长积分
         },
         baseAttributes: [], // 基本属性
-        skus: [] // 所有sku信息
+        skuInfos: [] // 所有sku信息
       },
       spuBaseInfoRules: {
         spuName: [
           {required: true, message: '请输入商品名字', trigger: 'blur'}
         ],
-        spuDescription: [
+        spuDesc: [
           {required: true, message: '请编写一个简单描述', trigger: 'blur'}
         ],
         categoryId: [
@@ -396,7 +396,7 @@ export default {
       dataResp: {
         // 后台返回的所有数据
         attrGroups: [],
-        baseAttrs: [],
+        baseAttributes: [],
         saleAttrs: [],
         tempSaleAttrs: [],
         tableAttrColumn: [],
@@ -412,21 +412,21 @@ export default {
   // 监控data中的数据变化
   watch: {
     uploadImages (val) {
-      // 扩展每个skus里面的imgs选项
-      let imgArr = Array.from(new Set(this.spu.images.concat(val)))
+      // 扩展每个skuInfos里面的imgs选项
+      let imgArr = Array.from(new Set(this.spu.detailImgs.concat(val)))
 
       // {imgUrl:"",defaultImg:0} 由于concat每次迭代上次，有很多重复。所以我们必须得到上次+这次的总长
-      this.spu.skus.forEach((item, index) => {
-        let len = imgArr.length - this.spu.skus[index].images.length // 还差这么多
+      this.spu.skuInfos.forEach((item, index) => {
+        let len = imgArr.length - this.spu.skuInfos[index].detailImgs.length // 还差这么多
         if (len > 0) {
           let imgs = new Array(len)
           imgs = imgs.fill({imgUrl: '', defaultImg: 0})
-          this.spu.skus[index].images = item.images.concat(imgs)
+          this.spu.skuInfos[index].detailImgs = item.detailImgs.concat(imgs)
         }
       })
 
-      this.spu.images = imgArr // 去重
-      console.log('this.spu.skus', this.spu.skus)
+      this.spu.detailImgs = imgArr // 去重
+      console.log('this.spu.skuInfos', this.spu.skuInfos)
     }
   },
   methods: {
@@ -460,17 +460,17 @@ export default {
         }).then(({data}) => {
           console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/attribute/list/basic')
           console.log('查询 -----> 当前分类可以使用的规格参数 -----> 返回结果:', data)
-          // 先对表单的baseAttrs进行初始化
+          // 先对表单的baseAttributes进行初始化
           data.data.forEach(item => {
             let attrArray = []
             item.attributeList.forEach(attr => {
               attrArray.push({
                 attributeId: attr.attributeId,
-                attrValues: '',
+                valueList: '',
                 quickShow: attr.quickShow
               })
             })
-            this.dataResp.baseAttrs.push(attrArray)
+            this.dataResp.baseAttributes.push(attrArray)
           })
           this.dataResp.steped[0] = 0
           this.dataResp.attrGroups = data.data
@@ -494,7 +494,7 @@ export default {
           data.data.forEach(item => {
             this.dataResp.tempSaleAttrs.push({
               attributeId: item.attributeId,
-              attrValues: [],
+              valueList: [],
               attributeName: item.attributeName
             })
             this.inputVisible.push({view: false})
@@ -511,8 +511,8 @@ export default {
       let selectValues = []
       this.dataResp.tableAttrColumn = []
       this.dataResp.tempSaleAttrs.forEach(item => {
-        if (item.attrValues.length > 0) {
-          selectValues.push(item.attrValues)
+        if (item.valueList.length > 0) {
+          selectValues.push(item.valueList)
           this.dataResp.tableAttrColumn.push(item)
         }
       })
@@ -526,7 +526,7 @@ export default {
       let descartes = this.descartes(selectValues)
       console.log('生成的SKU组合列表：', JSON.stringify(descartes))
       // 有多少descartes就有多少sku
-      let skus = []
+      let skuInfos = []
 
       descartes.forEach((descar, descaridx) => {
         let attrArray = [] // sku属性组
@@ -541,7 +541,7 @@ export default {
         })
         // 先初始化几个images，后面的上传还要加
         let imgs = []
-        this.spu.images.forEach((img, idx) => {
+        this.spu.detailImgs.forEach((img, idx) => {
           imgs.push({imgUrl: '', defaultImg: 0})
         })
         // 会员价，也必须在循环里面生成，否则会导致数据绑定问题
@@ -558,18 +558,18 @@ export default {
           }
         }
         // descaridx，判断如果之前有就用之前的值;
-        let res = this.hasAndReturnSku(this.spu.skus, descar)
+        let res = this.hasAndReturnSku(this.spu.skuInfos, descar)
         if (res === null) {
-          skus.push({
+          skuInfos.push({
             attr: attrArray,
-            skuName: this.spu.spuName + ' ' + descar.join(' '),
-            price: 0,
-            skuTitle: this.spu.spuName + ' ' + descar.join(' '),
-            skuSubtitle: '',
+            skuName: this.spu.spuName + ' ' + descar.join(' '), // SKU名字
+            price: 0, // 价格
+            skuTitle: this.spu.spuName + ' ' + descar.join(' '), // 标题
+            skuSubtitle: '', // 副标题
             images: imgs,
             descar: descar,
             fullCount: 0,
-            discount: 0,
+            discount: 0, // 折扣
             countStatus: 0,
             fullPrice: 0.0,
             reducePrice: 0.0,
@@ -577,11 +577,11 @@ export default {
             memberPrice: [].concat(memberPrices)
           })
         } else {
-          skus.push(res)
+          skuInfos.push(res)
         }
       })
-      this.spu.skus = skus
-      console.log('SKU列表：', this.spu.skus, this.dataResp.tableAttrColumn)
+      this.spu.skuInfos = skuInfos
+      console.log('SKU列表：', this.spu.skuInfos, this.dataResp.tableAttrColumn)
     },
     // 笛卡尔积运算 TODO 此处有BUG 生成的SKU组合会少
     descartes (list) {
@@ -678,23 +678,23 @@ export default {
     resetSpuData () {
       this.spu = {
         spuName: '',
-        spuDescription: '',
+        spuDesc: '',
         categoryId: 0,
         brandId: '',
         weight: '',
         publishStatus: 0,
         introduceImgs: [],
-        images: [],
+        detailImgs: [],
         bounds: {
           buyBounds: 0,
           growBounds: 0
         },
-        baseAttrs: [],
-        skus: []
+        baseAttributes: [],
+        skuInfos: []
       }
     },
     handlePriceChange (scope, mpidx, e) {
-      this.spu.skus[scope.$index].memberPrice[mpidx].price = e
+      this.spu.skuInfos[scope.$index].memberPrice[mpidx].price = e
     },
 
     showInput (idx) {
@@ -740,21 +740,21 @@ export default {
     },
     generateSaleAttrs () {
       // 把页面绑定的所有attr处理到spu里面,这一步都要做
-      this.spu.baseAttrs = []
-      this.dataResp.baseAttrs.forEach(item => {
+      this.spu.baseAttributes = []
+      this.dataResp.baseAttributes.forEach(item => {
         item.forEach(attr => {
-          let {attributeId, attrValues, quickShow} = attr
+          let {attributeId, valueList, quickShow} = attr
           // 跳过没有录入值的属性
-          if (attrValues !== '') {
-            if (attrValues instanceof Array) {
+          if (valueList !== '') {
+            if (valueList instanceof Array) {
               // 多个值用;隔开
-              attrValues = attrValues.join(';')
+              valueList = valueList.join(';')
             }
-            this.spu.baseAttrs.push({attributeId, attrValues, quickShow})
+            this.spu.baseAttributes.push({attributeId, valueList, quickShow})
           }
         })
       })
-      console.log('baseAttrs', this.spu.baseAttrs)
+      console.log('baseAttributes', this.spu.baseAttributes)
       this.step = 2
       this.getSalesAttributes()
     },
