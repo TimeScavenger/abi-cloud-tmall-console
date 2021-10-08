@@ -50,8 +50,8 @@
                 <template slot="prepend">成长值</template>
               </el-input-number>
             </el-form-item>
-            <el-form-item label="商品介绍" prop="introduceImgs">
-              <multi-upload v-model="spu.introduceImgs"></multi-upload>
+            <el-form-item label="商品介绍" prop="descImgs">
+              <multi-upload v-model="spu.descImgs"></multi-upload>
             </el-form-item>
 
             <el-form-item label="商品图集" prop="detailImgs">
@@ -138,11 +138,7 @@
         <el-card class="box-card" style="width:80%;margin:20px auto">
           <el-table :data="spu.skuInfos" style="width: 100%">
             <el-table-column label="属性组合">
-              <el-table-column
-                :label="item.attributeName"
-                v-for="(item,index) in dataResp.tableAttrColumn"
-                :key="item.attributeId"
-              >
+              <el-table-column :label="item.attributeName" v-for="(item,index) in dataResp.tableAttrColumn" :key="item.attributeId">
                 <template slot-scope="scope">
                   <span style="margin-left: 10px">{{ scope.row.attr[index].attrValue }}</span>
                 </template>
@@ -158,9 +154,9 @@
                 <el-input v-model="scope.row.skuTitle"></el-input>
               </template>
             </el-table-column>
-            <el-table-column label="副标题" prop="skuSubtitle">
+            <el-table-column label="副标题" prop="skuSubTitle">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.skuSubtitle"></el-input>
+                <el-input v-model="scope.row.skuSubTitle"></el-input>
               </template>
             </el-table-column>
             <el-table-column label="价格" prop="price">
@@ -170,133 +166,69 @@
             </el-table-column>
             <el-table-column type="expand">
               <template slot-scope="scope">
-                <el-row>
-                  <el-col :span="24">
-                    <label style="display:block;float:left">选择图集 或</label>
-                    <multi-upload
-                      style="float:left;margin-left:10px;"
-                      :showFile="false"
-                      :listType="'text'"
-                      v-model="uploadImages"
-                    ></multi-upload>
-                  </el-col>
-                  <el-col :span="24">
-                    <el-divider></el-divider>
-                  </el-col>
-                  <el-col :span="24">
-                    <el-card
-                      style="width:170px;float:left;margin-left:15px;margin-top:15px;"
-                      :body-style="{ padding: '0px' }"
-                      v-for="(img,index) in spu.detailImgs"
-                      :key="index"
-                    >
-                      <img :src="img" style="width:160px;height:120px" alt="商品图集"/>
-                      <div style="padding: 14px;">
-                        <el-row>
-                          <el-col :span="12">
-                            <el-checkbox
-                              v-model="scope.row.images[index].imgUrl"
-                              :true-label="img"
-                              false-label
-                            ></el-checkbox>
-                          </el-col>
-                          <el-col :span="12">
-                            <el-tag v-if="scope.row.images[index].defaultImg === 1">
-                              <input
-                                type="radio"
-                                checked
-                                :name="scope.row.skuName"
-                                @change="checkDefaultImg(scope.row,index,img)"
-                              />设为默认
-                            </el-tag>
-                            <el-tag v-else>
-                              <input
-                                type="radio"
-                                :name="scope.row.skuName"
-                                @change="checkDefaultImg(scope.row,index,img)"
-                              />设为默认
-                            </el-tag>
-                          </el-col>
-                        </el-row>
-                      </div>
-                    </el-card>
-                  </el-col>
-                </el-row>
+<!--                <el-row>-->
+<!--                  <el-col :span="24">-->
+<!--                    <label style="display:block;float:left">选择图集 或</label>-->
+<!--                    <multi-upload style="float:left;margin-left:10px;" :showFile="false" :listType="'text'" v-model="uploadImages"></multi-upload>-->
+<!--                  </el-col>-->
+<!--                  <el-col :span="24">-->
+<!--                    <el-divider></el-divider>-->
+<!--                  </el-col>-->
+<!--                  <el-col :span="24">-->
+<!--                    <el-card style="width:170px;float:left;margin-left:15px;margin-top:15px;" :body-style="{ padding: '0px' }" v-for="(img,index) in spu.detailImgs" :key="index">-->
+<!--                      <img :src="img" style="width:160px;height:120px" alt="商品图集"/>-->
+<!--                      <div style="padding: 14px;">-->
+<!--                        <el-row>-->
+<!--                          <el-col :span="12">-->
+<!--                            <el-checkbox v-model="scope.row.images[index].imgUrl" :true-label="img" false-label></el-checkbox>-->
+<!--                          </el-col>-->
+<!--                          <el-col :span="12">-->
+<!--                            <el-tag v-if="scope.row.images[index].defaultImg === 1">-->
+<!--                              <input type="radio" checked :name="scope.row.skuName" @change="checkDefaultImg(scope.row,index,img)"/>设为默认-->
+<!--                            </el-tag>-->
+<!--                            <el-tag v-else>-->
+<!--                              <input type="radio" :name="scope.row.skuName" @change="checkDefaultImg(scope.row,index,img)"/>设为默认-->
+<!--                            </el-tag>-->
+<!--                          </el-col>-->
+<!--                        </el-row>-->
+<!--                      </div>-->
+<!--                    </el-card>-->
+<!--                  </el-col>-->
+<!--                </el-row>-->
                 <!-- 折扣，满减，会员价 -->
                 <el-form :model="scope.row">
                   <el-row>
                     <el-col :span="24">
                       <el-form-item label="设置折扣">
                         <label>满</label>
-                        <el-input-number
-                          style="width:160px"
-                          :min="0"
-                          controls-position="right"
-                          v-model="scope.row.fullCount"
-                        ></el-input-number>
+                        <el-input-number style="width:160px" :min="0" controls-position="right" v-model="scope.row.fullCount"></el-input-number>
                         <label>件</label>
-
                         <label style="margin-left:15px;">打</label>
-                        <el-input-number
-                          style="width:160px"
-                          v-model="scope.row.discount"
-                          :precision="2"
-                          :max="1"
-                          :min="0"
-                          :step="0.01"
-                          controls-position="right"
-                        ></el-input-number>
+                        <el-input-number style="width:160px" v-model="scope.row.discount" :precision="2" :max="1" :min="0" :step="0.01" controls-position="right"></el-input-number>
                         <label>折</label>
-                        <el-checkbox
-                          v-model="scope.row.countStatus"
-                          :true-label="1"
-                          :false-label="0"
-                        >可叠加优惠
+                        <el-checkbox v-model="scope.row.countStatus" :true-label="1" :false-label="0">可叠加优惠
                         </el-checkbox>
                       </el-form-item>
                     </el-col>
                     <el-col :span="24">
                       <el-form-item label="设置满减">
                         <label>满</label>
-                        <el-input-number
-                          style="width:160px"
-                          v-model="scope.row.fullPrice"
-                          :step="100"
-                          :min="0"
-                          controls-position="right"
-                        ></el-input-number>
+                        <el-input-number style="width:160px" v-model="scope.row.fullPrice" :step="100" :min="0" controls-position="right"></el-input-number>
                         <label>元</label>
                         <label style="margin-left:15px;">减</label>
-                        <el-input-number
-                          style="width:160px"
-                          v-model="scope.row.reducePrice"
-                          :step="10"
-                          :min="0"
-                          controls-position="right"
-                        ></el-input-number>
+                        <el-input-number style="width:160px" v-model="scope.row.reducePrice" :step="10" :min="0" controls-position="right"></el-input-number>
                         <label>元</label>
-                        <el-checkbox
-                          v-model="scope.row.priceStatus"
-                          :true-label="1"
-                          :false-label="0"
-                        >可叠加优惠
+                        <el-checkbox v-model="scope.row.priceStatus" :true-label="1" :false-label="0">可叠加优惠
                         </el-checkbox>
                       </el-form-item>
                     </el-col>
-
                     <el-col :span="24">
                       <el-form-item label="设置会员价" v-if="scope.row.memberPrice.length>0">
                         <br/>
                         <!--   @change="handlePriceChange(scope,mpidx,$event)" -->
                         <el-form-item v-for="(mp,mpidx) in scope.row.memberPrice" :key="mp.id">
                           {{ mp.name }}
-                          <el-input-number
-                            style="width:160px"
-                            v-model="scope.row.memberPrice[mpidx].price"
-                            :precision="2"
-                            :min="0"
-                            controls-position="right"
-                          ></el-input-number>
+                          <el-input-number style="width:160px" v-model="scope.row.memberPrice[mpidx].price" :precision="2" :min="0" controls-position="right"></el-input-number>
                         </el-form-item>
                       </el-form-item>
                     </el-col>
@@ -336,6 +268,7 @@ import MultiUpload from '@/components/upload/multiUpload'
 
 export default {
   // import引入的组件需要注入到对象中才能使用
+  // TODO 此处级联在只有在刷新页面时才会重新加载
   components: {CategoryCascader, BrandSelect, MultiUpload},
   props: {},
   data () {
@@ -356,7 +289,7 @@ export default {
         brandId: '', // 品牌
         weight: '', // 重量
         publishStatus: 0, // 商家状态
-        introduceImgs: [], // 商品介绍图集
+        descImgs: [], // 商品介绍图集
         detailImgs: [], // 商品详情图集，最后sku也可以新增
         bounds: { // 积分
           buyBounds: 0, // 购物积分
@@ -377,21 +310,15 @@ export default {
         ],
         brandId: [
           {required: true, message: '请选择一个品牌', trigger: 'blur'}
-        ],
-        // introduceImgs: [
+        ]
+        // descImgs: [
         //   {required: true, message: '请上传商品详情图集', trigger: 'blur'}
         // ],
         // detailImgs: [
         //   {required: true, message: '请上传商品图片集', trigger: 'blur'}
         // ],
-        weight: [
-          {
-            type: 'number',
-            required: true,
-            message: '请填写正确的重量值',
-            trigger: 'blur'
-          }
-        ]
+        // weight: [{type: 'number', required: true, message: '请填写正确的重量值', trigger: 'blur'}
+        // ]
       },
       dataResp: {
         // 后台返回的所有数据
@@ -561,19 +488,19 @@ export default {
         let res = this.hasAndReturnSku(this.spu.skuInfos, descar)
         if (res === null) {
           skuInfos.push({
-            attr: attrArray,
-            skuName: this.spu.spuName + ' ' + descar.join(' '), // SKU名字
-            price: 0, // 价格
+            skuName: this.spu.spuName + ' ' + descar.join(' '), // sku名称
             skuTitle: this.spu.spuName + ' ' + descar.join(' '), // 标题
-            skuSubtitle: '', // 副标题
+            skuSubTitle: '', // 副标题
+            price: 0, // 价格
+            fullPrice: 0.0, // 满多少
+            reducePrice: 0.0, // 减多少
+            priceStatus: 0, // 是否参与其他优惠
+            fullCount: 0, // 折扣（满多少元打折扣）
+            discount: 0, // 打多少折扣
+            countStatus: 0, // 可叠加优惠
+            attr: attrArray, // TODO sku属性
             images: imgs,
             descar: descar,
-            fullCount: 0,
-            discount: 0, // 折扣
-            countStatus: 0,
-            fullPrice: 0.0,
-            reducePrice: 0.0,
-            priceStatus: 0,
             memberPrice: [].concat(memberPrices)
           })
         } else {
@@ -670,7 +597,6 @@ export default {
           })
         })
     },
-    // ========================================== 以下命名未统一 ====================
     addAgian () {
       this.step = 0
       this.resetSpuData()
@@ -683,7 +609,7 @@ export default {
         brandId: '',
         weight: '',
         publishStatus: 0,
-        introduceImgs: [],
+        descImgs: [],
         detailImgs: [],
         bounds: {
           buyBounds: 0,
@@ -693,6 +619,8 @@ export default {
         skuInfos: []
       }
     },
+    // ========================================== 以下命名未统一 ====================
+
     handlePriceChange (scope, mpidx, e) {
       this.spu.skuInfos[scope.$index].memberPrice[mpidx].price = e
     },
