@@ -41,12 +41,12 @@
                   <template slot="prepend">成长值</template>
                 </el-input-number>
               </el-form-item>
-              <el-form-item label="商品介绍" prop="descImgs">
-                <multi-upload v-model="spu.descImgs"></multi-upload>
+              <el-form-item label="商品介绍" prop="spuDescImgs">
+                <multi-upload v-model="spu.spuDescImgs"></multi-upload>
               </el-form-item>
 
-              <el-form-item label="商品图集" prop="detailImgs">
-                <multi-upload v-model="spu.detailImgs"></multi-upload>
+              <el-form-item label="商品图集" prop="spuDetailImgs">
+                <multi-upload v-model="spu.spuDetailImgs"></multi-upload>
               </el-form-item>
               <el-form-item>
                 <el-button type="success" @click="collectSpuBaseInfo">下一步：设置基本参数</el-button>
@@ -159,35 +159,43 @@
               </el-table-column>
               <el-table-column type="expand">
                 <template slot-scope="scope">
-                  <!--                <el-row>-->
-                  <!--                  <el-col :span="24">-->
-                  <!--                    <label style="display:block;float:left">选择图集 或</label>-->
-                  <!--                    <multi-upload style="float:left;margin-left:10px;" :showFile="false" :listType="'text'" v-model="uploadImages"></multi-upload>-->
-                  <!--                  </el-col>-->
-                  <!--                  <el-col :span="24">-->
-                  <!--                    <el-divider></el-divider>-->
-                  <!--                  </el-col>-->
-                  <!--                  <el-col :span="24">-->
-                  <!--                    <el-card style="width:170px;float:left;margin-left:15px;margin-top:15px;" :body-style="{ padding: '0px' }" v-for="(img,index) in spu.detailImgs" :key="index">-->
-                  <!--                      <img :src="img" style="width:160px;height:120px" alt="商品图集"/>-->
-                  <!--                      <div style="padding: 14px;">-->
-                  <!--                        <el-row>-->
-                  <!--                          <el-col :span="12">-->
-                  <!--                            <el-checkbox v-model="scope.row.images[index].imgUrl" :true-label="img" false-label></el-checkbox>-->
-                  <!--                          </el-col>-->
-                  <!--                          <el-col :span="12">-->
-                  <!--                            <el-tag v-if="scope.row.images[index].defaultImg === 1">-->
-                  <!--                              <input type="radio" checked :name="scope.row.skuName" @change="checkDefaultImg(scope.row,index,img)"/>设为默认-->
-                  <!--                            </el-tag>-->
-                  <!--                            <el-tag v-else>-->
-                  <!--                              <input type="radio" :name="scope.row.skuName" @change="checkDefaultImg(scope.row,index,img)"/>设为默认-->
-                  <!--                            </el-tag>-->
-                  <!--                          </el-col>-->
-                  <!--                        </el-row>-->
-                  <!--                      </div>-->
-                  <!--                    </el-card>-->
-                  <!--                  </el-col>-->
-                  <!--                </el-row>-->
+                  <el-row>
+                    <el-col :span="24">
+                      <label style="display:block;float:left">选择图集 或</label>
+                      <multi-upload style="float:left;margin-left:10px;" :showFile="false" :listType="'text'"
+                                    v-model="uploadImages"></multi-upload>
+                    </el-col>
+                    <!-- 此处代码会报错，暂时先注释 -->
+                    <!--
+                    <el-col :span="24">
+                      <el-divider></el-divider>
+                    </el-col>
+                    -->
+                    <el-col :span="24" style="margin-bottom: 3%;">
+                      <el-card style="width:170px;float:left;margin-left:15px;margin-top:15px;"
+                               :body-style="{ padding: '0px' }" v-for="(img,index) in spu.spuDetailImgs" :key="index">
+                        <img :src="img" style="width:160px;height:120px" alt="商品图集"/>
+                        <div style="padding: 14px">
+                          <el-row>
+                            <el-col :span="12">
+                              <el-checkbox v-model="scope.row.skuDetailImgs[index].imgUrl" :true-label="img"
+                                           false-label></el-checkbox>
+                            </el-col>
+                            <el-col :span="12">
+                              <el-tag v-if="scope.row.skuDetailImgs[index].defaultImg === 1">
+                                <input type="radio" checked :name="scope.row.skuName"
+                                       @change="checkDefaultImg(scope.row,index,img)"/>设为默认
+                              </el-tag>
+                              <el-tag v-else>
+                                <input type="radio" :name="scope.row.skuName"
+                                       @change="checkDefaultImg(scope.row,index,img)"/>设为默认
+                              </el-tag>
+                            </el-col>
+                          </el-row>
+                        </div>
+                      </el-card>
+                    </el-col>
+                  </el-row>
                   <!-- 折扣，满减，会员价 -->
                   <el-form :model="scope.row">
                     <el-row>
@@ -289,8 +297,8 @@ export default {
         brandId: '', // 品牌
         weight: '', // 重量
         publishStatus: 0, // 上架状态
-        descImgs: [], // 商品介绍图集
-        detailImgs: [], // 商品详情图集，最后sku也可以新增
+        spuDescImgs: [], // 商品介绍图集
+        spuDetailImgs: [], // 商品详情图集，最后sku也可以新增
         bounds: { // 积分
           buyBounds: 0, // 购物积分
           growBounds: 0 // 成长积分
@@ -307,14 +315,14 @@ export default {
         ],
         categoryId: [
           {required: true, message: '请选择一个分类', trigger: 'blur'}
-        ],
-        brandId: [
-          {required: true, message: '请选择一个品牌', trigger: 'blur'}
         ]
-        // descImgs: [
+        // brandId: [
+        //   {required: true, message: '请选择一个品牌', trigger: 'blur'}
+        // ]
+        // spuDescImgs: [
         //   {required: true, message: '请上传商品详情图集', trigger: 'blur'}
         // ],
-        // detailImgs: [
+        // spuDetailImgs: [
         //   {required: true, message: '请上传商品图片集', trigger: 'blur'}
         // ],
         // weight: [{type: 'number', required: true, message: '请填写正确的重量值', trigger: 'blur'}
@@ -340,20 +348,21 @@ export default {
   // 监控data中的数据变化
   watch: {
     uploadImages (val) {
+      console.log('监听上传图片的动作：', val)
       // 扩展每个skuInfos里面的imgs选项
-      let imgArr = Array.from(new Set(this.spu.detailImgs.concat(val)))
+      let imgArr = Array.from(new Set(this.spu.spuDetailImgs.concat(val)))
 
       // {imgUrl:"",defaultImg:0} 由于concat每次迭代上次，有很多重复。所以我们必须得到上次+这次的总长
       this.spu.skuInfos.forEach((item, index) => {
-        let len = imgArr.length - this.spu.skuInfos[index].detailImgs.length // 还差这么多
+        let len = imgArr.length - this.spu.skuInfos[index].skuDetailImgs.length // 还差这么多
         if (len > 0) {
           let imgs = new Array(len)
           imgs = imgs.fill({imgUrl: '', defaultImg: 0})
-          this.spu.skuInfos[index].detailImgs = item.detailImgs.concat(imgs)
+          this.spu.skuInfos[index].skuDetailImgs = item.skuDetailImgs.concat(imgs)
         }
       })
 
-      this.spu.detailImgs = imgArr // 去重
+      this.spu.spuDetailImgs = imgArr // 去重
       console.log('this.spu.skuInfos', this.spu.skuInfos)
     }
   },
@@ -490,9 +499,9 @@ export default {
           }
           attrArray.push(saleAttrItem)
         })
-        // 先初始化几个images，后面的上传还要加
+        // 先初始化几个skuDetailImgs，后面的上传还要加
         let imgs = []
-        this.spu.detailImgs.forEach((img, idx) => {
+        this.spu.spuDetailImgs.forEach((img, idx) => {
           imgs.push({imgUrl: '', defaultImg: 0})
         })
         // 会员价，也必须在循环里面生成，否则会导致数据绑定问题
@@ -523,9 +532,9 @@ export default {
             discount: 0, // 打几折
             countStatus: 0, // 是否参与其他优惠
             attr: attrArray, // sku属性
-            images: imgs, // sku图集
-            memberPrice: [].concat(memberPrices), // 会员价格
-            descar: descar // sku产品
+            descar: descar, // sku属性
+            skuDetailImgs: imgs, // sku图集
+            memberPrice: [].concat(memberPrices) // 会员价格
           })
         } else {
           skuInfos.push(res)
@@ -646,8 +655,8 @@ export default {
         brandId: '',
         weight: '',
         publishStatus: 0,
-        descImgs: [],
-        detailImgs: [],
+        spuDescImgs: [],
+        spuDetailImgs: [],
         bounds: {
           buyBounds: 0,
           growBounds: 0
@@ -670,12 +679,12 @@ export default {
     checkDefaultImg (row, index, img) {
       console.log('默认图片', row, index)
       // 这个图片被选中了，
-      row.images[index].imgUrl = img // 默认选中
-      row.images[index].defaultImg = 1 // 修改标志位;
+      row.skuDetailImgs[index].imgUrl = img // 默认选中
+      row.skuDetailImgs[index].defaultImg = 1 // 修改标志位;
       // 修改其他人的标志位
-      row.images.forEach((item, idx) => {
+      row.skuDetailImgs.forEach((item, idx) => {
         if (idx !== index) {
-          row.images[idx].defaultImg = 0
+          row.skuDetailImgs[idx].defaultImg = 0
         }
       })
     },
