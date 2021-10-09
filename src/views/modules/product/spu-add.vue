@@ -63,18 +63,19 @@
             <el-tabs tab-position="left" style="width:98%">
               <el-tab-pane :label="group.groupName" v-for="(group, gidx) in dataResp.attrGroups"
                            :key="group.groupId">
-                <!-- 遍历属性,每个tab-pane对应一个表单，每个属性是一个表单项  spu.baseAttributes[0] = [{attributeId:xx,val:}]-->
+                <!-- 遍历属性,每个tab-pane对应一个表单，每个属性是一个表单项  spu.spuBaseAttributes[0] = [{attributeId:xx,val:}]-->
                 <el-form ref="form" :model="spu">
                   <el-form-item :label="attr.attributeName" v-for="(attr, aidx) in group.attributeList"
                                 :key="attr.attributeId">
-                    <el-input v-model="dataResp.baseAttributes[gidx][aidx].attributeId" type="hidden"
+                    <el-input v-model="dataResp.tempSpuBaseAttributes[gidx][aidx].attributeId" type="hidden"
                               v-show="false"></el-input>
-                    <el-select v-model="dataResp.baseAttributes[gidx][aidx].valueList" :multiple="attr.valueType === 1"
+                    <el-select v-model="dataResp.tempSpuBaseAttributes[gidx][aidx].valueList"
+                               :multiple="attr.valueType === 1"
                                filterable allow-create default-first-option placeholder="请选择或输入值">
                       <el-option v-for="(val,vidx) in attr.valueList.split(';')" :key="vidx" :label="val"
                                  :value="val"></el-option>
                     </el-select>
-                    <el-checkbox v-model="dataResp.baseAttributes[gidx][aidx].quickShow" :true-label="1"
+                    <el-checkbox v-model="dataResp.tempSpuBaseAttributes[gidx][aidx].quickShow" :true-label="1"
                                  :false-label="0">
                       快速展示
                     </el-checkbox>
@@ -96,12 +97,14 @@
             <div slot="header" class="clearfix">
               <span>选择销售属性</span>
               <el-form ref="saleform" :model="spu">
-                <el-form-item :label="attr.attributeName" v-for="(attr, aidx) in dataResp.saleAttrs"
+                <el-form-item :label="attr.attributeName" v-for="(attr, aidx) in dataResp.skuSaleAttributes"
                               :key="attr.attributeId">
-                  <el-input v-model="dataResp.tempSaleAttrs[aidx].attributeId" type="hidden" v-show="false"></el-input>
-                  <el-checkbox-group v-model="dataResp.tempSaleAttrs[aidx].valueList">
-                    <el-checkbox v-if="dataResp.saleAttrs[aidx].valueList !== ''" :label="val"
-                                 v-for="val in dataResp.saleAttrs[aidx].valueList.split(';')" :key="val"></el-checkbox>
+                  <el-input v-model="dataResp.tempSkuSaleAttributes[aidx].attributeId" type="hidden"
+                            v-show="false"></el-input>
+                  <el-checkbox-group v-model="dataResp.tempSkuSaleAttributes[aidx].valueList">
+                    <el-checkbox v-if="dataResp.skuSaleAttributes[aidx].valueList !== ''" :label="val"
+                                 v-for="val in dataResp.skuSaleAttributes[aidx].valueList.split(';')"
+                                 :key="val"></el-checkbox>
                     <div style="margin-left:20px;display:inline">
                       <el-button v-show="!inputVisible[aidx].view" class="button-new-tag" size="mini"
                                  @click="showInput(aidx)">+自定义
@@ -278,7 +281,6 @@ export default {
       uploadDialogVisible: false,
       uploadImages: [],
       step: 0,
-      // spu_name  spu_description  catalog_id  brand_id  weight  publish_status
       spu: {
         // 要提交的数据
         spuName: '', // SPU名字
@@ -286,14 +288,14 @@ export default {
         categoryId: 0, // 分类
         brandId: '', // 品牌
         weight: '', // 重量
-        publishStatus: 0, // 商家状态
+        publishStatus: 0, // 上架状态
         descImgs: [], // 商品介绍图集
         detailImgs: [], // 商品详情图集，最后sku也可以新增
         bounds: { // 积分
           buyBounds: 0, // 购物积分
           growBounds: 0 // 成长积分
         },
-        baseAttributes: [], // 基本属性
+        spuBaseAttributes: [], // 基本属性
         skuInfos: [] // 所有sku信息
       },
       spuBaseInfoRules: {
@@ -321,9 +323,10 @@ export default {
       dataResp: {
         // 后台返回的所有数据
         attrGroups: [],
-        baseAttributes: [],
-        saleAttrs: [],
-        tempSaleAttrs: [],
+        spuBaseAttributes: [],
+        tempSpuBaseAttributes: [],
+        skuSaleAttributes: [],
+        tempSkuSaleAttributes: [],
         tableAttrColumn: [],
         memberLevels: [],
         steped: [false, false, false, false, false]
@@ -376,16 +379,16 @@ export default {
     getBaseAttributes () {
       if (!this.dataResp.steped[0]) {
         this.$http({
-          url: this.$http.adornUrl(`/product/attribute/list/basic`),
+          url: this.$http.adornUrl(`/product/attribute/list/base`),
           method: 'post',
           data: this.$http.adornData({
             type: 0,
             categoryId: this.spu.categoryId
           })
         }).then(({data}) => {
-          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/attribute/list/basic')
+          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/attribute/list/base')
           console.log('查询 -----> 当前分类可以使用的规格参数 -----> 返回结果:', data)
-          // 先对表单的baseAttributes进行初始化
+          // 先对表单的tempSpuBaseAttributes进行初始化
           data.data.forEach(item => {
             let attrArray = []
             item.attributeList.forEach(attr => {
@@ -395,29 +398,31 @@ export default {
                 quickShow: attr.quickShow
               })
             })
-            this.dataResp.baseAttributes.push(attrArray)
+            this.dataResp.tempSpuBaseAttributes.push(attrArray)
           })
           this.dataResp.steped[0] = 0
           this.dataResp.attrGroups = data.data
+        }).catch(e => {
+          console.log(e)
         })
       }
     },
     // 查询 当前分类可以使用的销售属性
-    getSalesAttributes () {
+    getSaleAttributes () {
       if (!this.dataResp.steped[1]) {
         this.$http({
-          url: this.$http.adornUrl(`/product/attribute/list/sales`),
+          url: this.$http.adornUrl(`/product/attribute/list/sale`),
           method: 'post',
           data: this.$http.adornData({
             type: 1,
             categoryId: this.spu.categoryId
           })
         }).then(({data}) => {
-          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 请求路径: /product/attribute/list/sales')
+          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 请求路径: /product/attribute/list/sale')
           console.log('查询 -----> 当前分类可以使用的销售属性 -----> 返回结果:', data)
-          this.dataResp.saleAttrs = data.data
+          this.dataResp.skuSaleAttributes = data.data
           data.data.forEach(item => {
-            this.dataResp.tempSaleAttrs.push({
+            this.dataResp.tempSkuSaleAttributes.push({
               attributeId: item.attributeId,
               valueList: [],
               attributeName: item.attributeName
@@ -426,16 +431,37 @@ export default {
             this.inputValue.push({val: ''})
           })
           this.dataResp.steped[1] = true
+        }).catch(e => {
+          console.log(e)
         })
       }
     },
+    generateSaleAttrs () {
+      // 把页面绑定的所有attr处理到spu里面,这一步都要做
+      this.spu.spuBaseAttributes = []
+      this.dataResp.tempSpuBaseAttributes.forEach(item => {
+        item.forEach(attr => {
+          let {attributeId, valueList, quickShow} = attr
+          // 跳过没有录入值的属性
+          if (valueList !== '') {
+            if (valueList instanceof Array) {
+              // 多个值用;隔开
+              valueList = valueList.join(';')
+            }
+            this.spu.spuBaseAttributes.push({attributeId, valueList, quickShow})
+          }
+        })
+      })
+      console.log('spuBaseAttributes', this.spu.spuBaseAttributes)
+      this.step = 2
+      this.getSaleAttributes()
+    },
+    // 根据笛卡尔积运算进行生成sku
     generateSkuList () {
       this.step = 3
-
-      // 根据笛卡尔积运算进行生成sku
       let selectValues = []
       this.dataResp.tableAttrColumn = []
-      this.dataResp.tempSaleAttrs.forEach(item => {
+      this.dataResp.tempSkuSaleAttributes.forEach(item => {
         if (item.valueList.length > 0) {
           selectValues.push(item.valueList)
           this.dataResp.tableAttrColumn.push(item)
@@ -456,7 +482,7 @@ export default {
       descartes.forEach((descar, descaridx) => {
         let attrArray = [] // sku属性组
         descar.forEach((de, index) => {
-          // 构造saleAttr信息
+          // 构造saleAttribute信息
           let saleAttrItem = {
             attributeId: this.dataResp.tableAttrColumn[index].attributeId,
             attributeName: this.dataResp.tableAttrColumn[index].attributeName,
@@ -497,18 +523,18 @@ export default {
             discount: 0, // 打几折
             countStatus: 0, // 是否参与其他优惠
             attr: attrArray, // sku属性
-            images: imgs,
-            descar: descar,
-            memberPrice: [].concat(memberPrices)
+            images: imgs, // sku图集
+            memberPrice: [].concat(memberPrices), // 会员价格
+            descar: descar // sku产品
           })
         } else {
           skuInfos.push(res)
         }
       })
       this.spu.skuInfos = skuInfos
-      console.log('SKU列表：', this.spu.skuInfos, this.dataResp.tableAttrColumn)
+      console.log('sku列表：', this.spu.skuInfos, this.dataResp.tableAttrColumn)
     },
-    // 笛卡尔积运算 TODO 此处有BUG 生成的SKU组合会少
+    // 笛卡尔积运算
     descartes (list) {
       // parent上一级索引;count指针计数
       var point = {}
@@ -532,9 +558,10 @@ export default {
 
       // 动态生成笛卡尔积
       while (true) {
-        for (var item in list) {
-          tempCount = point[item]['count']
-          temp.push(list[item][tempCount])
+        // eslint-disable-next-line no-redeclare
+        for (var index in list) {
+          tempCount = point[index]['count']
+          temp.push(list[index][tempCount])
         }
 
         // 压入结果数组
@@ -558,6 +585,18 @@ export default {
           }
         }
       }
+    },
+    // 判断如果包含之前的sku的descar组合，就返回这个sku的详细信息；
+    hasAndReturnSku (skus, descar) {
+      let res = null
+      if (skus.length > 0) {
+        for (let i = 0; i < skus.length; i++) {
+          if (skus[i].descar.join(' ') === descar.join(' ')) {
+            res = skus[i]
+          }
+        }
+      }
+      return res
     },
     submitSkus () {
       console.log('~~~~~', JSON.stringify(this.spu))
@@ -613,16 +652,16 @@ export default {
           buyBounds: 0,
           growBounds: 0
         },
-        baseAttributes: [],
+        spuBaseAttributes: [],
         skuInfos: []
       }
     },
+
     // ========================================== 以下命名未统一 ====================
 
     handlePriceChange (scope, mpidx, e) {
       this.spu.skuInfos[scope.$index].memberPrice[mpidx].price = e
     },
-
     showInput (idx) {
       console.log('``````', this.view)
       this.inputVisible[idx].view = true
@@ -644,10 +683,10 @@ export default {
       let inputValue = this.inputValue[idx].val
       if (inputValue) {
         // this.dynamicTags.push(inputValue);
-        if (this.dataResp.saleAttrs[idx].valueList === '') {
-          this.dataResp.saleAttrs[idx].valueList = inputValue
+        if (this.dataResp.skuSaleAttributes[idx].valueList === '') {
+          this.dataResp.skuSaleAttributes[idx].valueList = inputValue
         } else {
-          this.dataResp.saleAttrs[idx].valueList += ';' + inputValue
+          this.dataResp.skuSaleAttributes[idx].valueList += ';' + inputValue
         }
       }
       this.inputVisible[idx].view = false
@@ -663,38 +702,6 @@ export default {
           return false
         }
       })
-    },
-    generateSaleAttrs () {
-      // 把页面绑定的所有attr处理到spu里面,这一步都要做
-      this.spu.baseAttributes = []
-      this.dataResp.baseAttributes.forEach(item => {
-        item.forEach(attr => {
-          let {attributeId, valueList, quickShow} = attr
-          // 跳过没有录入值的属性
-          if (valueList !== '') {
-            if (valueList instanceof Array) {
-              // 多个值用;隔开
-              valueList = valueList.join(';')
-            }
-            this.spu.baseAttributes.push({attributeId, valueList, quickShow})
-          }
-        })
-      })
-      console.log('baseAttributes', this.spu.baseAttributes)
-      this.step = 2
-      this.getSalesAttributes()
-    },
-    // 判断如果包含之前的sku的descar组合，就返回这个sku的详细信息；
-    hasAndReturnSku (skus, descar) {
-      let res = null
-      if (skus.length > 0) {
-        for (let i = 0; i < skus.length; i++) {
-          if (skus[i].descar.join(' ') === descar.join(' ')) {
-            res = skus[i]
-          }
-        }
-      }
-      return res
     }
 
   },
