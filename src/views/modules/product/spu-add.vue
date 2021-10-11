@@ -363,7 +363,7 @@ export default {
       })
 
       this.spu.spuDetailImgs = imgArr // 去重
-      console.log('this.spu.skuInfos', this.spu.skuInfos)
+      console.log('重新上传图片后，sku信息列表：', this.spu.skuInfos)
     }
   },
   methods: {
@@ -386,6 +386,7 @@ export default {
     },
     // 查询 当前分类可以使用的规格参数
     getBaseAttributes () {
+      console.log('查询当前分类可以使用的规格参数：', this.spu.categoryId)
       if (!this.dataResp.steped[0]) {
         this.$http({
           url: this.$http.adornUrl(`/product/attribute/list/base`),
@@ -418,6 +419,7 @@ export default {
     },
     // 查询 当前分类可以使用的销售属性
     getSaleAttributes () {
+      console.log('查询当前分类可以使用的销售属性：', this.spu.categoryId)
       if (!this.dataResp.steped[1]) {
         this.$http({
           url: this.$http.adornUrl(`/product/attribute/list/sale`),
@@ -484,7 +486,7 @@ export default {
       //    ["蓝色","6GB","移动"],["蓝色","6GB","联通"],["蓝色","8GB","移动"],["蓝色","8GB","联通"]
       // ]
       let descartes = this.descartes(selectValues)
-      console.log('生成的SKU组合列表：', JSON.stringify(descartes))
+      console.log('生成的sku组合列表：', JSON.stringify(descartes))
       // 有多少descartes就有多少sku
       let skuInfos = []
 
@@ -541,7 +543,7 @@ export default {
         }
       })
       this.spu.skuInfos = skuInfos
-      console.log('sku列表：', this.spu.skuInfos, this.dataResp.tableAttrColumn)
+      console.log('根据笛卡尔积生成的sku列表：', this.spu.skuInfos, this.dataResp.tableAttrColumn)
     },
     // 笛卡尔积运算
     descartes (list) {
