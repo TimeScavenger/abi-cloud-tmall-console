@@ -617,11 +617,11 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/product/spuinfo/save'),
+          url: this.$http.adornUrl('/product/spu-info/save'),
           method: 'post',
           data: this.$http.adornData(this.spu, false)
         }).then(({data}) => {
-          console.log('新增 -----> Spu信息 -----> 请求路径: /product/spuinfo/save')
+          console.log('新增 -----> Spu信息 -----> 请求路径: /product/spu-info/save')
           console.log('新增 -----> Spu信息 -----> 返回结果:', data)
           if (data.code === 200000) {
             this.$message({

@@ -248,13 +248,13 @@ export default {
     // 查询 品牌分类关联关系列表
     getRelationHandle () {
       this.$http({
-        url: this.$http.adornUrl('/product/relation/brand-category/list/categorys/by/brandId'),
+        url: this.$http.adornUrl('/product/brand-category-relation/list/categorys/by/brandId'),
         method: 'post',
         data: this.$http.adornData({
           brandId: this.brandId
         }, false)
       }).then(({data}) => {
-        console.log('查询 -----> 品牌关联的分类 -----> 请求路径: /product/relation/brand-category/list/categorys/by/brandId')
+        console.log('查询 -----> 品牌关联的分类 -----> 请求路径: /product/brand-category-relation/list/categorys/by/brandId')
         console.log('查询 -----> 品牌关联的分类 -----> 返回数据:', data)
         this.cateRelationTableData = data.data
       })
@@ -264,14 +264,14 @@ export default {
       // {"brandId":1,"categoryId":2}
       this.popCategorySelectVisible = false
       this.$http({
-        url: this.$http.adornUrl('/product/relation/brand-category/save'),
+        url: this.$http.adornUrl('/product/brand-category-relation/save'),
         method: 'post',
         data: this.$http.adornData({
           brandId: this.brandId,
           categoryId: this.categoryPath[this.categoryPath.length - 1]
         }, false)
       }).then(({data}) => {
-        console.log('添加 -----> 品牌关联的分类 -----> 请求路径: /product/relation/brand-category/save')
+        console.log('添加 -----> 品牌关联的分类 -----> 请求路径: /product/brand-category-relation/save')
         console.log('添加 -----> 品牌关联的分类 -----> 返回数据:', data)
         this.getRelationHandle()
       })
@@ -279,11 +279,11 @@ export default {
     // 删除 品牌分类关联关系
     deleteRelationHandle (id, brandId) {
       this.$http({
-        url: this.$http.adornUrl('/product/relation/brand-category/remove'),
+        url: this.$http.adornUrl('/product/brand-category-relation/remove'),
         method: 'delete',
         data: this.$http.adornData([id], false)
       }).then(({data}) => {
-        console.log('删除 -----> 品牌关联的分类 -----> 请求路径: /product/relation/brand-category/remove')
+        console.log('删除 -----> 品牌关联的分类 -----> 请求路径: /product/brand-category-relation/remove')
         console.log('删除 -----> 品牌关联的分类 -----> 返回数据:', data)
         this.getRelationHandle()
       })
