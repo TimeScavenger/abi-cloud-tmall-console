@@ -87,12 +87,11 @@
 // 例如: import《组件名称》from'《组件路径》';
 import CategoryCascader from '../common/category-cascader'
 import BrandSelect from '../common/brand-select'
-import Spuinfo from './spuinfo-list'
 import PubSub from 'pubsub-js'
 
 export default {
   // import引入的组件需要注入到对象中才能使用
-  components: {CategoryCascader, Spuinfo, BrandSelect},
+  components: {CategoryCascader, BrandSelect},
   props: {},
   data () {
     // 这里存放数据
