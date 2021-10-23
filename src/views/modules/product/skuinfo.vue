@@ -14,7 +14,7 @@
           <el-input-number style="width:160px" v-model="dataForm.price.max" :min="0"></el-input-number>
         </el-form-item>
         <el-form-item label="检索">
-          <el-input style="width:160px" v-model="dataForm.key" clearable></el-input>
+          <el-input style="width:160px" v-model="dataForm.skuName" clearable></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchSkuInfo">查询</el-button>
@@ -27,8 +27,7 @@
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
       style="width: 100%;"
-      @expand-change="getSkuDetails"
-    >
+      @expand-change="getSkuDetails">
       <el-table-column type="expand">
         <template slot-scope="scope">
           商品标题：{{ scope.row.skuTitle }}
@@ -63,8 +62,7 @@
             @command="handleCommand(scope.row,$event)"
             size="small"
             split-button
-            type="text"
-          >
+            type="text">
             更多
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="uploadImages">上传图片</el-dropdown-item>
@@ -109,9 +107,9 @@ export default {
       catPathSub: null,
       brandIdSub: null,
       dataForm: {
-        key: '',
-        brandId: 0,
-        catelogId: 0,
+        skuName: '',
+        brandId: null,
+        categoryId: null,
         price: {
           min: 0,
           max: 0
@@ -153,21 +151,23 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/product/skuinfo/list'),
-        method: 'get',
-        params: this.$http.adornParams({
+        url: this.$http.adornUrl('/product/sku-info/page'),
+        method: 'post',
+        data: this.$http.adornData({
           page: this.pageIndex,
-          limit: this.pageSize,
-          key: this.dataForm.key,
-          catelogId: this.dataForm.catelogId,
+          size: this.pageSize,
+          categoryId: this.dataForm.categoryId,
           brandId: this.dataForm.brandId,
-          min: this.dataForm.price.min,
-          max: this.dataForm.price.max
+          priceMin: this.dataForm.price.min,
+          priceMax: this.dataForm.price.max,
+          skuName: this.dataForm.skuName
         })
       }).then(({data}) => {
-        if (data && data.code === 0) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.totalCount
+        console.log('查询 -----> Sku分页信息 -----> 请求路径: /product/sku-info/page')
+        console.log('查询 -----> Sku分页信息 -----> 返回结果:', data)
+        if (data && data.code === 200000) {
+          this.dataList = data.data.records
+          this.totalPage = data.data.total
         } else {
           this.dataList = []
           this.totalPage = 0
@@ -194,7 +194,7 @@ export default {
   mounted () {
     // eslint-disable-next-line no-undef
     this.catPathSub = PubSub.subscribe('catPath', (msg, val) => {
-      this.dataForm.catelogId = val[val.length - 1]
+      this.dataForm.categoryId = val[val.length - 1]
     })
     // eslint-disable-next-line no-undef
     this.brandIdSub = PubSub.subscribe('brandId', (msg, val) => {
