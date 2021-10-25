@@ -3,7 +3,7 @@
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="仓库">
         <el-select style="width:160px;" v-model="dataForm.wareId" placeholder="请选择仓库" clearable>
-          <el-option :label="w.name" :value="w.id" v-for="w in wareList" :key="w.id"></el-option>
+          <el-option :label="w.name" :value="w.wareId" v-for="w in wareList" :key="w.wareId"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="skuId">
@@ -17,16 +17,11 @@
           type="danger"
           @click="deleteHandle()"
           :disabled="dataListSelections.length <= 0"
-        >批量删除</el-button>
+        >批量删除
+        </el-button>
       </el-form-item>
     </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;"
-    >
+    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="id"></el-table-column>
       <el-table-column prop="skuId" header-align="center" align="center" label="sku_id"></el-table-column>
@@ -41,29 +36,24 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper"
-    ></el-pagination>
+    <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
+                   :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage"
+                   layout="total, sizes, prev, pager, next, jumper"></el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
 <script>
-import AddOrUpdate from "./waresku-add-or-update";
+import AddOrUpdate from './waresku-add-or-update'
+
 export default {
-  data() {
+  data () {
     return {
       wareList: [],
       dataForm: {
-        wareId: "",
-        skuId: ""
+        wareId: '',
+        skuId: ''
       },
       dataList: [],
       pageIndex: 1,
@@ -72,113 +62,117 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false
-    };
+    }
   },
   components: {
     AddOrUpdate
   },
-  activated() {
-    console.log("接收到", this.$route.query.skuId);
+  activated () {
+    console.log('接收到', this.$route.query.skuId)
     if (this.$route.query.skuId) {
-      this.dataForm.skuId = this.$route.query.skuId;
+      this.dataForm.skuId = this.$route.query.skuId
     }
-    this.getWares();
-    this.getDataList();
+    this.getWares()
+    this.getDataList()
   },
   methods: {
-    getWares() {
+    getWares () {
       this.$http({
-        url: this.$http.adornUrl("/ware/wareinfo/list"),
-        method: "get",
-        params: this.$http.adornParams({
+        url: this.$http.adornUrl('/ware/wareinfo/page'),
+        method: 'post',
+        data: this.$http.adornData({
           page: 1,
-          limit: 500
+          size: 100
         })
-      }).then(({ data }) => {
-        this.wareList = data.page.list;
-      });
+      }).then(({data}) => {
+        console.log('查询 -----> 仓库分页列表 -----> 请求路径: /ware/wareinfo/page')
+        console.log('查询 -----> 仓库分页列表 -----> 返回结果:', data)
+        if (data && data.code === 200000) {
+          this.wareList = data.data.records
+        }
+      })
     },
     // 获取数据列表
-    getDataList() {
-      this.dataListLoading = true;
+    getDataList () {
+      this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl("/ware/waresku/list"),
-        method: "get",
-        params: this.$http.adornParams({
+        url: this.$http.adornUrl('/ware/ware-info/sku/page'),
+        method: 'post',
+        data: this.$http.adornData({
           page: this.pageIndex,
-          limit: this.pageSize,
-          skuId: this.dataForm.skuId,
-          wareId: this.dataForm.wareId
+          size: this.pageSize,
+          wareId: this.dataForm.wareId,
+          skuId: this.dataForm.skuId
         })
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.dataList = data.page.list;
-          this.totalPage = data.page.totalCount;
+      }).then(({data}) => {
+        if (data && data.code === 200000) {
+          this.dataList = data.data.records
+          this.totalPage = data.data.total
         } else {
-          this.dataList = [];
-          this.totalPage = 0;
+          this.dataList = []
+          this.totalPage = 0
         }
-        this.dataListLoading = false;
-      });
+        this.dataListLoading = false
+      })
     },
     // 每页数
-    sizeChangeHandle(val) {
-      this.pageSize = val;
-      this.pageIndex = 1;
-      this.getDataList();
+    sizeChangeHandle (val) {
+      this.pageSize = val
+      this.pageIndex = 1
+      this.getDataList()
     },
     // 当前页
-    currentChangeHandle(val) {
-      this.pageIndex = val;
-      this.getDataList();
+    currentChangeHandle (val) {
+      this.pageIndex = val
+      this.getDataList()
     },
     // 多选
-    selectionChangeHandle(val) {
-      this.dataListSelections = val;
+    selectionChangeHandle (val) {
+      this.dataListSelections = val
     },
     // 新增 / 修改
-    addOrUpdateHandle(id) {
-      this.addOrUpdateVisible = true;
+    addOrUpdateHandle (id) {
+      this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id);
-      });
+        this.$refs.addOrUpdate.init(id)
+      })
     },
     // 删除
-    deleteHandle(id) {
+    deleteHandle (id) {
       var ids = id
         ? [id]
         : this.dataListSelections.map(item => {
-            return item.id;
-          });
+          return item.id
+        })
       this.$confirm(
-        `确定对[id=${ids.join(",")}]进行[${id ? "删除" : "批量删除"}]操作?`,
-        "提示",
+        `确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
+        '提示',
         {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         }
       ).then(() => {
         this.$http({
-          url: this.$http.adornUrl("/ware/waresku/delete"),
-          method: "post",
+          url: this.$http.adornUrl('/ware/waresku/delete'),
+          method: 'post',
           data: this.$http.adornData(ids, false)
-        }).then(({ data }) => {
+        }).then(({data}) => {
           if (data && data.code === 0) {
             this.$message({
-              message: "操作成功",
-              type: "success",
+              message: '操作成功',
+              type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataList();
+                this.getDataList()
               }
-            });
+            })
           } else {
-            this.$message.error(data.msg);
+            this.$message.error(data.msg)
           }
-        });
-      });
+        })
+      })
     }
   }
-};
+}
 </script>
