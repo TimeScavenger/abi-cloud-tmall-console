@@ -22,7 +22,7 @@
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.wareId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.wareId)">删除</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.wareId, scope.row.wareName)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -97,6 +97,7 @@ export default {
     },
     // 多选
     selectionChangeHandle (val) {
+      console.log('多选按钮勾选的对象：', val)
       this.dataListSelections = val
     },
     // 新增 / 修改
@@ -107,11 +108,14 @@ export default {
       })
     },
     // 删除
-    deleteHandle (id) {
+    deleteHandle (id, name) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
-        return item.id
+        return item.wareId
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+      var names = name ? [name] : this.dataListSelections.map(item => {
+        return item.wareName
+      })
+      this.$confirm(`确定对[ ${names.join('、')} ] 进行 [ ${name ? '删除' : '批量删除'} ]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
