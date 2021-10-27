@@ -2,14 +2,14 @@
   <el-dialog :title="!dataForm.wareId ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
              label-width="120px">
-      <el-form-item label="仓库名" prop="name">
-        <el-input v-model="dataForm.name" placeholder="仓库名"></el-input>
+      <el-form-item label="仓库名" prop="wareName">
+        <el-input v-model="dataForm.wareName" placeholder="仓库名"></el-input>
       </el-form-item>
-      <el-form-item label="仓库地址" prop="address">
-        <el-input v-model="dataForm.address" placeholder="仓库地址"></el-input>
+      <el-form-item label="仓库地址" prop="wareAddress">
+        <el-input v-model="dataForm.wareAddress" placeholder="仓库地址"></el-input>
       </el-form-item>
-      <el-form-item label="区域编码" prop="areacode">
-        <el-input v-model="dataForm.areacode" placeholder="区域编码"></el-input>
+      <el-form-item label="区域编码" prop="wareAreacode">
+        <el-input v-model="dataForm.wareAreacode" placeholder="区域编码"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -26,18 +26,18 @@ export default {
       visible: false,
       dataForm: {
         wareId: 0,
-        name: '',
-        address: '',
-        areacode: ''
+        wareName: '',
+        wareAddress: '',
+        wareAreacode: ''
       },
       dataRule: {
-        name: [
+        wareName: [
           {required: true, message: '仓库名不能为空', trigger: 'blur'}
         ],
-        address: [
+        wareAddress: [
           {required: true, message: '仓库地址不能为空', trigger: 'blur'}
         ],
-        areacode: [
+        wareAreacode: [
           {required: true, message: '区域编码不能为空', trigger: 'blur'}
         ]
       }
@@ -51,18 +51,18 @@ export default {
         this.$refs['dataForm'].resetFields()
         if (this.dataForm.wareId) {
           this.$http({
-            url: this.$http.adornUrl(`/ware/wareinfo/info`),
+            url: this.$http.adornUrl(`/ware/ware/console/info`),
             method: 'post',
             data: this.$http.adornData({
               'wareId': this.dataForm.wareId
             })
           }).then(({data}) => {
-            console.log('查看 -----> 仓库信息 -----> 请求路径: /ware/wareinfo/info')
+            console.log('查看 -----> 仓库信息 -----> 请求路径: /ware/ware/console/info')
             console.log('查看 -----> 仓库信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
-              this.dataForm.name = data.data.name
-              this.dataForm.address = data.data.address
-              this.dataForm.areacode = data.data.areacode
+              this.dataForm.wareName = data.data.wareName
+              this.dataForm.wareAddress = data.data.wareAddress
+              this.dataForm.wareAreacode = data.data.wareAreacode
             }
           })
         }
@@ -73,16 +73,16 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/ware/wareinfo/${!this.dataForm.wareId ? 'save' : 'modify'}`),
+            url: this.$http.adornUrl(`/ware/ware/console/${!this.dataForm.wareId ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
               'wareId': this.dataForm.wareId || undefined,
-              'name': this.dataForm.name,
-              'address': this.dataForm.address,
-              'areacode': this.dataForm.areacode
+              'wareName': this.dataForm.wareName,
+              'wareAddress': this.dataForm.wareAddress,
+              'wareAreacode': this.dataForm.wareAreacode
             })
           }).then(({data}) => {
-            console.log('新增或修改 -----> 仓库信息 -----> 请求路径: /ware/wareinfo/save or modify')
+            console.log('新增或修改 -----> 仓库信息 -----> 请求路径: /ware/ware/console/save or modify')
             console.log('新增或修改 -----> 仓库信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.$message({

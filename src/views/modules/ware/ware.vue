@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('ware:wareinfo:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('ware:wareinfo:delete')" type="danger" @click="deleteHandle()"
+        <el-button v-if="isAuth('ware:ware:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('ware:ware:delete')" type="danger" @click="deleteHandle()"
                    :disabled="dataListSelections.length <= 0">批量删除
         </el-button>
       </el-form-item>
@@ -16,9 +16,9 @@
               style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="wareId" header-align="center" align="center" label="id"></el-table-column>
-      <el-table-column prop="name" header-align="center" align="center" label="仓库名"></el-table-column>
-      <el-table-column prop="address" header-align="center" align="center" label="仓库地址"></el-table-column>
-      <el-table-column prop="areacode" header-align="center" align="center" label="区域编码"></el-table-column>
+      <el-table-column prop="wareName" header-align="center" align="center" label="仓库名"></el-table-column>
+      <el-table-column prop="wareAddress" header-align="center" align="center" label="仓库地址"></el-table-column>
+      <el-table-column prop="wareAreacode" header-align="center" align="center" label="区域编码"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.wareId)">修改</el-button>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import AddOrUpdate from './wareinfo-add-or-update'
+import AddOrUpdate from './ware-add-or-update'
 
 export default {
   data () {
@@ -64,16 +64,16 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/ware/wareinfo/page'),
+        url: this.$http.adornUrl('/ware/ware/console/page'),
         method: 'post',
         data: this.$http.adornData({
           page: this.pageIndex,
           size: this.pageSize,
-          name: this.dataForm.key
+          wareName: this.dataForm.key
         })
       }).then(({data}) => {
-        console.log('查询 -----> 仓库分页列表 -----> 请求路径: /ware/wareinfo/page')
-        console.log('查询 -----> 仓库分页列表 -----> 返回结果:', data)
+        console.log('查询 -----> 仓库分页 -----> 请求路径: /ware/ware/console/page')
+        console.log('查询 -----> 仓库分页 -----> 返回结果:', data)
         if (data && data.code === 200000) {
           this.dataList = data.data.records
           this.totalPage = data.data.total
@@ -117,11 +117,13 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/ware/wareinfo/delete'),
+          url: this.$http.adornUrl('/ware/ware/console/remove'),
           method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({data}) => {
-          if (data && data.code === 0) {
+          if (data && data.code === 200000) {
+            console.log('删除 -----> 仓库信息 -----> 请求路径: /ware/ware/console/info')
+            console.log('删除 -----> 仓库信息 -----> 返回结果:', data)
             this.$message({
               message: '操作成功',
               type: 'success',
