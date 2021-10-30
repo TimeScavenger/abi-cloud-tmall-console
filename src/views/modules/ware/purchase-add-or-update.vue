@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.purchaseId ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
@@ -22,14 +22,14 @@ export default {
     return {
       visible: false,
       dataForm: {
-        id: 0,
+        purchaseId: 0,
         assigneeId: '',
         assigneeName: '',
-        phone: '',
+        assigneePhone: '',
         priority: '',
         status: 0,
         wareId: '',
-        amount: '',
+        allAmount: '',
         createTime: '',
         updateTime: ''
       },
@@ -40,8 +40,8 @@ export default {
         assigneeName: [
           {required: true, message: '采购人名不能为空', trigger: 'blur'}
         ],
-        phone: [
-          {required: true, message: '联系方式不能为空', trigger: 'blur'}
+        assigneePhone: [
+          {required: true, message: '采购人联系方式不能为空', trigger: 'blur'}
         ],
         priority: [
           {required: true, message: '优先级不能为空', trigger: 'blur'}
@@ -52,40 +52,34 @@ export default {
         wareId: [
           {required: true, message: '仓库id不能为空', trigger: 'blur'}
         ],
-        amount: [
+        allAmount: [
           {required: true, message: '总金额不能为空', trigger: 'blur'}
-        ],
-        createTime: [
-          {required: true, message: '创建日期不能为空', trigger: 'blur'}
-        ],
-        updateTime: [
-          {required: true, message: '更新日期不能为空', trigger: 'blur'}
         ]
       }
     }
   },
   methods: {
     init (id) {
-      this.dataForm.id = id || 0
+      this.dataForm.purchaseId = id || 0
       this.visible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
-        if (this.dataForm.id) {
+        if (this.dataForm.purchaseId) {
           this.$http({
-            url: this.$http.adornUrl(`/ware/purchase/info/${this.dataForm.id}`),
-            method: 'get',
+            url: this.$http.adornUrl(`/ware/console/purchase/info`),
+            method: 'post',
             params: this.$http.adornParams()
           }).then(({data}) => {
-            if (data && data.code === 0) {
+            console.log('查看 -----> 采购单信息 -----> 请求路径: /ware/console/purchase/info')
+            console.log('查看 -----> 采购单信息 -----> 返回结果:', data)
+            if (data && data.code === 200000) {
               this.dataForm.assigneeId = data.purchase.assigneeId
               this.dataForm.assigneeName = data.purchase.assigneeName
-              this.dataForm.phone = data.purchase.phone
+              this.dataForm.assigneePhone = data.purchase.assigneePhone
               this.dataForm.priority = data.purchase.priority
               this.dataForm.status = data.purchase.status
               this.dataForm.wareId = data.purchase.wareId
-              this.dataForm.amount = data.purchase.amount
-              this.dataForm.createTime = data.purchase.createTime
-              this.dataForm.updateTime = data.purchase.updateTime
+              this.dataForm.allAmount = data.purchase.allAmount
             }
           })
         }
@@ -96,22 +90,22 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/ware/purchase/${!this.dataForm.id ? 'save' : 'update'}`),
+            url: this.$http.adornUrl(`/ware/console/purchase/${!this.dataForm.purchaseId ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
-              'id': this.dataForm.id || undefined,
+              'purchaseId': this.dataForm.purchaseId || undefined,
               'assigneeId': this.dataForm.assigneeId,
               'assigneeName': this.dataForm.assigneeName,
-              'phone': this.dataForm.phone,
+              'assigneePhone': this.dataForm.assigneePhone,
               'priority': this.dataForm.priority,
               'status': this.dataForm.status,
               'wareId': this.dataForm.wareId,
-              'amount': this.dataForm.amount,
-              'createTime': this.dataForm.createTime,
-              'updateTime': this.dataForm.updateTime
+              'allAmount': this.dataForm.allAmount
             })
           }).then(({data}) => {
-            if (data && data.code === 0) {
+            if (data && data.code === 200000) {
+              console.log('新增或修改 -----> 采购单信息 -----> 请求路径: /ware/console/ware/save or modify')
+              console.log('新增或修改 -----> 采购单信息 -----> 返回结果:', data)
               this.$message({
                 message: '操作成功',
                 type: 'success',

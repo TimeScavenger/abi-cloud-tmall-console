@@ -25,10 +25,10 @@
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
               style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="采购单id"></el-table-column>
-      <el-table-column prop="assigneeId" header-align="center" align="center" label="采购人id"></el-table-column>
+      <el-table-column prop="purchaseId" header-align="center" align="center" label="采购单ID"></el-table-column>
+      <el-table-column prop="assigneeId" header-align="center" align="center" label="采购人ID"></el-table-column>
       <el-table-column prop="assigneeName" header-align="center" align="center" label="采购人名"></el-table-column>
-      <el-table-column prop="phone" header-align="center" align="center" label="联系方式"></el-table-column>
+      <el-table-column prop="assigneePhone" header-align="center" align="center" label="采购人联系方式"></el-table-column>
       <el-table-column prop="priority" header-align="center" align="center" label="优先级"></el-table-column>
       <el-table-column prop="status" header-align="center" align="center" label="状态">
         <template slot-scope="scope">
@@ -40,9 +40,9 @@
         </template>
       </el-table-column>
       <el-table-column prop="wareId" header-align="center" align="center" label="仓库id"></el-table-column>
-      <el-table-column prop="amount" header-align="center" align="center" label="总金额"></el-table-column>
+      <el-table-column prop="allAmount" header-align="center" align="center" label="总金额"></el-table-column>
       <el-table-column prop="createTime" header-align="center" align="center" label="创建日期"></el-table-column>
-      <el-table-column prop="updateTime" header-align="center" align="center" label="更新日期"></el-table-column>
+      <el-table-column prop="modifyTime" header-align="center" align="center" label="更新日期"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" v-if="scope.row.status===0||scope.row.status===1"
@@ -118,25 +118,24 @@ export default {
       })
       this.caigoudialogVisible = false
       this.$http({
-        url: this.$http.adornUrl(
-          `/ware/purchase/update`
-        ),
+        url: this.$http.adornUrl(`/ware/console/purchase/modify`),
         method: 'post',
         data: this.$http.adornData({
-          id: this.currentRow.id || undefined,
+          purchaseId: this.currentRow.purchaseId || undefined,
           assigneeId: user.userId,
           assigneeName: user.username,
-          phone: user.mobile,
+          assigneePhone: user.mobile,
           status: 1
         })
       }).then(({data}) => {
-        if (data && data.code === 0) {
+        if (data && data.code === 200000) {
+          console.log('修改 -----> 采购人信息 -----> 请求路径: /ware/console/ware/modify')
+          console.log('修改 -----> 采购人信息 -----> 返回结果:', data)
           this.$message({
             message: '操作成功',
             type: 'success',
             duration: 1500
           })
-
           this.userId = ''
           this.getDataList()
         } else {
@@ -160,7 +159,7 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/ware/purchase/page'),
+        url: this.$http.adornUrl('/ware/console/purchase/page'),
         method: 'post',
         data: this.$http.adornData({
           page: this.pageIndex,
@@ -168,7 +167,7 @@ export default {
           name: this.dataForm.key
         })
       }).then(({data}) => {
-        console.log('查询 -----> 采购单分页列表 -----> 请求路径: /ware/purchase/page')
+        console.log('查询 -----> 采购单分页列表 -----> 请求路径: /ware/console/purchase/page')
         console.log('查询 -----> 采购单分页列表 -----> 返回结果:', data)
         if (data && data.code === 200000) {
           this.dataList = data.data.records
