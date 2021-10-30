@@ -3,11 +3,11 @@
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="仓库">
         <el-select style="width:160px;" v-model="dataForm.wareId" placeholder="请选择仓库" clearable>
-          <el-option :label="w.name" :value="w.wareId" v-for="w in wareList" :key="w.wareId"></el-option>
+          <el-option :label="w.wareName" :value="w.wareId" v-for="w in wareList" :key="w.wareName"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="skuId">
-        <el-input v-model="dataForm.skuId" placeholder="skuId" clearable></el-input>
+      <el-form-item label="商品名称">
+        <el-input v-model="dataForm.skuName" placeholder="请输入商品名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -23,11 +23,12 @@
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="id"></el-table-column>
-      <el-table-column prop="skuId" header-align="center" align="center" label="sku_id"></el-table-column>
-      <el-table-column prop="wareId" header-align="center" align="center" label="仓库id"></el-table-column>
+      <el-table-column prop="id" header-align="center" align="center" label="自增ID"></el-table-column>
+      <el-table-column prop="wareId" header-align="center" align="center" label="仓库ID"></el-table-column>
+      <el-table-column prop="wareName" header-align="center" align="center" label="仓库名称"></el-table-column>
+      <el-table-column prop="skuId" header-align="center" align="center" label="商品ID"></el-table-column>
+      <el-table-column prop="skuName" header-align="center" align="center" label="商品名称"></el-table-column>
       <el-table-column prop="stock" header-align="center" align="center" label="库存数"></el-table-column>
-      <el-table-column prop="skuName" header-align="center" align="center" label="sku_name"></el-table-column>
       <el-table-column prop="stockLocked" header-align="center" align="center" label="锁定库存"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
@@ -45,7 +46,7 @@
 </template>
 
 <script>
-import AddOrUpdate from './waresku-add-or-update'
+import AddOrUpdate from './ware-sku-add-or-update'
 
 export default {
   data () {
@@ -53,7 +54,7 @@ export default {
       wareList: [],
       dataForm: {
         wareId: '',
-        skuId: ''
+        skuName: ''
       },
       dataList: [],
       pageIndex: 1,
@@ -78,17 +79,14 @@ export default {
   methods: {
     getWares () {
       this.$http({
-        url: this.$http.adornUrl('/ware/wareinfo/page'),
+        url: this.$http.adornUrl('/ware/console/ware/list'),
         method: 'post',
-        data: this.$http.adornData({
-          page: 1,
-          size: 100
-        })
+        data: this.$http.adornData({})
       }).then(({data}) => {
-        console.log('查询 -----> 仓库分页列表 -----> 请求路径: /ware/wareinfo/page')
-        console.log('查询 -----> 仓库分页列表 -----> 返回结果:', data)
+        console.log('查询 -----> 仓库列表 -----> 请求路径: /ware/console/ware/list')
+        console.log('查询 -----> 仓库列表 -----> 返回结果:', data)
         if (data && data.code === 200000) {
-          this.wareList = data.data.records
+          this.wareList = data.data
         }
       })
     },
@@ -96,16 +94,18 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/ware/ware-info/sku/page'),
+        url: this.$http.adornUrl('/ware/console/ware-sku-relation/page'),
         method: 'post',
         data: this.$http.adornData({
           page: this.pageIndex,
           size: this.pageSize,
           wareId: this.dataForm.wareId,
-          skuId: this.dataForm.skuId
+          skuName: this.dataForm.skuName
         })
       }).then(({data}) => {
         if (data && data.code === 200000) {
+          console.log('查询 -----> 仓库列表 -----> 请求路径: /ware/console/ware-sku-relation/page')
+          console.log('查询 -----> 仓库列表 -----> 返回结果:', data)
           this.dataList = data.data.records
           this.totalPage = data.data.total
         } else {

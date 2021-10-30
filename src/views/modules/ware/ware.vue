@@ -15,7 +15,7 @@
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
               style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="wareId" header-align="center" align="center" label="id"></el-table-column>
+      <el-table-column prop="wareId" header-align="center" align="center" label="仓库ID"></el-table-column>
       <el-table-column prop="wareName" header-align="center" align="center" label="仓库名"></el-table-column>
       <el-table-column prop="wareAddress" header-align="center" align="center" label="仓库地址"></el-table-column>
       <el-table-column prop="wareAreacode" header-align="center" align="center" label="区域编码"></el-table-column>
@@ -64,7 +64,7 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/ware/ware/console/page'),
+        url: this.$http.adornUrl('/ware/console/ware/page'),
         method: 'post',
         data: this.$http.adornData({
           page: this.pageIndex,
@@ -72,7 +72,7 @@ export default {
           wareName: this.dataForm.key
         })
       }).then(({data}) => {
-        console.log('查询 -----> 仓库分页 -----> 请求路径: /ware/ware/console/page')
+        console.log('查询 -----> 仓库分页 -----> 请求路径: /ware/console/ware/page')
         console.log('查询 -----> 仓库分页 -----> 返回结果:', data)
         if (data && data.code === 200000) {
           this.dataList = data.data.records
@@ -121,12 +121,12 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/ware/ware/console/remove'),
+          url: this.$http.adornUrl('/ware/console/ware/remove'),
           method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({data}) => {
           if (data && data.code === 200000) {
-            console.log('删除 -----> 仓库信息 -----> 请求路径: /ware/ware/console/info')
+            console.log('删除 -----> 仓库信息 -----> 请求路径: /ware/console/ware/remove')
             console.log('删除 -----> 仓库信息 -----> 返回结果:', data)
             this.$message({
               message: '操作成功',

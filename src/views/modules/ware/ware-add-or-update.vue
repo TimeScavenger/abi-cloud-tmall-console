@@ -51,13 +51,13 @@ export default {
         this.$refs['dataForm'].resetFields()
         if (this.dataForm.wareId) {
           this.$http({
-            url: this.$http.adornUrl(`/ware/ware/console/info`),
+            url: this.$http.adornUrl(`/ware/console/ware/info`),
             method: 'post',
             data: this.$http.adornData({
               'wareId': this.dataForm.wareId
             })
           }).then(({data}) => {
-            console.log('查看 -----> 仓库信息 -----> 请求路径: /ware/ware/console/info')
+            console.log('查看 -----> 仓库信息 -----> 请求路径: /ware/console/ware/info')
             console.log('查看 -----> 仓库信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.dataForm.wareName = data.data.wareName
@@ -73,7 +73,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/ware/ware/console/${!this.dataForm.wareId ? 'save' : 'modify'}`),
+            url: this.$http.adornUrl(`/ware/console/ware/${!this.dataForm.wareId ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
               'wareId': this.dataForm.wareId || undefined,
@@ -82,7 +82,7 @@ export default {
               'wareAreacode': this.dataForm.wareAreacode
             })
           }).then(({data}) => {
-            console.log('新增或修改 -----> 仓库信息 -----> 请求路径: /ware/ware/console/save or modify')
+            console.log('新增或修改 -----> 仓库信息 -----> 请求路径: /ware/console/ware/save or modify')
             console.log('新增或修改 -----> 仓库信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.$message({
