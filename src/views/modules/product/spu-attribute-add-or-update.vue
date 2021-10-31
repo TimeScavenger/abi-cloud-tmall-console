@@ -4,43 +4,18 @@
       <el-col :span="16">
         <el-card class="box-card">
           <el-tabs tab-position="left" style="width:98%">
-            <el-tab-pane
-              :label="group.attrGroupName"
-              v-for="(group,gidx) in dataResp.attrGroups"
-              :key="group.attrGroupId"
-            >
+            <el-tab-pane :label="group.attrGroupName" v-for="(group,gidx) in dataResp.attrGroups"
+                         :key="group.attrGroupId">
               <!-- 遍历属性,每个tab-pane对应一个表单，每个属性是一个表单项  spu.baseAttrs[0] = [{attrId:xx,val:}]-->
               <el-form ref="form" :model="dataResp">
-                <el-form-item
-                  :label="attr.attrName"
-                  v-for="(attr,aidx) in group.attrs"
-                  :key="attr.attrId"
-                >
-                  <el-input
-                    v-model="dataResp.baseAttrs[gidx][aidx].attrId"
-                    type="hidden"
-                    v-show="false"
-                  ></el-input>
-                  <el-select
-                    v-model="dataResp.baseAttrs[gidx][aidx].attrValues"
-                    :multiple="attr.valueType === 1"
-                    filterable
-                    allow-create
-                    default-first-option
-                    placeholder="请选择或输入值"
-                  >
-                    <el-option
-                      v-for="(val,vidx) in attr.valueSelect.split(';')"
-                      :key="vidx"
-                      :label="val"
-                      :value="val"
-                    ></el-option>
+                <el-form-item :label="attr.attrName" v-for="(attr,aidx) in group.attrs" :key="attr.attrId">
+                  <el-input v-model="dataResp.baseAttrs[gidx][aidx].attrId" type="hidden" v-show="false"></el-input>
+                  <el-select v-model="dataResp.baseAttrs[gidx][aidx].attrValues" :multiple="attr.valueType === 1"
+                             filterable allow-create default-first-option placeholder="请选择或输入值">
+                    <el-option v-for="(val,vidx) in attr.valueSelect.split(';')" :key="vidx" :label="val"
+                               :value="val"></el-option>
                   </el-select>
-                  <el-checkbox
-                    v-model="dataResp.baseAttrs[gidx][aidx].quickShow"
-                    :true-label="1"
-                    :false-label="0"
-                  >快速展示
+                  <el-checkbox v-model="dataResp.baseAttrs[gidx][aidx].quickShow" :true-label="1" :false-label="0">快速展示
                   </el-checkbox>
                 </el-form-item>
               </el-form>
@@ -140,7 +115,6 @@ export default {
           } else {
             val = attr.attrValues
           }
-
           if (val !== '') {
             submitData.push({
               attrId: attr.attrId,
@@ -151,30 +125,27 @@ export default {
           }
         })
       })
-
       this.$confirm('修改商品规格信息, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      })
-        .then(() => {
-          this.$http({
-            url: this.$http.adornUrl(`/product/console/attr/update/${this.spuId}`),
-            method: 'post',
-            data: this.$http.adornData(submitData, false)
-          }).then(({data}) => {
-            this.$message({
-              type: 'success',
-              message: '属性修改成功!'
-            })
-          })
-        })
-        .catch((e) => {
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl(`/product/console/attr/update/${this.spuId}`),
+          method: 'post',
+          data: this.$http.adornData(submitData, false)
+        }).then(({data}) => {
           this.$message({
-            type: 'info',
-            message: '已取消修改' + e
+            type: 'success',
+            message: '属性修改成功!'
           })
         })
+      }).catch((e) => {
+        this.$message({
+          type: 'info',
+          message: '已取消修改' + e
+        })
+      })
     }
   },
   created () {
@@ -189,5 +160,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
+
 </style>

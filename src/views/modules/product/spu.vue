@@ -26,12 +26,8 @@
       </el-col>
       <el-col :span="24">
         <div class="mod-config">
-          <el-table
-            :data="dataList"
-            border
-            v-loading="dataListLoading"
-            @selection-change="selectionChangeHandle"
-            style="width: 100%;">
+          <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
+                    style="width: 100%;">
             <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
             <el-table-column prop="spuId" header-align="center" align="center" label="spuId"></el-table-column>
             <el-table-column prop="spuName" header-align="center" align="center" label="名称"></el-table-column>
@@ -50,26 +46,17 @@
             <el-table-column prop="modifyTime" header-align="center" align="center" label="修改时间"></el-table-column>
             <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
               <template slot-scope="scope">
-                <el-button
-                  v-if="scope.row.publishStatus === 0"
-                  type="text"
-                  size="small"
-                  @click="productUp(scope.row.id)">上架
+                <el-button v-if="scope.row.publishStatus === 0" type="text" size="small"
+                           @click="productUp(scope.row.id)">上架
                 </el-button>
                 <el-button type="text" size="small" @click="attrUpdateShow(scope.row)">规格</el-button>
               </template>
             </el-table-column>
           </el-table>
 
-          <el-pagination
-            @size-change="sizeChangeHandle"
-            @current-change="currentChangeHandle"
-            :current-page="pageIndex"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pageSize"
-            :total="totalPage"
-            layout="total, sizes, prev, pager, next, jumper"
-          ></el-pagination>
+          <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
+                         :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage"
+                         layout="total, sizes, prev, pager, next, jumper"></el-pagination>
         </div>
       </el-col>
     </el-row>
@@ -149,7 +136,10 @@ export default {
       console.log(row)
       this.$router.push({
         path: '/product-attrupdate',
-        query: {spuId: row.id, catalogId: row.catalogId}
+        query: {
+          spuId: row.id,
+          categoryId: row.categoryId
+        }
       })
     },
     // 获取数据列表
@@ -158,7 +148,7 @@ export default {
       let param = {}
       Object.assign(param, this.dataForm, {
         page: this.pageIndex,
-        limit: this.pageSize
+        size: this.pageSize
       })
       this.$http({
         url: this.$http.adornUrl('/product/console/spu-info/page'),
