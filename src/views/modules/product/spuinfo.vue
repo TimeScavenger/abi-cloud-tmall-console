@@ -128,7 +128,7 @@ export default {
     },
     productUp (id) {
       this.$http({
-        url: this.$http.adornUrl('/product/spu-info/' + id + '/up'),
+        url: this.$http.adornUrl('/product/console/spu-info/' + id + '/up'),
         method: 'post'
       }).then(({data}) => {
         if (data && data.code === 0) {
@@ -161,7 +161,7 @@ export default {
         limit: this.pageSize
       })
       this.$http({
-        url: this.$http.adornUrl('/product/spu-info/page'),
+        url: this.$http.adornUrl('/product/console/spu-info/page'),
         method: 'post',
         data: this.$http.adornData({
           page: this.pageIndex,
@@ -172,7 +172,7 @@ export default {
           spuName: this.dataForm.spuName
         })
       }).then(({data}) => {
-        console.log('查询 -----> Spu分页信息 -----> 请求路径: /product/spu-info/page')
+        console.log('查询 -----> Spu分页信息 -----> 请求路径: /product/console/spu-info/page')
         console.log('查询 -----> Spu分页信息 -----> 返回结果:', data)
         if (data && data.code === 200000) {
           this.dataList = data.data.records

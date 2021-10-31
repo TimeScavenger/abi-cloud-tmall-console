@@ -389,14 +389,14 @@ export default {
       console.log('查询当前分类可以使用的规格参数：', this.spu.categoryId)
       if (!this.dataResp.steped[0]) {
         this.$http({
-          url: this.$http.adornUrl(`/product/attribute/list/base`),
+          url: this.$http.adornUrl(`/product/console/attribute/list/base`),
           method: 'post',
           data: this.$http.adornData({
             type: 0,
             categoryId: this.spu.categoryId
           })
         }).then(({data}) => {
-          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/attribute/list/base')
+          console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/console/attribute/list/base')
           console.log('查询 -----> 当前分类可以使用的规格参数 -----> 返回结果:', data)
           // 先对表单的tempSpuBaseAttributes进行初始化
           data.data.forEach(item => {
@@ -422,14 +422,14 @@ export default {
       console.log('查询当前分类可以使用的销售属性：', this.spu.categoryId)
       if (!this.dataResp.steped[1]) {
         this.$http({
-          url: this.$http.adornUrl(`/product/attribute/list/sale`),
+          url: this.$http.adornUrl(`/product/console/attribute/list/sale`),
           method: 'post',
           data: this.$http.adornData({
             type: 1,
             categoryId: this.spu.categoryId
           })
         }).then(({data}) => {
-          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 请求路径: /product/attribute/list/sale')
+          console.log('查询 -----> 当前分类可以使用的销售属性 -----> 请求路径: /product/console/attribute/list/sale')
           console.log('查询 -----> 当前分类可以使用的销售属性 -----> 返回结果:', data)
           this.dataResp.skuSaleAttributes = data.data
           data.data.forEach(item => {
@@ -617,11 +617,11 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/product/spu-info/save'),
+          url: this.$http.adornUrl('/product/console/spu-info/save'),
           method: 'post',
           data: this.$http.adornData(this.spu, false)
         }).then(({data}) => {
-          console.log('新增 -----> Spu信息 -----> 请求路径: /product/spu-info/save')
+          console.log('新增 -----> Spu信息 -----> 请求路径: /product/console/spu-info/save')
           console.log('新增 -----> Spu信息 -----> 返回结果:', data)
           if (data.code === 200000) {
             this.$message({

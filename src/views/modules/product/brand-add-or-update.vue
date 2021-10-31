@@ -112,11 +112,11 @@ export default {
         this.$refs['dataForm'].resetFields()
         if (this.dataForm.brandId) {
           this.$http({
-            url: this.$http.adornUrl(`/product/brand/info/${this.dataForm.brandId}`),
+            url: this.$http.adornUrl(`/product/console/brand/info/${this.dataForm.brandId}`),
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {
-            console.log(`初始化 -----> 添加/修改品牌信息 -----> 请求路径: /product/brand/info/${this.dataForm.brandId}`)
+            console.log(`初始化 -----> 添加/修改品牌信息 -----> 请求路径: /product/console/brand/info/${this.dataForm.brandId}`)
             console.log('初始化 -----> 添加/修改品牌信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.dataForm.brandName = data.data.brandName
@@ -135,7 +135,7 @@ export default {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/product/brand/${!this.dataForm.brandId ? 'save' : 'modify'}`),
+            url: this.$http.adornUrl(`/product/console/brand/${!this.dataForm.brandId ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
               brandId: this.dataForm.brandId || undefined,
@@ -147,7 +147,7 @@ export default {
               sort: this.dataForm.sort
             })
           }).then(({data}) => {
-            console.log('表单提交 -----> 添加/修改品牌信息 -----> 请求路径: /product/brand/save /product/brand/modify')
+            console.log('表单提交 -----> 添加/修改品牌信息 -----> 请求路径: /product/console/brand/save /product/console/brand/modify')
             console.log('表单提交 -----> 添加/修改品牌信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.$message({

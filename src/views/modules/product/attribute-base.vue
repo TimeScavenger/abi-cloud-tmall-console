@@ -154,7 +154,7 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl(`/product/attribute/page`),
+        url: this.$http.adornUrl(`/product/console/attribute/page`),
         method: 'post',
         data: this.$http.adornData({
           page: this.pageIndex,
@@ -164,7 +164,7 @@ export default {
           attributeName: this.dataForm.key
         })
       }).then(({data}) => {
-        console.log('查询 -----> 规格参数分页列表 -----> 请求路径: /product/attribute/page')
+        console.log('查询 -----> 规格参数分页列表 -----> 请求路径: /product/console/attribute/page')
         console.log('查询 -----> 规格参数分页列表 -----> 返回结果:', data)
         if (data && data.code === 200000) {
           this.dataList = data.data.records
@@ -198,11 +198,11 @@ export default {
         }
       ).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/product/attribute/remove'),
+          url: this.$http.adornUrl('/product/console/attribute/remove'),
           method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({data}) => {
-          console.log('删除 -----> 规格参数 -----> 请求路径: /product/attribute/remove')
+          console.log('删除 -----> 规格参数 -----> 请求路径: /product/console/attribute/remove')
           console.log('删除 -----> 规格参数 -----> 返回结果:', data)
           if (data && data.code === 200000) {
             this.$message({

@@ -5,15 +5,8 @@
     <!--
       @node-click="nodeclick" 节点被点击时的回调
     -->
-    <el-tree
-        :data="menus"
-        :props="defaultProps"
-        node-key="catId"
-        ref="menuTree"
-        @node-click="nodeclick"
-        :filter-node-method="filterNode"
-        :highlight-current="true"></el-tree>
-
+    <el-tree :data="menus" :props="defaultProps" node-key="catId" ref="menuTree" @node-click="nodeclick"
+             :filter-node-method="filterNode" :highlight-current="true"></el-tree>
   </div>
 </template>
 
@@ -57,11 +50,11 @@ export default {
     },
     getCategorys () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/list/tree'),
+        url: this.$http.adornUrl('/product/console/category/list/tree'),
         method: 'post',
         data: this.$http.adornData(this.categoryTree, false)
       }).then(({data}) => {
-        console.log('查询 -----> 分类列表 -----> 请求路径: /product/category/list/tree')
+        console.log('查询 -----> 分类列表 -----> 请求路径: /product/console/category/list/tree')
         console.log('查询 -----> 分类列表 -----> 返回数据:', data)
         this.menus = data.data
       })

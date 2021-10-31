@@ -111,11 +111,11 @@ export default {
     // 查询 分类树形列表
     getDataList () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/list/tree'),
+        url: this.$http.adornUrl('/product/console/category/list/tree'),
         method: 'post',
         data: this.$http.adornData(this.categoryTree, false)
       }).then(({data}) => {
-        console.log('查询 -----> 分类树形列表 -----> 请求路径: /product/category/list/tree')
+        console.log('查询 -----> 分类树形列表 -----> 请求路径: /product/console/category/list/tree')
         console.log('查询 -----> 分类树形列表 -----> 返回结果:', data)
         this.menus = data.data
       })
@@ -138,11 +138,11 @@ export default {
     // 表单提交 添加分类信息
     dataAddFormSubmit () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/save'),
+        url: this.$http.adornUrl('/product/console/category/save'),
         method: 'post',
         data: this.$http.adornData(this.category, false)
       }).then(({data}) => {
-        console.log('添加 -----> 分类信息 -----> 请求路径: /product/category/save')
+        console.log('添加 -----> 分类信息 -----> 请求路径: /product/console/category/save')
         console.log('添加 -----> 分类信息 -----> 返回结果:', data)
         this.$message({
           message: '添加分类信息成功',
@@ -163,10 +163,10 @@ export default {
       this.dialogVisible = true
       // 发送请求获取当前节点最新的参数
       this.$http({
-        url: this.$http.adornUrl(`/product/category/find/${data.categoryId}`),
+        url: this.$http.adornUrl(`/product/console/category/find/${data.categoryId}`),
         method: 'get'
       }).then(({data}) => {
-        console.log(`初始化 -----> 修改分类信息 -----> 请求路径: /product/category/find/${data.categoryId}`)
+        console.log(`初始化 -----> 修改分类信息 -----> 请求路径: /product/console/category/find/${data.categoryId}`)
         console.log('初始化 -----> 修改分类信息 -----> 返回结果:', data)
         this.category.categoryId = data.data.categoryId
         this.category.categoryName = data.data.categoryName
@@ -181,11 +181,11 @@ export default {
     // 表单提交 修改分类信息
     dataUpdateFormSubmit () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/modify'),
+        url: this.$http.adornUrl('/product/console/category/modify'),
         method: 'post',
         data: this.$http.adornData(this.category, false)
       }).then(({data}) => {
-        console.log('修改 -----> 分类信息 -----> 请求路径: /product/category/modify')
+        console.log('修改 -----> 分类信息 -----> 请求路径: /product/console/category/modify')
         console.log('修改 -----> 分类信息 -----> 返回结果:', data)
         this.$message({
           message: '修改分类信息成功',
@@ -217,11 +217,11 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/product/category/remove'),
+          url: this.$http.adornUrl('/product/console/category/remove'),
           method: 'post',
           data: this.$http.adornData(this.categorySub, false)
         }).then(({data}) => {
-          console.log('删除 -----> 分类信息 -----> 请求路径: /product/category/remove')
+          console.log('删除 -----> 分类信息 -----> 请求路径: /product/console/category/remove')
           console.log('删除 -----> 分类信息 -----> 返回结果:', data)
           this.$message({
             message: '分类删除成功',
@@ -247,11 +247,11 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/product/category/remove'),
+          url: this.$http.adornUrl('/product/console/category/remove'),
           method: 'post',
           data: this.$http.adornData(this.categorySub, false)
         }).then(({data}) => {
-          console.log('批量删除 -----> 分类信息 -----> 请求路径: /product/category/remove')
+          console.log('批量删除 -----> 分类信息 -----> 请求路径: /product/console/category/remove')
           console.log('批量删除 -----> 分类信息 -----> 返回结果:', data)
           this.$message({
             message: '分类批量删除成功',
@@ -266,11 +266,11 @@ export default {
     // 批量修改 分类信息排序
     batchModifySort () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/modify/sort'),
+        url: this.$http.adornUrl('/product/console/category/modify/sort'),
         method: 'post',
         data: this.$http.adornData(this.updateNodes, false)
       }).then(({data}) => {
-        console.log('批量修改 -----> 分类信息排序 -----> 请求路径: /product/category/modify/sort')
+        console.log('批量修改 -----> 分类信息排序 -----> 请求路径: /product/console/category/modify/sort')
         console.log('批量修改 -----> 分类信息排序 -----> 返回结果:', data)
         this.$message({
           message: '分类顺序修改成功',

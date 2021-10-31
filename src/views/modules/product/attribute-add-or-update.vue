@@ -123,7 +123,7 @@ export default {
       this.dataForm.categoryId = path[path.length - 1]
       if (path && path.length === 3) {
         this.$http({
-          url: this.$http.adornUrl(`/product/group/page/`),
+          url: this.$http.adornUrl(`/product/console/group/page/`),
           method: 'post',
           data: this.$http.adornData({
             page: 1,
@@ -131,7 +131,7 @@ export default {
             categoryId: this.dataForm.categoryId
           })
         }).then(({data}) => {
-          console.log('监听查询 -----> 三级分类路径 -----> 提交路径: /product/group/page/')
+          console.log('监听查询 -----> 三级分类路径 -----> 提交路径: /product/console/group/page/')
           console.log('监听查询 -----> 三级分类路径 -----> 返回数据:', data)
           if (data && data.code === 200000) {
             this.attrGroups = data.data.records
@@ -158,11 +158,11 @@ export default {
         this.$refs['dataForm'].resetFields()
         if (this.dataForm.attributeId) {
           this.$http({
-            url: this.$http.adornUrl(`/product/attribute/find/${this.dataForm.attributeId}`),
+            url: this.$http.adornUrl(`/product/console/attribute/find/${this.dataForm.attributeId}`),
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {
-            console.log(`初始化 -----> 添加/修改属性信息 -----> 请求路径: /product/attribute/find/${this.dataForm.attributeId}`)
+            console.log(`初始化 -----> 添加/修改属性信息 -----> 请求路径: /product/console/attribute/find/${this.dataForm.attributeId}`)
             console.log('初始化 -----> 添加/修改属性信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.dataForm.attributeName = data.data.attributeName
@@ -188,7 +188,7 @@ export default {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/product/attribute/${!this.dataForm.attributeId ? 'save' : 'modify'}`),
+            url: this.$http.adornUrl(`/product/console/attribute/${!this.dataForm.attributeId ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
               attributeId: this.dataForm.attributeId || undefined,
@@ -204,7 +204,7 @@ export default {
               quickShow: this.dataForm.quickShow
             })
           }).then(({data}) => {
-            console.log('表单提交 -----> 添加/修改属性信息 -----> 请求路径: /product/attribute/save /product/attribute/modify')
+            console.log('表单提交 -----> 添加/修改属性信息 -----> 请求路径: /product/console/attribute/save /product/console/attribute/modify')
             console.log('表单提交 -----> 添加/修改属性信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.$message({

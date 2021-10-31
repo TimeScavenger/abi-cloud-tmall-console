@@ -100,7 +100,7 @@ export default {
     // 查询分类级联关系
     getCategorys () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/list/tree'),
+        url: this.$http.adornUrl('/product/console/category/list/tree'),
         method: 'post',
         data: this.$http.adornData(this.categoryTree, false)
       }).then(({data}) => {
@@ -116,11 +116,11 @@ export default {
         this.$refs['dataForm'].resetFields()
         if (this.dataForm.groupId) {
           this.$http({
-            url: this.$http.adornUrl(`/product/group/find/${this.dataForm.groupId}`),
+            url: this.$http.adornUrl(`/product/console/group/find/${this.dataForm.groupId}`),
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {
-            console.log(`初始化 -----> 添加/修改分组信息 -----> 请求路径: /product/group/find/${this.dataForm.groupId}`)
+            console.log(`初始化 -----> 添加/修改分组信息 -----> 请求路径: /product/console/group/find/${this.dataForm.groupId}`)
             console.log('初始化 -----> 添加/修改分组信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.dataForm.groupName = data.data.groupName
@@ -141,7 +141,7 @@ export default {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/product/group/${!this.dataForm.groupId ? 'save' : 'modify'}`),
+            url: this.$http.adornUrl(`/product/console/group/${!this.dataForm.groupId ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
               groupId: this.dataForm.groupId || undefined,
@@ -152,7 +152,7 @@ export default {
               categoryId: this.categoryPath[this.categoryPath.length - 1]
             })
           }).then(({data}) => {
-            console.log('表单提交 -----> 添加/修改分组信息 -----> 请求路径: /product/group/save /product/group/modify')
+            console.log('表单提交 -----> 添加/修改分组信息 -----> 请求路径: /product/console/group/save /product/console/group/modify')
             console.log('表单提交 -----> 添加/修改分组信息 -----> 返回数据:', data)
             if (data && data.code === 200000) {
               this.$message({

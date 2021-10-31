@@ -151,7 +151,7 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/product/sku-info/page'),
+        url: this.$http.adornUrl('/product/console/sku-info/page'),
         method: 'post',
         data: this.$http.adornData({
           page: this.pageIndex,
@@ -163,7 +163,7 @@ export default {
           skuName: this.dataForm.skuName
         })
       }).then(({data}) => {
-        console.log('查询 -----> Sku分页信息 -----> 请求路径: /product/sku-info/page')
+        console.log('查询 -----> Sku分页信息 -----> 请求路径: /product/console/sku-info/page')
         console.log('查询 -----> Sku分页信息 -----> 返回结果:', data)
         if (data && data.code === 200000) {
           this.dataList = data.data.records

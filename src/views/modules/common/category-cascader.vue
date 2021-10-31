@@ -8,15 +8,9 @@
             由于有sync修饰符，所以cascader路径变化以后自动会修改父的categoryPath，这是结合子组件this.$emit("update:categoryPath",v);做的
         -->
   <div>
-    <el-cascader
-      filterable
-      clearable
-      placeholder="试试搜索：手机"
-      v-model="paths"
-      :options="categorys"
-      :props="setting"></el-cascader>
+    <el-cascader filterable clearable placeholder="试试搜索：手机" v-model="paths" :options="categorys"
+                 :props="setting"></el-cascader>
   </div>
-
 </template>
 
 <script>
@@ -65,11 +59,11 @@ export default {
   methods: {
     getCategorys () {
       this.$http({
-        url: this.$http.adornUrl('/product/category/list/tree'),
+        url: this.$http.adornUrl('/product/console/category/list/tree'),
         method: 'post',
         data: this.$http.adornData(this.categoryTree, false)
       }).then(({data}) => {
-        console.log('查询 -----> 分类列表 -----> 请求路径: /product/category/list/tree')
+        console.log('查询 -----> 分类列表 -----> 请求路径: /product/console/category/list/tree')
         console.log('查询 -----> 分类列表 -----> 返回数据:', data)
         this.categorys = data.data
       })
