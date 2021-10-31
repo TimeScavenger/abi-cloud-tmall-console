@@ -171,7 +171,7 @@ export default {
           this.getUnreceivedPurchase()
           this.mergedialogVisible = true
         } else {
-          this.$alert('请先选择需要合并的需求', '提示', {
+          this.$alert('请先选择需要合并的采购项', '提示', {
             confirmButtonText: '确定',
             callback: action => {
             }
