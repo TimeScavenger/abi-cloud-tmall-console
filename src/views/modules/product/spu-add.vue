@@ -714,12 +714,17 @@ export default {
         }
       })
     }
-
   },
-  // 生命周期 - 创建完成（可以访问当前this实例）
+  // 生命周期-创建之前
+  beforeCreate () {
+  },
+  // 生命周期-创建完成（可以访问当前this实例）
   created () {
   },
-  // 生命周期 - 挂载完成（可以访问DOM元素）
+  // 生命周期-挂载之前
+  beforeMount () {
+  },
+  // 生命周期-挂载完成（可以访问DOM元素）
   mounted () {
     this.catPathSub = this.PubSub.subscribe('catPath', (msg, val) => {
       this.spu.categoryId = val[val.length - 1]
@@ -729,22 +734,23 @@ export default {
     })
     this.getMemberLevels()
   },
-  beforeCreate () {
-  }, // 生命周期 - 创建之前
-  beforeMount () {
-  }, // 生命周期 - 挂载之前
+  // 生命周期-更新之前
   beforeUpdate () {
-  }, // 生命周期 - 更新之前
+  },
+  // 生命周期-更新之后
   updated () {
-  }, // 生命周期 - 更新之后
+  },
+  // 生命周期-销毁之前
   beforeDestroy () {
     this.PubSub.unsubscribe(this.catPathSub)
     this.PubSub.unsubscribe(this.brandIdSub)
-  }, // 生命周期 - 销毁之前
+  },
+  // 生命周期-销毁完成
   destroyed () {
-  }, // 生命周期 - 销毁完成
+  },
+  // 如果页面有keep-alive缓存功能，这个函数会触发
   activated () {
-  } // 如果页面有keep-alive缓存功能，这个函数会触发
+  }
 }
 </script>
 

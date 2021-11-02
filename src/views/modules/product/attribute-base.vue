@@ -13,7 +13,8 @@
           <el-form-item>
             <el-button @click="getDataList()">查询</el-button>
             <el-button type="success" @click="getAllDataList()">查询全部</el-button>
-            <el-button v-if="isAuth('product:attribute:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+            <el-button v-if="isAuth('product:attribute:save')" type="primary" @click="addOrUpdateHandle()">新增
+            </el-button>
             <el-button v-if="isAuth('product:attribute:delete')" type="danger" @click="deleteHandle()"
                        :disabled="dataListSelections.length <= 0">批量删除
             </el-button>
@@ -232,6 +233,7 @@ export default {
       this.getDataList()
     }
   },
+  // 如果页面有keep-alive缓存功能，这个函数会触发
   activated () {
     this.getDataList()
   }

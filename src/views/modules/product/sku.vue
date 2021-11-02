@@ -191,6 +191,7 @@ export default {
       this.dataListSelections = val
     }
   },
+  // 生命周期-挂载完成（可以访问DOM元素）
   mounted () {
     // eslint-disable-next-line no-undef
     this.catPathSub = PubSub.subscribe('catPath', (msg, val) => {
@@ -201,6 +202,7 @@ export default {
       this.dataForm.brandId = val
     })
   },
+  // 生命周期-销毁之前
   beforeDestroy () {
     // eslint-disable-next-line no-undef
     PubSub.unsubscribe(this.catPathSub)

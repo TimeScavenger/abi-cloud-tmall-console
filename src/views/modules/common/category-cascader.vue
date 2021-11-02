@@ -63,9 +63,11 @@ export default {
         method: 'post',
         data: this.$http.adornData(this.categoryTree, false)
       }).then(({data}) => {
-        console.log('查询 -----> 分类列表 -----> 请求路径: /product/console/category/list/tree')
-        console.log('查询 -----> 分类列表 -----> 返回数据:', data)
-        this.categorys = data.data
+        console.log('查询 -----> 分类树形列表 -----> 请求路径: /product/console/category/list/tree')
+        console.log('查询 -----> 分类树形列表 -----> 返回数据:', data)
+        if (data && data.code === 200000) {
+          this.categorys = data.data
+        }
       })
     }
   },
