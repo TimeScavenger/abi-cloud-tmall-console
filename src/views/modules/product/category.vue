@@ -6,49 +6,26 @@
     <el-button type="danger" @click="deleteBatchHandle">批量删除</el-button>
 
     <!-- 中间树形结构 -->
-    <el-tree
-      :data="menus"
-      :props="defaultProps"
-      :expand-on-click-node="false"
-      show-checkbox
-      node-key="categoryId"
-      :default-expanded-keys="expandedKey"
-      :draggable="draggable"
-      :allow-drop="allowDrop"
-      @node-drop="handleNodeDrop"
-      ref="menuTree">
+    <el-tree :data="menus" :props="defaultProps" :expand-on-click-node="false" show-checkbox node-key="categoryId"
+             :default-expanded-keys="expandedKey" :draggable="draggable" :allow-drop="allowDrop"
+             @node-drop="handleNodeDrop" ref="menuTree">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
         <span>
-          <el-button
-            v-if="node.level <=2"
-            type="text"
-            size="mini"
-            @click="() => dataAddInit(data)">Append</el-button>
-          <el-button
-            type="text"
-            size="mini"
-            @click="dataUpdateInit(data)">Modify</el-button>
-          <el-button
-            v-if="node.childNodes.length===0"
-            type="text"
-            size="mini"
-            @click="() => deleteHandle(node, data)">Delete</el-button>
+          <el-button v-if="node.level <=2" type="text" size="mini" @click="() => dataAddInit(data)">Append</el-button>
+          <el-button type="text" size="mini" @click="dataUpdateInit(data)">Modify</el-button>
+          <el-button v-if="node.childNodes.length===0" type="text" size="mini" @click="() => deleteHandle(node, data)">Delete</el-button>
         </span>
       </span>
     </el-tree>
 
     <!-- 中间树形结构 -->
-    <el-dialog
-      :title="title"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false">
       <el-form :model="category">
         <el-form-item label="分类名称">
           <el-input v-model="category.categoryName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="图标">
+        <el-form-item label="分类图标">
           <el-input v-model="category.icon" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="计量单位">
@@ -89,7 +66,6 @@ export default {
       categorySub: {
         categoryIds: []
       },
-
       pCid: [],
       draggable: false,
       updateNodes: [],
@@ -133,7 +109,6 @@ export default {
       this.category.icon = ''
       this.category.productUnit = ''
       this.category.productCount = ''
-      console.log('初始化 -----> 添加分类信息 -----> 返回结果:', this.category)
     },
     // 表单提交 添加分类信息
     dataAddFormSubmit () {
@@ -211,7 +186,7 @@ export default {
     // 删除 分类信息
     deleteHandle (node, data) {
       this.categorySub.categoryIds = [data.categoryId]
-      this.$confirm(`是否删除【${data.categoryName}】分类?`, '提示', {
+      this.$confirm(`是否删除【 ${data.categoryName} 】分类?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -241,7 +216,7 @@ export default {
       for (let i = 0; i < checkedNodes.length; i++) {
         this.categorySub.categoryIds.push(checkedNodes[i].categoryId)
       }
-      this.$confirm(`是否批量删除【${this.categorySub.categoryIds}】分类?`, '提示', {
+      this.$confirm(`是否批量删除【 ${this.categorySub.categoryIds} 】分类?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
