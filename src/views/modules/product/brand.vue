@@ -200,7 +200,10 @@ export default {
       this.brandSub.brandIds = id ? [id] : this.dataListSelections.map(item => {
         return item.brandId
       })
-      this.$confirm(`确定对[id=${this.brandSub.brandIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+      this.brandSub.brandNames = this.dataListSelections.map(item => {
+        return item.brandName
+      })
+      this.$confirm(`确定对[ ${this.brandSub.brandNames.join('，')} ] 进行 [ ${id ? '删除' : '批量删除'} ]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -209,7 +212,9 @@ export default {
         this.$http({
           url: this.$http.adornUrl('/product/console/brand/remove'),
           method: 'delete',
-          data: this.$http.adornData(this.brandSub.brandIds, false)
+          data: this.$http.adornData({
+            brandIds: this.brandSub.brandIds
+          })
         }).then(({data}) => {
           console.log('删除 -----> 品牌信息 -----> 请求路径: /product/console/brand/remove')
           console.log('删除 -----> 品牌信息 -----> 返回结果:', data)
