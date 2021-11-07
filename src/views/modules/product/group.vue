@@ -165,7 +165,9 @@ export default {
         this.$http({
           url: this.$http.adornUrl('/product/console/group/remove'),
           method: 'delete',
-          data: this.$http.adornData(ids, false)
+          data: this.$http.adornData({
+            groupIds: ids
+          })
         }).then(({data}) => {
           console.log('删除 -----> 分组信息 -----> 请求路径: /product/console/group/remove')
           console.log('删除 -----> 分组信息 -----> 返回结果:', data)

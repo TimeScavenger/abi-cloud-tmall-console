@@ -174,8 +174,8 @@ export default {
           attributeName: this.dataForm.key
         })
       }).then(({data}) => {
-        console.log('查询 -----> 分组未给关联属性分页列表 -----> 提交路径: /product/console/group-attribute-relation/page/no-attributes/by/groupId')
-        console.log('查询 -----> 分组未给关联属性分页列表 -----> 返回数据:', data)
+        console.log('查询 -----> 分组未关联属性分页列表 -----> 提交路径: /product/console/group-attribute-relation/page/no-attributes/by/groupId')
+        console.log('查询 -----> 分组未关联属性分页列表 -----> 返回数据:', data)
         if (data && data.code === 200000) {
           this.dataList = data.data.records
           this.totalPage = data.data.total
@@ -221,11 +221,11 @@ export default {
       let data = []
       data.push({attributeId: attributeId, groupId: this.groupId})
       this.$http({
-        url: this.$http.adornUrl('/product/console/group-attribute-relation/remove'),
+        url: this.$http.adornUrl('/product/console/group-attribute-relation/remove/batch'),
         method: 'post',
         data: this.$http.adornData(data, false)
       }).then(({data}) => {
-        console.log('移除 -----> 分组属性关联关系 -----> 提交路径: /product/console/group-attribute-relation/remove')
+        console.log('移除 -----> 分组属性关联关系 -----> 提交路径: /product/console/group-attribute-relation/remove/batch')
         console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', data)
         if (data.code === 200000) {
           this.$message({type: 'success', message: '删除成功'})
@@ -242,11 +242,11 @@ export default {
         postData.push({attributeId: item.attributeId, groupId: this.groupId})
       })
       this.$http({
-        url: this.$http.adornUrl('/product/console/group-attribute-relation/remove'),
+        url: this.$http.adornUrl('/product/console/group-attribute-relation/remove/batch'),
         method: 'post',
         data: this.$http.adornData(postData, false)
       }).then(({data}) => {
-        console.log('移除 -----> 分组属性关联关系 -----> 提交路径: /product/console/group-attribute-relation/remove')
+        console.log('移除 -----> 分组属性关联关系 -----> 提交路径: /product/console/group-attribute-relation/remove/batch')
         console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', data)
         if (data.code === 200000) {
           this.$message({type: 'success', message: '删除成功'})

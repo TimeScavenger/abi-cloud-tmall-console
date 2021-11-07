@@ -201,7 +201,9 @@ export default {
         this.$http({
           url: this.$http.adornUrl('/product/console/attribute/remove'),
           method: 'post',
-          data: this.$http.adornData(ids, false)
+          data: this.$http.adornData({
+            attributeIds: ids
+          })
         }).then(({data}) => {
           console.log('删除 -----> 规格参数 -----> 请求路径: /product/console/attribute/remove')
           console.log('删除 -----> 规格参数 -----> 返回结果:', data)
