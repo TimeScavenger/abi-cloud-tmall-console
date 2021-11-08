@@ -128,7 +128,7 @@
         <el-card class="box-card" style="width:80%;margin:20px auto">
           <el-card class="box-card">
 
-            <el-table :data="spu.skuInfos" style="width: 100%">
+            <el-table :data="spu.skuAddDtos" style="width: 100%">
               <el-table-column label="属性组合">
                 <el-table-column :label="item.attributeName" v-for="(item,index) in dataResp.tableAttrColumn"
                                  :key="item.attributeId">
@@ -304,7 +304,7 @@ export default {
           growBounds: 0 // 成长积分
         },
         spuBaseAttributes: [], // 基本属性
-        skuInfos: [] // 所有sku信息
+        skuAddDtos: [] // 所有sku信息
       },
       spuBaseInfoRules: {
         spuName: [
@@ -349,21 +349,21 @@ export default {
   watch: {
     uploadImages (val) {
       console.log('监听上传图片的动作：', val)
-      // 扩展每个skuInfos里面的imgs选项
+      // 扩展每个skuAddDtos里面的imgs选项
       let imgArr = Array.from(new Set(this.spu.spuDetailImgs.concat(val)))
 
       // {imgUrl:"",defaultImg:0} 由于concat每次迭代上次，有很多重复。所以我们必须得到上次+这次的总长
-      this.spu.skuInfos.forEach((item, index) => {
-        let len = imgArr.length - this.spu.skuInfos[index].skuDetailImgs.length // 还差这么多
+      this.spu.skuAddDtos.forEach((item, index) => {
+        let len = imgArr.length - this.spu.skuAddDtos[index].skuDetailImgs.length // 还差这么多
         if (len > 0) {
           let imgs = new Array(len)
           imgs = imgs.fill({imgUrl: '', defaultImg: 0})
-          this.spu.skuInfos[index].skuDetailImgs = item.skuDetailImgs.concat(imgs)
+          this.spu.skuAddDtos[index].skuDetailImgs = item.skuDetailImgs.concat(imgs)
         }
       })
 
       this.spu.spuDetailImgs = imgArr // 去重
-      console.log('重新上传图片后，sku信息列表：', this.spu.skuInfos)
+      console.log('重新上传图片后，sku信息列表：', this.spu.skuAddDtos)
     }
   },
   methods: {
@@ -488,7 +488,7 @@ export default {
       let descartes = this.descartes(selectValues)
       console.log('生成的sku组合列表：', JSON.stringify(descartes))
       // 有多少descartes就有多少sku
-      let skuInfos = []
+      let skuAddDtos = []
 
       descartes.forEach((descar, descaridx) => {
         let attrArray = [] // sku属性组
@@ -520,9 +520,9 @@ export default {
           }
         }
         // descaridx，判断如果之前有就用之前的值;
-        let res = this.hasAndReturnSku(this.spu.skuInfos, descar)
+        let res = this.hasAndReturnSku(this.spu.skuAddDtos, descar)
         if (res === null) {
-          skuInfos.push({
+          skuAddDtos.push({
             skuName: this.spu.spuName + ' ' + descar.join(' '), // sku名称
             skuTitle: this.spu.spuName + ' ' + descar.join(' '), // 标题
             skuSubTitle: '', // 副标题
@@ -539,11 +539,11 @@ export default {
             memberPrice: [].concat(memberPrices) // 会员价格
           })
         } else {
-          skuInfos.push(res)
+          skuAddDtos.push(res)
         }
       })
-      this.spu.skuInfos = skuInfos
-      console.log('根据笛卡尔积生成的sku列表：', this.spu.skuInfos, this.dataResp.tableAttrColumn)
+      this.spu.skuAddDtos = skuAddDtos
+      console.log('根据笛卡尔积生成的sku列表：', this.spu.skuAddDtos, this.dataResp.tableAttrColumn)
     },
     // 笛卡尔积运算
     descartes (list) {
@@ -664,14 +664,14 @@ export default {
           growBounds: 0
         },
         spuBaseAttributes: [],
-        skuInfos: []
+        skuAddDtos: []
       }
     },
 
     // ========================================== 以下命名未统一 ====================
 
     handlePriceChange (scope, mpidx, e) {
-      this.spu.skuInfos[scope.$index].memberPrice[mpidx].price = e
+      this.spu.skuAddDtos[scope.$index].memberPrice[mpidx].price = e
     },
     showInput (idx) {
       console.log('``````', this.view)
