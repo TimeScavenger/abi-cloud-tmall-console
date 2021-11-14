@@ -94,7 +94,7 @@
             <el-button
               type="text"
               size="small"
-              @click="deleteRelationHandle(scope.row.id,scope.row.brandCode)">移除
+              @click="deleteRelationHandle(scope.row.id, scope.row.brandCode)">移除
             </el-button>
           </template>
         </el-table-column>
@@ -266,14 +266,14 @@ export default {
     },
     // 添加 品牌分类关联关系
     addRelationSelectHandle () {
-      // {"brandCode":1,"categoryId":2}
+      // {"brandCode":1,"categoryCode":2}
       this.popCategorySelectVisible = false
       this.$http({
         url: this.$http.adornUrl('/product/console/category-brand-relation/save'),
         method: 'post',
         data: this.$http.adornData({
           brandCode: this.brandCode,
-          categoryId: this.categoryPath[this.categoryPath.length - 1]
+          categoryCode: this.categoryPath[this.categoryPath.length - 1]
         }, false)
       }).then(({data}) => {
         console.log('添加 -----> 品牌关联的分类 -----> 请求路径: /product/console/category-brand-relation/save')
@@ -286,7 +286,9 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/product/console/category-brand-relation/remove'),
         method: 'delete',
-        data: this.$http.adornData([id], false)
+        data: this.$http.adornData({
+          ids: [id]
+        }, false)
       }).then(({data}) => {
         console.log('删除 -----> 品牌关联的分类 -----> 请求路径: /product/console/category-brand-relation/remove')
         console.log('删除 -----> 品牌关联的分类 -----> 返回数据:', data)

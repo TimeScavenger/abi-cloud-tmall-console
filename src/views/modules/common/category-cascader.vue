@@ -34,7 +34,7 @@ export default {
     // 这里存放数据
     return {
       setting: {
-        value: 'categoryId',
+        value: 'categoryCode',
         label: 'categoryName',
         children: 'children'
       },
