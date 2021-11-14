@@ -60,10 +60,10 @@ export default {
     return {
       visible: false,
       dataForm: {
-        brandId: 0,
+        brandCode: 0,
         brandName: '',
         logo: '',
-        description: '',
+        desc: '',
         showed: 1,
         firstLetter: '',
         sort: 0
@@ -106,22 +106,22 @@ export default {
   methods: {
     // 初始化 添加/修改品牌信息
     dataInit (id) {
-      this.dataForm.brandId = id || 0
+      this.dataForm.brandCode = id || 0
       this.visible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
-        if (this.dataForm.brandId) {
+        if (this.dataForm.brandCode) {
           this.$http({
-            url: this.$http.adornUrl(`/product/console/brand/info/${this.dataForm.brandId}`),
+            url: this.$http.adornUrl(`/product/console/brand/info/${this.dataForm.brandCode}`),
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {
-            console.log(`初始化 -----> 添加/修改品牌信息 -----> 请求路径: /product/console/brand/info/${this.dataForm.brandId}`)
+            console.log(`初始化 -----> 添加/修改品牌信息 -----> 请求路径: /product/console/brand/info/${this.dataForm.brandCode}`)
             console.log('初始化 -----> 添加/修改品牌信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.dataForm.brandName = data.data.brandName
               this.dataForm.logo = data.data.logo
-              this.dataForm.description = data.data.description
+              this.dataForm.desc = data.data.desc
               this.dataForm.showed = data.data.showed
               this.dataForm.firstLetter = data.data.firstLetter
               this.dataForm.sort = data.data.sort
@@ -135,13 +135,13 @@ export default {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/product/console/brand/${!this.dataForm.brandId ? 'save' : 'modify'}`),
+            url: this.$http.adornUrl(`/product/console/brand/${!this.dataForm.brandCode ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
-              brandId: this.dataForm.brandId || undefined,
+              brandCode: this.dataForm.brandCode || undefined,
               brandName: this.dataForm.brandName,
               logo: this.dataForm.logo,
-              description: this.dataForm.description,
+              desc: this.dataForm.desc,
               showed: this.dataForm.showed,
               firstLetter: this.dataForm.firstLetter,
               sort: this.dataForm.sort

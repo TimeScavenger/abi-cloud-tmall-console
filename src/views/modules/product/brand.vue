@@ -28,7 +28,7 @@
       @selection-change="selectionChangeHandle"
       style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="brandId" header-align="center" align="center" label="品牌id"></el-table-column>
+      <el-table-column prop="brandCode" header-align="center" align="center" label="品牌Code"></el-table-column>
       <el-table-column prop="brandName" header-align="center" align="center" label="品牌名"></el-table-column>
       <el-table-column prop="logo" header-align="center" align="center" label="品牌logo">
         <template slot-scope="scope">
@@ -39,7 +39,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="description" header-align="center" align="center" label="介绍"></el-table-column>
+      <el-table-column prop="desc" header-align="center" align="center" label="介绍"></el-table-column>
       <el-table-column prop="showed" header-align="center" align="center" label="显示状态">
         <template slot-scope="scope">
           <el-switch
@@ -56,9 +56,9 @@
       <el-table-column prop="sort" header-align="center" align="center" label="排序"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="250" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="updateCategoryHandle(scope.row.brandId)">关联分类</el-button>
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.brandId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.brandId)">删除</el-button>
+          <el-button type="text" size="small" @click="updateCategoryHandle(scope.row.brandCode)">关联分类</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.brandCode)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.brandCode)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,7 +94,7 @@
             <el-button
               type="text"
               size="small"
-              @click="deleteRelationHandle(scope.row.id,scope.row.brandId)">移除
+              @click="deleteRelationHandle(scope.row.id,scope.row.brandCode)">移除
             </el-button>
           </template>
         </el-table-column>
@@ -132,9 +132,9 @@ export default {
         key: ''
       },
       brandSub: {
-        brandIds: []
+        brandCodes: []
       },
-      brandId: 0,
+      brandCode: 0,
       categoryPath: [],
       dataList: [],
       cateRelationTableData: [],
@@ -197,8 +197,8 @@ export default {
     },
     // 删除 品牌信息
     deleteHandle (id) {
-      this.brandSub.brandIds = id ? [id] : this.dataListSelections.map(item => {
-        return item.brandId
+      this.brandSub.brandCodes = id ? [id] : this.dataListSelections.map(item => {
+        return item.brandCode
       })
       this.brandSub.brandNames = this.dataListSelections.map(item => {
         return item.brandName
@@ -213,7 +213,7 @@ export default {
           url: this.$http.adornUrl('/product/console/brand/remove'),
           method: 'delete',
           data: this.$http.adornData({
-            brandIds: this.brandSub.brandIds
+            brandCodes: this.brandSub.brandCodes
           })
         }).then(({data}) => {
           console.log('删除 -----> 品牌信息 -----> 请求路径: /product/console/brand/remove')
@@ -235,12 +235,12 @@ export default {
     },
     // 更新 品牌状态信息
     updateBrandStatusHandle (data) {
-      let {brandId, showed} = data
+      let {brandCode, showed} = data
       // 发送请求修改状态
       this.$http({
         url: this.$http.adornUrl('/product/console/brand/modify/showed'),
         method: 'post',
-        data: this.$http.adornData({brandId, showed}, false)
+        data: this.$http.adornData({brandCode, showed}, false)
       }).then(({data}) => {
         console.log('更新 -----> 品牌的状态信息 -----> 请求路径: /product/console/brand/modify/showed')
         console.log('更新 -----> 品牌的状态信息 -----> 返回数据:', data)
@@ -253,26 +253,26 @@ export default {
     // 查询 品牌分类关联关系列表
     getRelationHandle () {
       this.$http({
-        url: this.$http.adornUrl('/product/console/category-brand-relation/list/categorys/by/brandId'),
+        url: this.$http.adornUrl('/product/console/category-brand-relation/list/categorys/by/brandCode'),
         method: 'post',
         data: this.$http.adornData({
-          brandId: this.brandId
+          brandCode: this.brandCode
         }, false)
       }).then(({data}) => {
-        console.log('查询 -----> 品牌关联的分类 -----> 请求路径: /product/console/category-brand-relation/list/categorys/by/brandId')
+        console.log('查询 -----> 品牌关联的分类 -----> 请求路径: /product/console/category-brand-relation/list/categorys/by/brandCode')
         console.log('查询 -----> 品牌关联的分类 -----> 返回数据:', data)
         this.cateRelationTableData = data.data
       })
     },
     // 添加 品牌分类关联关系
     addRelationSelectHandle () {
-      // {"brandId":1,"categoryId":2}
+      // {"brandCode":1,"categoryId":2}
       this.popCategorySelectVisible = false
       this.$http({
         url: this.$http.adornUrl('/product/console/category-brand-relation/save'),
         method: 'post',
         data: this.$http.adornData({
-          brandId: this.brandId,
+          brandCode: this.brandCode,
           categoryId: this.categoryPath[this.categoryPath.length - 1]
         }, false)
       }).then(({data}) => {
@@ -282,7 +282,7 @@ export default {
       })
     },
     // 删除 品牌分类关联关系
-    deleteRelationHandle (id, brandId) {
+    deleteRelationHandle (id, brandCode) {
       this.$http({
         url: this.$http.adornUrl('/product/console/category-brand-relation/remove'),
         method: 'delete',
@@ -294,9 +294,9 @@ export default {
       })
     },
     // 更新 关联分类级联关系
-    updateCategoryHandle (brandId) {
+    updateCategoryHandle (brandCode) {
       this.cateRelationDialogVisible = true
-      this.brandId = brandId
+      this.brandCode = brandCode
       this.getRelationHandle()
     }
   },
