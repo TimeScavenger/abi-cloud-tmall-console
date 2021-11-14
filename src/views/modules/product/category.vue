@@ -6,7 +6,7 @@
     <el-button type="danger" @click="deleteBatchHandle">批量删除</el-button>
 
     <!-- 中间树形结构 -->
-    <el-tree :data="menus" :props="defaultProps" :expand-on-click-node="false" show-checkbox node-key="categoryId"
+    <el-tree :data="menus" :props="defaultProps" :expand-on-click-node="false" show-checkbox node-key="categoryCode"
              :default-expanded-keys="expandedKey" :draggable="draggable" :allow-drop="allowDrop"
              @node-drop="handleNodeDrop" ref="menuTree">
       <span class="custom-tree-node" slot-scope="{ node, data }">
@@ -54,9 +54,9 @@ export default {
       dialogVisible: false,
       dialogType: '', // save,update
       category: {
-        categoryId: null,
+        categoryCode: null,
         categoryName: '',
-        parentId: 0,
+        parentCode: 0,
         level: 0,
         sort: 0,
         icon: '',
@@ -64,7 +64,7 @@ export default {
         productCount: 0
       },
       categorySub: {
-        categoryIds: []
+        categoryCodes: []
       },
       pCid: [],
       draggable: false,
@@ -101,9 +101,9 @@ export default {
       this.dialogType = 'save'
       this.title = '添加分类信息'
       this.dialogVisible = true
-      this.category.categoryId = null
+      this.category.categoryCode = null
       this.category.categoryName = ''
-      this.category.parentId = data.categoryId
+      this.category.parentCode = data.categoryCode
       this.category.level = data.level * 1 + 1
       this.category.sort = 0
       this.category.icon = ''
@@ -128,7 +128,7 @@ export default {
         // 刷新出新的分类
         this.getDataList()
         // 设置需要默认展开的分类
-        this.expandedKey = [this.category.parentId]
+        this.expandedKey = [this.category.parentCode]
       })
     },
     // 初始化 修改分类信息
@@ -138,14 +138,14 @@ export default {
       this.dialogVisible = true
       // 发送请求获取当前节点最新的参数
       this.$http({
-        url: this.$http.adornUrl(`/product/console/category/find/${data.categoryId}`),
+        url: this.$http.adornUrl(`/product/console/category/find/${data.categoryCode}`),
         method: 'get'
       }).then(({data}) => {
-        console.log(`初始化 -----> 修改分类信息 -----> 请求路径: /product/console/category/find/${data.categoryId}`)
+        console.log(`初始化 -----> 修改分类信息 -----> 请求路径: /product/console/category/find/${data.categoryCode}`)
         console.log('初始化 -----> 修改分类信息 -----> 返回结果:', data)
-        this.category.categoryId = data.data.categoryId
+        this.category.categoryCode = data.data.categoryCode
         this.category.categoryName = data.data.categoryName
-        this.category.parentId = data.data.parentId
+        this.category.parentCode = data.data.parentCode
         this.category.level = data.data.level
         this.category.icon = data.data.icon
         this.category.sort = data.data.sort
@@ -171,7 +171,7 @@ export default {
         // 刷新出新的分类
         this.getDataList()
         // 设置需要默认展开的分类
-        this.expandedKey = [this.category.parentId]
+        this.expandedKey = [this.category.parentCode]
       })
     },
     // 表单提交 添加/修改分类信息
@@ -185,7 +185,7 @@ export default {
     },
     // 删除 分类信息
     deleteHandle (node, data) {
-      this.categorySub.categoryIds = [data.categoryId]
+      this.categorySub.categoryCodes = [data.categoryCode]
       this.$confirm(`是否删除【 ${data.categoryName} 】分类?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -205,7 +205,7 @@ export default {
           // 刷新出新的分类
           this.getDataList()
           // 设置需要默认展开的分类
-          this.expandedKey = [node.parent.data.categoryId]
+          this.expandedKey = [node.parent.data.categoryCode]
         })
       }).catch(() => {
       })
@@ -214,9 +214,9 @@ export default {
     deleteBatchHandle () {
       let checkedNodes = this.$refs.menuTree.getCheckedNodes()
       for (let i = 0; i < checkedNodes.length; i++) {
-        this.categorySub.categoryIds.push(checkedNodes[i].categoryId)
+        this.categorySub.categoryCodes.push(checkedNodes[i].categoryCode)
       }
-      this.$confirm(`是否批量删除【 ${this.categorySub.categoryIds} 】分类?`, '提示', {
+      this.$confirm(`是否批量删除【 ${this.categorySub.categoryCodes} 】分类?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -267,16 +267,16 @@ export default {
       let pCid = 0
       let siblings = null
       if (dropType === 'before' || dropType === 'after') {
-        pCid = dropNode.parent.data.categoryId === undefined ? 0 : dropNode.parent.data.categoryId
+        pCid = dropNode.parent.data.categoryCode === undefined ? 0 : dropNode.parent.data.categoryCode
         siblings = dropNode.parent.childNodes
       } else {
-        pCid = dropNode.data.categoryId
+        pCid = dropNode.data.categoryCode
         siblings = dropNode.childNodes
       }
       this.pCid.push(pCid)
       // 2、当前拖拽节点的最新顺序，
       for (let i = 0; i < siblings.length; i++) {
-        if (siblings[i].data.categoryId === draggingNode.data.categoryId) {
+        if (siblings[i].data.categoryCode === draggingNode.data.categoryCode) {
           // 如果遍历的是当前正在拖拽的节点
           let level = draggingNode.level
           if (siblings[i].level !== draggingNode.level) {
@@ -286,13 +286,13 @@ export default {
             this.updateChildNodeLevel(siblings[i])
           }
           this.updateNodes.push({
-            categoryId: siblings[i].data.categoryId,
+            categoryCode: siblings[i].data.categoryCode,
             sort: i,
-            parentId: pCid,
+            parentCode: pCid,
             level: level
           })
         } else {
-          this.updateNodes.push({categoryId: siblings[i].data.categoryId, sort: i})
+          this.updateNodes.push({categoryCode: siblings[i].data.categoryCode, sort: i})
         }
       }
       // 3、当前拖拽节点的最新层级
@@ -304,7 +304,7 @@ export default {
         for (let i = 0; i < node.childNodes.length; i++) {
           var cNode = node.childNodes[i].data
           this.updateNodes.push({
-            categoryId: cNode.categoryId,
+            categoryCode: cNode.categoryCode,
             level: node.childNodes[i].level
           })
           this.updateChildNodeLevel(node.childNodes[i])
