@@ -1,7 +1,7 @@
 <template>
 
   <el-dialog
-    :title="!dataForm.groupId ? '新增' : '修改'"
+    :title="!dataForm.groupCode ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible"
     @closed="dialogClose">
@@ -21,16 +21,16 @@
         <el-input v-model="dataForm.sort" placeholder="排序"></el-input>
       </el-form-item>
 
-      <el-form-item label="描述" prop="description">
-        <el-input v-model="dataForm.description" placeholder="描述"></el-input>
+      <el-form-item label="描述" prop="desc">
+        <el-input v-model="dataForm.desc" placeholder="描述"></el-input>
       </el-form-item>
 
       <el-form-item label="组图标" prop="icon">
         <el-input v-model="dataForm.icon" placeholder="组图标"></el-input>
       </el-form-item>
 
-      <el-form-item label="所属分类" prop="categoryId">
-        <!-- <el-input v-model="dataForm.categoryId" placeholder="所属分类id"></el-input> @change="handleChange" -->
+      <el-form-item label="所属分类" prop="categoryCode">
+        <!-- <el-input v-model="dataForm.categoryCode" placeholder="所属分类id"></el-input> @change="handleChange" -->
         <!-- <el-cascader filterable placeholder="试试搜索：手机" v-model="categoryPath" :options="categorys"  :props="props"></el-cascader> -->
         <!-- :categoryPath="categoryPath"自定义绑定的属性，可以给子组件传值 -->
         <category-cascader :categoryPath.sync="categoryPath"></category-cascader>
@@ -71,23 +71,23 @@ export default {
       },
       categoryPath: [],
       dataForm: {
-        groupId: 0,
+        groupCode: 0,
         groupName: '',
         sort: '',
-        description: '',
+        desc: '',
         icon: '',
-        categoryId: 0
+        categoryCode: 0
       },
       dataRule: {
         groupName: [
           {required: true, message: '组名不能为空', trigger: 'blur'}
         ],
         sort: [{required: true, message: '排序不能为空', trigger: 'blur'}],
-        description: [
+        desc: [
           {required: true, message: '描述不能为空', trigger: 'blur'}
         ],
         icon: [{required: true, message: '组图标不能为空', trigger: 'blur'}],
-        categoryId: [
+        categoryCode: [
           {required: true, message: '所属分类id不能为空', trigger: 'blur'}
         ]
       }
@@ -110,25 +110,25 @@ export default {
     },
     // 初始化 添加/修改分组信息
     dataInit (id) {
-      this.dataForm.groupId = id || 0
+      this.dataForm.groupCode = id || 0
       this.visible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
-        if (this.dataForm.groupId) {
+        if (this.dataForm.groupCode) {
           this.$http({
-            url: this.$http.adornUrl(`/product/console/group/find/${this.dataForm.groupId}`),
+            url: this.$http.adornUrl(`/product/console/group/find/${this.dataForm.groupCode}`),
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {
-            console.log(`初始化 -----> 添加/修改分组信息 -----> 请求路径: /product/console/group/find/${this.dataForm.groupId}`)
+            console.log(`初始化 -----> 添加/修改分组信息 -----> 请求路径: /product/console/group/find/${this.dataForm.groupCode}`)
             console.log('初始化 -----> 添加/修改分组信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.dataForm.groupName = data.data.groupName
               this.dataForm.sort = data.data.sort
-              this.dataForm.description = data.data.description
+              this.dataForm.desc = data.data.desc
               this.dataForm.icon = data.data.icon
-              this.dataForm.categoryId = data.data.categoryId
-              // 查出categoryId的完整路径
+              this.dataForm.categoryCode = data.data.categoryCode
+              // 查出categoryCode的完整路径
               this.categoryPath = data.data.categoryPath
             }
             console.log(this.dataForm)
@@ -141,15 +141,15 @@ export default {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/product/console/group/${!this.dataForm.groupId ? 'save' : 'modify'}`),
+            url: this.$http.adornUrl(`/product/console/group/${!this.dataForm.groupCode ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
-              groupId: this.dataForm.groupId || undefined,
+              groupCode: this.dataForm.groupCode || undefined,
               groupName: this.dataForm.groupName,
               sort: this.dataForm.sort,
-              description: this.dataForm.description,
+              desc: this.dataForm.desc,
               icon: this.dataForm.icon,
-              categoryId: this.categoryPath[this.categoryPath.length - 1]
+              categoryCode: this.categoryPath[this.categoryPath.length - 1]
             })
           }).then(({data}) => {
             console.log('表单提交 -----> 添加/修改分组信息 -----> 请求路径: /product/console/group/save /product/console/group/modify')

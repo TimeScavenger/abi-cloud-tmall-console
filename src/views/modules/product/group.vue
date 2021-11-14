@@ -37,17 +37,17 @@
           @selection-change="selectionChangeHandle"
           style="width: 100%;">
           <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-          <el-table-column prop="groupId" header-align="center" align="center" label="分组id"></el-table-column>
+          <el-table-column prop="groupCode" header-align="center" align="center" label="分组Code"></el-table-column>
           <el-table-column prop="groupName" header-align="center" align="center" label="组名"></el-table-column>
           <el-table-column prop="sort" header-align="center" align="center" label="排序"></el-table-column>
-          <el-table-column prop="description" header-align="center" align="center" label="描述"></el-table-column>
+          <el-table-column prop="desc" header-align="center" align="center" label="描述"></el-table-column>
           <el-table-column prop="icon" header-align="center" align="center" label="组图标"></el-table-column>
-          <el-table-column prop="categoryId" header-align="center" align="center" label="所属分类id"></el-table-column>
+          <el-table-column prop="categoryCode" header-align="center" align="center" label="分类Code"></el-table-column>
           <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="getRelationHandle(scope.row.groupId)">关联</el-button>
-              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.groupId)">修改</el-button>
-              <el-button type="text" size="small" @click="deleteHandle(scope.row.groupId)">删除</el-button>
+              <el-button type="text" size="small" @click="getRelationHandle(scope.row.groupCode)">关联</el-button>
+              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.groupCode)">修改</el-button>
+              <el-button type="text" size="small" @click="deleteHandle(scope.row.groupCode)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -89,7 +89,7 @@ export default {
   props: {},
   data () {
     return {
-      categoryId: 0,
+      categoryCode: 0,
       dataForm: {
         key: ''
       },
@@ -129,7 +129,7 @@ export default {
           page: this.pageIndex,
           size: this.pageSize,
           groupName: this.dataForm.key,
-          categoryId: this.categoryId
+          categoryCode: this.categoryCode
         })
       }).then(({data}) => {
         console.log('查询 -----> 分组分页列表 -----> 请求路径: /product/console/group/page')
@@ -154,7 +154,7 @@ export default {
     // 删除 分组信息
     deleteHandle (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
-        return item.groupId
+        return item.groupCode
       })
       this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
@@ -166,7 +166,7 @@ export default {
           url: this.$http.adornUrl('/product/console/group/remove'),
           method: 'delete',
           data: this.$http.adornData({
-            groupIds: ids
+            groupCodes: ids
           })
         }).then(({data}) => {
           console.log('删除 -----> 分组信息 -----> 请求路径: /product/console/group/remove')
@@ -187,22 +187,22 @@ export default {
       })
     },
     // 查询 分组属性关联关系列表
-    getRelationHandle (groupId) {
+    getRelationHandle (groupCode) {
       this.relationVisible = true
       this.$nextTick(() => {
-        this.$refs.relationUpdate.dataInit(groupId)
+        this.$refs.relationUpdate.dataInit(groupCode)
       })
     },
     // ========================================== 以下命名未统一 ====================
     // 感知树节点被点击，接受子组件传过来的数据
     treenodeclick (data, node, component) {
       if (node.level === 3) {
-        this.categoryId = data.categoryId
+        this.categoryCode = data.categoryCode
         this.getDataList() // 重新查询
       }
     },
     getAllDataList () {
-      this.categoryId = 0
+      this.categoryCode = 0
       this.getDataList()
     }
   },
