@@ -1,11 +1,11 @@
 <template>
   <div>
-    <el-select placeholder="请选择" v-model="brandId" filterable clearable>
+    <el-select placeholder="请选择" v-model="brandCode" filterable clearable>
       <el-option
         v-for="item in brands"
-        :key="item.brandId"
+        :key="item.brandCode"
         :label="item.brandName"
-        :value="item.brandId"
+        :value="item.brandCode"
       ></el-option>
     </el-select>
   </div>
@@ -22,14 +22,14 @@ export default {
   data () {
     // 这里存放数据
     return {
-      categoryId: 0,
+      categoryCode: 0,
       brands: [
         {
           label: 'a',
           value: 1
         }
       ],
-      brandId: '',
+      brandCode: '',
       subscribe: null
     }
   },
@@ -37,18 +37,18 @@ export default {
   computed: {},
   // 监控data中的数据变化
   watch: {
-    brandId (val) {
-      this.PubSub.publish('brandId', val)
+    brandCode (val) {
+      this.PubSub.publish('brandCode', val)
     }
   },
   // 方法集合
   methods: {
     getCatBrands () {
       this.$http({
-        url: this.$http.adornUrl('/product/console/category-brand-relation/list/brands/by/categoryId'),
+        url: this.$http.adornUrl('/product/console/category-brand-relation/list/brands/by/categoryCode'),
         method: 'post',
         data: this.$http.adornData({
-          categoryId: this.categoryId
+          categoryCode: this.categoryCode
         })
       }).then(({data}) => {
         console.log('根据分类id获得品牌信息成功', data.data)
@@ -65,7 +65,7 @@ export default {
   mounted () {
     // 监听三级分类消息的变化
     this.subscribe = this.PubSub.subscribe('catPath', (msg, val) => {
-      this.categoryId = val[val.length - 1]
+      this.categoryCode = val[val.length - 1]
       this.getCatBrands()
     })
   },  // 生命周期 - 挂载完成（可以访问DOM元素）
@@ -82,5 +82,7 @@ export default {
   }  // 如果页面有keep-alive缓存功能，这个函数会触发
 }
 </script>
+
 <style scoped>
+
 </style>

@@ -29,7 +29,7 @@
           <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
                     style="width: 100%;">
             <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-            <el-table-column prop="spuId" header-align="center" align="center" label="spuId"></el-table-column>
+            <el-table-column prop="spuCode" header-align="center" align="center" label="spuCode"></el-table-column>
             <el-table-column prop="spuName" header-align="center" align="center" label="名称"></el-table-column>
             <el-table-column prop="spuDesc" header-align="center" align="center" label="描述"></el-table-column>
             <el-table-column prop="categoryName" header-align="center" align="center" label="分类"></el-table-column>
@@ -87,7 +87,7 @@ export default {
       categoryPath: [],
       dataSub: null,
       dataForm: {
-        categoryId: null,
+        categoryCode: null,
         brandId: null,
         publishStatus: '',
         spuName: ''
@@ -137,8 +137,8 @@ export default {
       this.$router.push({
         path: '/product-attrupdate',
         query: {
-          spuId: row.id,
-          categoryId: row.categoryId
+          spuCode: row.id,
+          categoryCode: row.categoryCode
         }
       })
     },
@@ -156,7 +156,7 @@ export default {
         data: this.$http.adornData({
           page: this.pageIndex,
           size: this.pageSize,
-          categoryId: this.dataForm.categoryId,
+          categoryCode: this.dataForm.categoryCode,
           brandId: this.dataForm.brandId,
           publishStatus: this.dataForm.publishStatus,
           spuName: this.dataForm.spuName
@@ -206,7 +206,7 @@ export default {
   mounted () {
     // eslint-disable-next-line no-undef
     this.catPathSub = PubSub.subscribe('catPath', (msg, val) => {
-      this.dataForm.categoryId = val[val.length - 1]
+      this.dataForm.categoryCode = val[val.length - 1]
     })
     // eslint-disable-next-line no-undef
     this.brandIdSub = PubSub.subscribe('brandId', (msg, val) => {

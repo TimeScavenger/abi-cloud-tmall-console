@@ -9,9 +9,9 @@
           <brand-select style="width:160px"></brand-select>
         </el-form-item>
         <el-form-item label="价格">
-          <el-input-number style="width:160px" v-model="dataForm.price.min" :min="0"></el-input-number>
+          <el-input-number style="width:160px" v-model="dataForm.skuPrice.min" :min="0"></el-input-number>
           -
-          <el-input-number style="width:160px" v-model="dataForm.price.max" :min="0"></el-input-number>
+          <el-input-number style="width:160px" v-model="dataForm.skuPrice.max" :min="0"></el-input-number>
         </el-form-item>
         <el-form-item label="检索">
           <el-input style="width:160px" v-model="dataForm.skuName" clearable></el-input>
@@ -21,43 +21,38 @@
         </el-form-item>
       </el-form>
     </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;"
-      @expand-change="getSkuDetails">
+    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
+              style="width: 100%;" @expand-change="getSkuDetails">
       <el-table-column type="expand">
         <template slot-scope="scope">
           商品标题：{{ scope.row.skuTitle }}
           <br/>
-          商品副标题：{{ scope.row.skuSubtitle }}
+          商品副标题：{{ scope.row.skuSubTitle }}
           <br/>
           商品描述：{{ scope.row.skuDesc }}
           <br/>
-          分类ID：{{ scope.row.catalogId }}
+          分类Code：{{ scope.row.categoryCode }}
           <br/>
-          SpuID：{{ scope.row.spuId }}
+          品牌Code：{{ scope.row.brandCode }}
           <br/>
-          品牌ID：{{ scope.row.brandId }}
+          SpuCode：{{ scope.row.spuCode }}
           <br/>
         </template>
       </el-table-column>
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="skuId" header-align="center" align="center" label="skuId"></el-table-column>
+      <el-table-column prop="skuCode" header-align="center" align="center" label="skuCode"></el-table-column>
       <el-table-column prop="skuName" header-align="center" align="center" label="名称"></el-table-column>
       <el-table-column prop="skuDefaultImg" header-align="center" align="center" label="默认图片">
         <template slot-scope="scope">
           <img :src="scope.row.skuDefaultImg" style="width:80px;height:80px;"/>
         </template>
       </el-table-column>
-      <el-table-column prop="price" header-align="center" align="center" label="价格"></el-table-column>
-      <el-table-column prop="saleCount" header-align="center" align="center" label="销量"></el-table-column>
+      <el-table-column prop="skuPrice" header-align="center" align="center" label="价格"></el-table-column>
+      <el-table-column prop="skuSaleCount" header-align="center" align="center" label="销量"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="previewHandle(scope.row.skuId)">预览</el-button>
-          <el-button type="text" size="small" @click="commentHandle(scope.row.skuId)">评论</el-button>
+          <el-button type="text" size="small" @click="previewHandle(scope.row.skuCode)">预览</el-button>
+          <el-button type="text" size="small" @click="commentHandle(scope.row.skuCode)">评论</el-button>
           <el-dropdown
             @command="handleCommand(scope.row,$event)"
             size="small"
@@ -105,12 +100,12 @@ export default {
   data () {
     return {
       catPathSub: null,
-      brandIdSub: null,
+      brandCodeSub: null,
       dataForm: {
         skuName: '',
-        brandId: null,
-        categoryId: null,
-        price: {
+        brandCode: null,
+        categoryCode: null,
+        skuPrice: {
           min: 0,
           max: 0
         }
@@ -141,7 +136,7 @@ export default {
     handleCommand (row, command) {
       console.log('~~~~~', row, command)
       if (command === 'stockSettings') {
-        this.$router.push({path: '/ware-sku', query: {skuId: row.skuId}})
+        this.$router.push({path: '/ware-sku', query: {skuCode: row.skuCode}})
       }
     },
     searchSkuInfo () {
@@ -156,10 +151,10 @@ export default {
         data: this.$http.adornData({
           page: this.pageIndex,
           size: this.pageSize,
-          categoryId: this.dataForm.categoryId,
-          brandId: this.dataForm.brandId,
-          priceMin: this.dataForm.price.min,
-          priceMax: this.dataForm.price.max,
+          categoryCode: this.dataForm.categoryCode,
+          brandCode: this.dataForm.brandCode,
+          skuPriceMin: this.dataForm.skuPrice.min,
+          skuPriceMax: this.dataForm.skuPrice.max,
           skuName: this.dataForm.skuName
         })
       }).then(({data}) => {
@@ -195,11 +190,11 @@ export default {
   mounted () {
     // eslint-disable-next-line no-undef
     this.catPathSub = PubSub.subscribe('catPath', (msg, val) => {
-      this.dataForm.categoryId = val[val.length - 1]
+      this.dataForm.categoryCode = val[val.length - 1]
     })
     // eslint-disable-next-line no-undef
-    this.brandIdSub = PubSub.subscribe('brandId', (msg, val) => {
-      this.dataForm.brandId = val
+    this.brandCodeSub = PubSub.subscribe('brandCode', (msg, val) => {
+      this.dataForm.brandCode = val
     })
   },
   // 生命周期-销毁之前
@@ -207,7 +202,7 @@ export default {
     // eslint-disable-next-line no-undef
     PubSub.unsubscribe(this.catPathSub)
     // eslint-disable-next-line no-undef
-    PubSub.unsubscribe(this.brandIdSub)
+    PubSub.unsubscribe(this.brandCodeSub)
   } // 生命周期 - 销毁之前
 }
 </script>
