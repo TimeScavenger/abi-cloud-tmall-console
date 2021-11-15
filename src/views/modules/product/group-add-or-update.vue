@@ -18,7 +18,7 @@
       </el-form-item>
 
       <el-form-item label="排序" prop="sort">
-        <el-input v-model="dataForm.sort" placeholder="排序"></el-input>
+        <el-input v-model.number="dataForm.sort" placeholder="排序"></el-input>
       </el-form-item>
 
       <el-form-item label="描述" prop="desc">
@@ -79,16 +79,25 @@ export default {
         categoryCode: 0
       },
       dataRule: {
-        groupName: [
-          {required: true, message: '组名不能为空', trigger: 'blur'}
-        ],
-        sort: [{required: true, message: '排序不能为空', trigger: 'blur'}],
-        desc: [
-          {required: true, message: '描述不能为空', trigger: 'blur'}
-        ],
+        groupName: [{required: true, message: '组名不能为空', trigger: 'blur'}],
+        desc: [{required: true, message: '描述不能为空', trigger: 'blur'}],
         icon: [{required: true, message: '组图标不能为空', trigger: 'blur'}],
-        categoryCode: [
-          {required: true, message: '所属分类id不能为空', trigger: 'blur'}
+        categoryCode: [{required: true, message: '所属分类id不能为空', trigger: 'blur'}],
+        sort: [
+          {
+            validator: (rule, value, callback) => {
+              if (value === '') {
+                callback(new Error('排序字段必须填写'))
+              } else if (!Number.isInteger(value) || value < 0) {
+                callback(new Error('排序必须是一个大于等于0的整数'))
+              } else if (value > 1000) {
+                callback(new Error('排序必须是一个大于等于0小于1000的整数'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'
+          }
         ]
       }
     }
