@@ -26,13 +26,13 @@
       <el-form-item label="属性图标" prop="icon">
         <el-input v-model="dataForm.icon" placeholder="属性图标"></el-input>
       </el-form-item>
-      <el-form-item label="所属分类" prop="categoryId">
+      <el-form-item label="所属分类" prop="categoryCode">
         <category-cascader :categoryPath.sync="categoryPath"></category-cascader>
       </el-form-item>
-      <el-form-item label="所属分组" prop="groupId" v-if="type === 0">
-        <el-select ref="groupSelect" v-model="dataForm.groupId" placeholder="请选择">
-          <el-option v-for="item in attrGroups" :key="item.groupId" :label="item.groupName"
-                     :value="item.groupId"></el-option>
+      <el-form-item label="所属分组" prop="groupCode" v-if="type === 0">
+        <el-select ref="groupSelect" v-model="dataForm.groupCode" placeholder="请选择">
+          <el-option v-for="item in attrGroups" :key="item.groupCode" :label="item.groupName"
+                     :value="item.groupCode"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="可检索" prop="searchType" v-if="type === 0">
@@ -83,7 +83,7 @@ export default {
     return {
       visible: false,
       dataForm: {
-        attributeId: 0,
+        attributeCode: 0,
         attributeName: '',
         searchType: 0,
         valueType: 1,
@@ -91,8 +91,8 @@ export default {
         valueList: '',
         type: 0,
         enabled: 0,
-        categoryId: 0,
-        groupId: '',
+        categoryCode: 0,
+        groupCode: '',
         quickShow: 0
       },
       categoryPath: [],
@@ -104,7 +104,7 @@ export default {
         icon: [{required: true, message: '属性图标不能为空', trigger: 'blur'}],
         type: [{required: true, message: '属性类型不能为空', trigger: 'blur'}],
         enabled: [{required: true, message: '启用状态不能为空', trigger: 'blur'}],
-        categoryId: [{required: true, message: '需要选择正确的三级分类数据', trigger: 'blur'}],
+        categoryCode: [{required: true, message: '需要选择正确的三级分类数据', trigger: 'blur'}],
         quickShow: [{required: true, message: '快速展示不能为空', trigger: 'blur'}]
       }
     }
@@ -119,8 +119,8 @@ export default {
     categoryPath (path) {
       // 监听到路径变化需要查出这个三级分类的分组信息
       this.attrGroups = []
-      this.dataForm.groupId = ''
-      this.dataForm.categoryId = path[path.length - 1]
+      this.dataForm.groupCode = ''
+      this.dataForm.categoryCode = path[path.length - 1]
       if (path && path.length === 3) {
         this.$http({
           url: this.$http.adornUrl(`/product/console/group/page/`),
@@ -128,7 +128,7 @@ export default {
           data: this.$http.adornData({
             page: 1,
             size: 10000000,
-            categoryId: this.dataForm.categoryId
+            categoryCode: this.dataForm.categoryCode
           })
         }).then(({data}) => {
           console.log('监听查询 -----> 三级分类路径 -----> 提交路径: /product/console/group/page/')
@@ -140,10 +140,10 @@ export default {
           }
         })
       } else if (path.length === 0) {
-        this.dataForm.categoryId = ''
+        this.dataForm.categoryCode = ''
       } else {
         this.$message.error('请选择正确的分类')
-        this.dataForm.categoryId = ''
+        this.dataForm.categoryCode = ''
       }
     }
   },
@@ -151,18 +151,18 @@ export default {
   methods: {
     // 初始化 添加/修改属性信息
     dataInit (id) {
-      this.dataForm.attributeId = id || 0
+      this.dataForm.attributeCode = id || 0
       this.dataForm.type = this.type
       this.visible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
-        if (this.dataForm.attributeId) {
+        if (this.dataForm.attributeCode) {
           this.$http({
-            url: this.$http.adornUrl(`/product/console/attribute/find/${this.dataForm.attributeId}`),
+            url: this.$http.adornUrl(`/product/console/attribute/find/${this.dataForm.attributeCode}`),
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {
-            console.log(`初始化 -----> 添加/修改属性信息 -----> 请求路径: /product/console/attribute/find/${this.dataForm.attributeId}`)
+            console.log(`初始化 -----> 添加/修改属性信息 -----> 请求路径: /product/console/attribute/find/${this.dataForm.attributeCode}`)
             console.log('初始化 -----> 添加/修改属性信息 -----> 返回结果:', data)
             if (data && data.code === 200000) {
               this.dataForm.attributeName = data.data.attributeName
@@ -172,11 +172,11 @@ export default {
               this.dataForm.valueList = data.data.valueList.split(';')
               this.dataForm.type = data.data.type
               this.dataForm.enabled = data.data.enabled
-              this.dataForm.categoryId = data.data.categoryId
+              this.dataForm.categoryCode = data.data.categoryCode
               this.dataForm.quickShow = data.data.quickShow
               this.categoryPath = data.data.categoryPath
               this.$nextTick(() => {
-                this.dataForm.groupId = data.data.groupId
+                this.dataForm.groupCode = data.data.groupCode
               })
             }
           })
@@ -188,10 +188,10 @@ export default {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/product/console/attribute/${!this.dataForm.attributeId ? 'save' : 'modify'}`),
+            url: this.$http.adornUrl(`/product/console/attribute/${!this.dataForm.attributeCode ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
-              attributeId: this.dataForm.attributeId || undefined,
+              attributeCode: this.dataForm.attributeCode || undefined,
               attributeName: this.dataForm.attributeName,
               searchType: this.dataForm.searchType,
               valueType: this.dataForm.valueType,
@@ -199,8 +199,8 @@ export default {
               valueList: this.dataForm.valueList.join(';'),
               type: this.dataForm.type,
               enabled: this.dataForm.enabled,
-              categoryId: this.dataForm.categoryId,
-              groupId: this.dataForm.groupId,
+              categoryCode: this.dataForm.categoryCode,
+              groupCode: this.dataForm.groupCode,
               quickShow: this.dataForm.quickShow
             })
           }).then(({data}) => {

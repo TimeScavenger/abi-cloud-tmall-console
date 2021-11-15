@@ -20,7 +20,7 @@
             @selection-change="innerSelectionChangeHandle"
             style="width: 100%;">
             <el-table-column type="selection" header-align="center" align="center"></el-table-column>
-            <el-table-column prop="attributeId" header-align="center" align="center" label="属性id"></el-table-column>
+            <el-table-column prop="attributeCode" header-align="center" align="center" label="属性id"></el-table-column>
             <el-table-column prop="attributeName" header-align="center" align="center" label="属性名"></el-table-column>
             <el-table-column prop="icon" header-align="center" align="center" label="属性图标"></el-table-column>
             <el-table-column prop="valueList" header-align="center" align="center" label="可选值列表"></el-table-column>
@@ -59,7 +59,7 @@
             @selection-change="selectionChangeHandle"
             border>
             <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-            <el-table-column prop="attributeId" label="#"></el-table-column>
+            <el-table-column prop="attributeCode" label="#"></el-table-column>
             <el-table-column prop="attributeName" label="属性名"></el-table-column>
             <el-table-column prop="valueList" label="可选值">
               <template slot-scope="scope">
@@ -76,7 +76,7 @@
             </el-table-column>
             <el-table-column fixed="right" header-align="center" align="center" label="操作">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="deleteHandle(scope.row.attributeId)">移除</el-button>
+                <el-button type="text" size="small" @click="deleteHandle(scope.row.attributeCode)">移除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -96,7 +96,7 @@ export default {
   data () {
     // 这里存放数据
     return {
-      groupId: 0,
+      groupCode: 0,
       visible: false,
       innerVisible: false,
       relationAttrs: [],
@@ -139,19 +139,19 @@ export default {
     },
     // 查询 分组属性关联关系分页列表
     dataInit (id) {
-      this.groupId = id || 0
+      this.groupCode = id || 0
       this.visible = true
       this.$http({
-        url: this.$http.adornUrl('/product/console/group-attribute-relation/list/attributes/by/groupId'),
+        url: this.$http.adornUrl('/product/console/group-attribute-relation/list/attributes/by/groupCode'),
         method: 'post',
         data: this.$http.adornData({
           page: this.pageIndex,
           size: this.pageSize,
-          groupId: this.groupId,
+          groupCode: this.groupCode,
           attributeName: this.dataForm.key
         })
       }).then(({data}) => {
-        console.log('查询 -----> 分组属性关联关系分页列表 -----> 提交路径: /product/console/group-attribute-relation/list/attributes/by/groupId')
+        console.log('查询 -----> 分组属性关联关系分页列表 -----> 提交路径: /product/console/group-attribute-relation/list/attributes/by/groupCode')
         console.log('查询 -----> 分组属性关联关系分页列表 -----> 返回数据:', data)
         if (data && data.code === 200000) {
           this.relationAttrs = data.data.records
@@ -165,16 +165,16 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/product/console/group-attribute-relation/page/no-attributes/by/groupId'),
+        url: this.$http.adornUrl('/product/console/group-attribute-relation/page/no-attributes/by/groupCode'),
         method: 'post',
         data: this.$http.adornData({
           page: this.pageIndex,
           size: this.pageSize,
-          groupId: this.groupId,
+          groupCode: this.groupCode,
           attributeName: this.dataForm.key
         })
       }).then(({data}) => {
-        console.log('查询 -----> 分组未关联属性分页列表 -----> 提交路径: /product/console/group-attribute-relation/page/no-attributes/by/groupId')
+        console.log('查询 -----> 分组未关联属性分页列表 -----> 提交路径: /product/console/group-attribute-relation/page/no-attributes/by/groupCode')
         console.log('查询 -----> 分组未关联属性分页列表 -----> 返回数据:', data)
         if (data && data.code === 200000) {
           this.dataList = data.data.records
@@ -198,7 +198,7 @@ export default {
       if (this.innerdataListSelections.length > 0) {
         let postData = []
         this.innerdataListSelections.forEach(item => {
-          postData.push({attributeId: item.attributeId, groupId: this.groupId})
+          postData.push({attributeCode: item.attributeCode, groupCode: this.groupCode})
         })
         this.$http({
           url: this.$http.adornUrl('/product/console/group-attribute-relation/save/batch'),
@@ -211,15 +211,15 @@ export default {
             this.$message({type: 'success', message: '新增关联成功'})
           }
           this.$emit('refreshData')
-          this.dataInit(this.groupId)
+          this.dataInit(this.groupCode)
         })
       } else {
       }
     },
     // 移除 分组属性关联关系
-    deleteHandle (attributeId) {
+    deleteHandle (attributeCode) {
       let data = []
-      data.push({attributeId: attributeId, groupId: this.groupId})
+      data.push({attributeCode: attributeCode, groupCode: this.groupCode})
       this.$http({
         url: this.$http.adornUrl('/product/console/group-attribute-relation/remove/batch'),
         method: 'post',
@@ -229,7 +229,7 @@ export default {
         console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', data)
         if (data.code === 200000) {
           this.$message({type: 'success', message: '删除成功'})
-          this.dataInit(this.groupId)
+          this.dataInit(this.groupCode)
         } else {
           this.$message({type: 'error', message: data.msg})
         }
@@ -239,7 +239,7 @@ export default {
     batchDeleteHandle (val) {
       let postData = []
       this.dataListSelections.forEach(item => {
-        postData.push({attributeId: item.attributeId, groupId: this.groupId})
+        postData.push({attributeCode: item.attributeCode, groupCode: this.groupCode})
       })
       this.$http({
         url: this.$http.adornUrl('/product/console/group-attribute-relation/remove/batch'),
@@ -250,7 +250,7 @@ export default {
         console.log('移除 -----> 分组属性关联关系 -----> 返回数据:', data)
         if (data.code === 200000) {
           this.$message({type: 'success', message: '删除成功'})
-          this.dataInit(this.groupId)
+          this.dataInit(this.groupCode)
         } else {
           this.$message({type: 'error', message: data.msg})
         }

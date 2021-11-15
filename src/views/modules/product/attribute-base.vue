@@ -24,11 +24,10 @@
         <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
                   style="width: 100%;">
           <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-          <el-table-column prop="attributeId" header-align="center" align="center" label="id"></el-table-column>
+          <el-table-column prop="attributeCode" header-align="center" align="center" label="属性Code"></el-table-column>
           <el-table-column prop="attributeName" header-align="center" align="center" label="属性名"></el-table-column>
-          <el-table-column prop="categoryName" header-align="center" align="center" label="所属分类"></el-table-column>
-          <el-table-column v-if="attrtype === 0" prop="groupName" header-align="center" align="center"
-                           label="所属分组"></el-table-column>
+          <el-table-column prop="categoryName" header-align="center" align="center" label="分类"></el-table-column>
+          <el-table-column v-if="attrtype === 0" prop="groupName" header-align="center" align="center" label="分组"></el-table-column>
           <el-table-column prop="valueType" header-align="center" align="center" label="值类型">
             <template slot-scope="scope">
               <el-tag type="success" v-if="scope.row.valueType===0">单选</el-tag>
@@ -72,8 +71,8 @@
             width="150"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.attributeId)">修改</el-button>
-              <el-button type="text" size="small" @click="deleteHandle(scope.row.attributeId)">删除</el-button>
+              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.attributeCode)">修改</el-button>
+              <el-button type="text" size="small" @click="deleteHandle(scope.row.attributeCode)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -121,7 +120,7 @@ export default {
   },
   data () {
     return {
-      categoryId: 0,
+      categoryCode: 0,
       type: 0,
       dataForm: {
         key: ''
@@ -161,7 +160,7 @@ export default {
           page: this.pageIndex,
           size: this.pageSize,
           type: this.attrtype,
-          categoryId: this.categoryId,
+          categoryCode: this.categoryCode,
           attributeName: this.dataForm.key
         })
       }).then(({data}) => {
@@ -187,7 +186,7 @@ export default {
     // 删除 规格参数
     deleteHandle (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
-        return item.attributeId
+        return item.attributeCode
       })
       this.$confirm(
         `确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
@@ -202,7 +201,7 @@ export default {
           url: this.$http.adornUrl('/product/console/attribute/remove'),
           method: 'post',
           data: this.$http.adornData({
-            attributeIds: ids
+            attributeCodes: ids
           })
         }).then(({data}) => {
           console.log('删除 -----> 规格参数 -----> 请求路径: /product/console/attribute/remove')
@@ -226,12 +225,12 @@ export default {
     // 感知树节点被点击
     treenodeclick (data, node, component) {
       if (node.level === 3) {
-        this.categoryId = data.categoryId
+        this.categoryCode = data.categoryCode
         this.getDataList() //  重新查询
       }
     },
     getAllDataList () {
-      this.categoryId = 0
+      this.categoryCode = 0
       this.getDataList()
     }
   },
