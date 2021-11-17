@@ -22,10 +22,10 @@
               <el-form-item label="商品描述" prop="spuDesc">
                 <el-input v-model="spu.spuDesc"></el-input>
               </el-form-item>
-              <el-form-item label="选择分类" prop="categoryId">
+              <el-form-item label="选择分类" prop="categoryCode">
                 <category-cascader></category-cascader>
               </el-form-item>
-              <el-form-item label="选择品牌" prop="brandId">
+              <el-form-item label="选择品牌" prop="brandCode">
                 <brand-select></brand-select>
               </el-form-item>
               <el-form-item label="商品重量(Kg)" prop="weight">
@@ -63,11 +63,11 @@
             <el-tabs tab-position="left" style="width:98%">
               <el-tab-pane :label="group.groupName" v-for="(group, gidx) in dataResp.attrGroups"
                            :key="group.groupId">
-                <!-- 遍历属性,每个tab-pane对应一个表单，每个属性是一个表单项  spu.spuBaseAttributes[0] = [{attributeId:xx,val:}]-->
+                <!-- 遍历属性,每个tab-pane对应一个表单，每个属性是一个表单项  spu.spuBaseAttributes[0] = [{attributeCode:xx,val:}]-->
                 <el-form ref="form" :model="spu">
                   <el-form-item :label="attr.attributeName" v-for="(attr, aidx) in group.attributeList"
-                                :key="attr.attributeId">
-                    <el-input v-model="dataResp.tempSpuBaseAttributes[gidx][aidx].attributeId" type="hidden"
+                                :key="attr.attributeCode">
+                    <el-input v-model="dataResp.tempSpuBaseAttributes[gidx][aidx].attributeCode" type="hidden"
                               v-show="false"></el-input>
                     <el-select v-model="dataResp.tempSpuBaseAttributes[gidx][aidx].valueList"
                                :multiple="attr.valueType === 1"
@@ -98,8 +98,8 @@
               <span>选择销售属性</span>
               <el-form ref="saleform" :model="spu">
                 <el-form-item :label="attr.attributeName" v-for="(attr, aidx) in dataResp.skuSaleAttributes"
-                              :key="attr.attributeId">
-                  <el-input v-model="dataResp.tempSkuSaleAttributes[aidx].attributeId" type="hidden"
+                              :key="attr.attributeCode">
+                  <el-input v-model="dataResp.tempSkuSaleAttributes[aidx].attributeCode" type="hidden"
                             v-show="false"></el-input>
                   <el-checkbox-group v-model="dataResp.tempSkuSaleAttributes[aidx].valueList">
                     <el-checkbox v-if="dataResp.skuSaleAttributes[aidx].valueList !== ''" :label="val"
@@ -131,7 +131,7 @@
             <el-table :data="spu.skuAddDtos" style="width: 100%">
               <el-table-column label="属性组合">
                 <el-table-column :label="item.attributeName" v-for="(item,index) in dataResp.tableAttrColumn"
-                                 :key="item.attributeId">
+                                 :key="item.attributeCode">
                   <template slot-scope="scope">
                     <span style="margin-left: 10px">{{ scope.row.attr[index].attrValue }}</span>
                   </template>
@@ -152,9 +152,9 @@
                   <el-input v-model="scope.row.skuSubTitle"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="价格" prop="price">
+              <el-table-column label="价格" prop="skuPrice">
                 <template slot-scope="scope">
-                  <el-input v-model="scope.row.price"></el-input>
+                  <el-input v-model="scope.row.skuPrice"></el-input>
                 </template>
               </el-table-column>
               <el-table-column type="expand">
@@ -285,7 +285,7 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       catPathSub: null,
-      brandIdSub: null,
+      brandCodeSub: null,
       uploadDialogVisible: false,
       uploadImages: [],
       step: 0,
@@ -293,8 +293,8 @@ export default {
         // 要提交的数据
         spuName: '', // SPU名字
         spuDesc: '', // SPU描述
-        categoryId: 0, // 分类
-        brandId: '', // 品牌
+        categoryCode: 0, // 分类
+        brandCode: '', // 品牌
         weight: '', // 重量
         publishStatus: 0, // 上架状态
         spuDescImgs: [], // 商品介绍图集
@@ -313,10 +313,10 @@ export default {
         spuDesc: [
           {required: true, message: '请编写一个简单描述', trigger: 'blur'}
         ],
-        categoryId: [
+        categoryCode: [
           {required: true, message: '请选择一个分类', trigger: 'blur'}
         ]
-        // brandId: [
+        // brandCode: [
         //   {required: true, message: '请选择一个品牌', trigger: 'blur'}
         // ]
         // spuDescImgs: [
@@ -386,14 +386,14 @@ export default {
     },
     // 查询 当前分类可以使用的规格参数
     getBaseAttributes () {
-      console.log('查询当前分类可以使用的规格参数：', this.spu.categoryId)
+      console.log('查询当前分类可以使用的规格参数：', this.spu.categoryCode)
       if (!this.dataResp.steped[0]) {
         this.$http({
           url: this.$http.adornUrl(`/product/console/attribute/list/base`),
           method: 'post',
           data: this.$http.adornData({
             type: 0,
-            categoryId: this.spu.categoryId
+            categoryCode: this.spu.categoryCode
           })
         }).then(({data}) => {
           console.log('查询 -----> 当前分类可以使用的规格参数 -----> 请求路径: /product/console/attribute/list/base')
@@ -403,7 +403,7 @@ export default {
             let attrArray = []
             item.attributeList.forEach(attr => {
               attrArray.push({
-                attributeId: attr.attributeId,
+                attributeCode: attr.attributeCode,
                 valueList: '',
                 quickShow: attr.quickShow
               })
@@ -419,14 +419,14 @@ export default {
     },
     // 查询 当前分类可以使用的销售属性
     getSaleAttributes () {
-      console.log('查询当前分类可以使用的销售属性：', this.spu.categoryId)
+      console.log('查询当前分类可以使用的销售属性：', this.spu.categoryCode)
       if (!this.dataResp.steped[1]) {
         this.$http({
           url: this.$http.adornUrl(`/product/console/attribute/list/sale`),
           method: 'post',
           data: this.$http.adornData({
             type: 1,
-            categoryId: this.spu.categoryId
+            categoryCode: this.spu.categoryCode
           })
         }).then(({data}) => {
           console.log('查询 -----> 当前分类可以使用的销售属性 -----> 请求路径: /product/console/attribute/list/sale')
@@ -434,7 +434,7 @@ export default {
           this.dataResp.skuSaleAttributes = data.data
           data.data.forEach(item => {
             this.dataResp.tempSkuSaleAttributes.push({
-              attributeId: item.attributeId,
+              attributeCode: item.attributeCode,
               valueList: [],
               attributeName: item.attributeName
             })
@@ -452,14 +452,14 @@ export default {
       this.spu.spuBaseAttributes = []
       this.dataResp.tempSpuBaseAttributes.forEach(item => {
         item.forEach(attr => {
-          let {attributeId, valueList, quickShow} = attr
+          let {attributeCode, valueList, quickShow} = attr
           // 跳过没有录入值的属性
           if (valueList !== '') {
             if (valueList instanceof Array) {
               // 多个值用;隔开
               valueList = valueList.join(';')
             }
-            this.spu.spuBaseAttributes.push({attributeId, valueList, quickShow})
+            this.spu.spuBaseAttributes.push({attributeCode, valueList, quickShow})
           }
         })
       })
@@ -495,7 +495,7 @@ export default {
         descar.forEach((de, index) => {
           // 构造saleAttribute信息
           let saleAttrItem = {
-            attributeId: this.dataResp.tableAttrColumn[index].attributeId,
+            attributeCode: this.dataResp.tableAttrColumn[index].attributeCode,
             attributeName: this.dataResp.tableAttrColumn[index].attributeName,
             attrValue: de
           }
@@ -526,7 +526,7 @@ export default {
             skuName: this.spu.spuName + ' ' + descar.join(' '), // sku名称
             skuTitle: this.spu.spuName + ' ' + descar.join(' '), // 标题
             skuSubTitle: '', // 副标题
-            price: 0, // 价格
+            skuPrice: 0, // 价格
             fullPrice: 0.0, // 满多少
             reducePrice: 0.0, // 减多少
             priceStatus: 0, // 是否参与其他优惠
@@ -653,8 +653,8 @@ export default {
       this.spu = {
         spuName: '',
         spuDesc: '',
-        categoryId: 0,
-        brandId: '',
+        categoryCode: 0,
+        brandCode: '',
         weight: '',
         publishStatus: 0,
         spuDescImgs: [],
@@ -727,10 +727,10 @@ export default {
   // 生命周期-挂载完成（可以访问DOM元素）
   mounted () {
     this.catPathSub = this.PubSub.subscribe('catPath', (msg, val) => {
-      this.spu.categoryId = val[val.length - 1]
+      this.spu.categoryCode = val[val.length - 1]
     })
-    this.brandIdSub = this.PubSub.subscribe('brandId', (msg, val) => {
-      this.spu.brandId = val
+    this.brandCodeSub = this.PubSub.subscribe('brandCode', (msg, val) => {
+      this.spu.brandCode = val
     })
     this.getMemberLevels()
   },
@@ -743,7 +743,7 @@ export default {
   // 生命周期-销毁之前
   beforeDestroy () {
     this.PubSub.unsubscribe(this.catPathSub)
-    this.PubSub.unsubscribe(this.brandIdSub)
+    this.PubSub.unsubscribe(this.brandCodeSub)
   },
   // 生命周期-销毁完成
   destroyed () {
