@@ -2,8 +2,8 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="仓库">
-        <el-select style="width:120px;" v-model="dataForm.wareId" placeholder="请选择仓库" clearable>
-          <el-option :label="w.wareName" :value="w.wareId" v-for="w in wareList" :key="w.wareId"></el-option>
+        <el-select style="width:120px;" v-model="dataForm.wareCode" placeholder="请选择仓库" clearable>
+          <el-option :label="w.wareName" :value="w.wareCode" v-for="w in wareList" :key="w.wareCode"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="状态">
@@ -33,25 +33,25 @@
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
               style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="purchaseDetailId" header-align="center" align="center" label="采购明细ID"></el-table-column>
-      <el-table-column prop="purchaseId" header-align="center" align="center" label="采购单ID"></el-table-column>
-      <el-table-column prop="skuId" header-align="center" align="center" label="采购商品ID"></el-table-column>
+      <el-table-column prop="purchaseDetailCode" header-align="center" align="center" label="采购项Code"></el-table-column>
+      <el-table-column prop="purchaseCode" header-align="center" align="center" label="采购单Code"></el-table-column>
+      <el-table-column prop="skuCode" header-align="center" align="center" label="采购商品Code"></el-table-column>
       <el-table-column prop="skuNum" header-align="center" align="center" label="采购数量"></el-table-column>
       <el-table-column prop="skuPrice" header-align="center" align="center" label="采购金额"></el-table-column>
-      <el-table-column prop="wareId" header-align="center" align="center" label="仓库ID"></el-table-column>
+      <el-table-column prop="wareCode" header-align="center" align="center" label="仓库Code"></el-table-column>
       <el-table-column prop="status" header-align="center" align="center" label="状态">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status===0">新建</el-tag>
-          <el-tag type="info" v-if="scope.row.status===1">已分配</el-tag>
-          <el-tag type="wanring" v-if="scope.row.status===2">正在采购</el-tag>
-          <el-tag type="success" v-if="scope.row.status===3">已完成</el-tag>
-          <el-tag type="danger" v-if="scope.row.status===4">采购失败</el-tag>
+          <el-tag v-if="scope.row.status === 0">新建</el-tag>
+          <el-tag type="info" v-if="scope.row.status === 1">已分配</el-tag>
+          <el-tag type="wanring" v-if="scope.row.status === 2">正在采购</el-tag>
+          <el-tag type="success" v-if="scope.row.status === 3">已完成</el-tag>
+          <el-tag type="danger" v-if="scope.row.status === 4">采购失败</el-tag>
         </template>
       </el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.purchaseDetailId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.purchaseDetailId)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.purchaseDetailCode)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.purchaseDetailCode)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,9 +62,9 @@
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
     <el-dialog title="合并到整单" :visible.sync="mergedialogVisible">
       <!-- id  assignee_id  assignee_name  phone   priority status -->
-      <el-select v-model="purchaseId" placeholder="请选择" clearable filterable>
-        <el-option v-for="item in purchasetableData" :key="item.purchaseId" :label="item.purchaseName"
-                   :value="item.purchaseId">
+      <el-select v-model="purchaseCode" placeholder="请选择" clearable filterable>
+        <el-option v-for="item in purchasetableData" :key="item.purchaseCode" :label="item.purchaseName"
+                   :value="item.purchaseCode">
           <span style="float: left">{{ item.purchaseName }}</span>
           <span style="float: right; color: #8492a6; font-size: 13px; margin-left: 3px;">{{
               item.assigneeName
@@ -86,7 +86,7 @@ export default {
   data () {
     return {
       dataForm: {
-        wareId: '',
+        wareCode: '',
         status: '',
         skuName: ''
       },
@@ -99,7 +99,7 @@ export default {
       dataListSelections: [],
       addOrUpdateVisible: false,
       mergedialogVisible: false,
-      purchaseId: '',
+      purchaseCode: '',
       purchasetableData: []
     }
   },
@@ -112,10 +112,10 @@ export default {
   },
   methods: {
     mergeItem () {
-      let purchaseDetailIds = this.dataListSelections.map(item => {
-        return item.purchaseDetailId
+      let purchaseDetailCodes = this.dataListSelections.map(item => {
+        return item.purchaseDetailCode
       })
-      if (!this.purchaseId) {
+      if (!this.purchaseCode) {
         this.$confirm('没有选择任何【采购单】，将自动创建新单进行合并。确认吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -125,7 +125,7 @@ export default {
             url: this.$http.adornUrl('/ware/console/purchase-detail/merge'),
             method: 'post',
             data: this.$http.adornData({
-              purchaseDetailIds: purchaseDetailIds
+              purchaseDetailCodes: purchaseDetailCodes
             })
           }).then(({data}) => {
             this.getDataList()
@@ -137,8 +137,8 @@ export default {
           url: this.$http.adornUrl('/ware/console/purchase-detail/merge'),
           method: 'post',
           data: this.$http.adornData({
-            purchaseId: this.purchaseId,
-            purchaseDetailIds: purchaseDetailIds
+            purchaseCode: this.purchaseCode,
+            purchaseDetailCodes: purchaseDetailCodes
           })
         }).then(({data}) => {
           this.getDataList()
@@ -201,7 +201,7 @@ export default {
         data: this.$http.adornData({
           page: this.pageIndex,
           limit: this.pageSize,
-          wareId: this.dataForm.wareId,
+          wareCode: this.dataForm.wareCode,
           status: this.dataForm.status,
           skuName: this.dataForm.skuName
         })
@@ -241,23 +241,24 @@ export default {
     // 删除
     deleteHandle (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
-        return item.purchaseDetailId
+        return item.purchaseDetailCode
       })
-      this.$confirm(
-        `确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
+      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
       ).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/ware/purchasedetail/delete'),
+          url: this.$http.adornUrl('/ware/console/purchase-detail/remove'),
           method: 'post',
-          data: this.$http.adornData(ids, false)
+          data: this.$http.adornData({
+            purchaseDetailCodes: ids
+          })
         }).then(({data}) => {
-          if (data && data.code === 0) {
+          console.log('移除 -----> 采购项 -----> 请求路径: /ware/console/purchase-detail/remove')
+          console.log('移除 -----> 采购项 -----> 返回结果:', data)
+          if (data && data.code === 200000) {
             this.$message({
               message: '操作成功',
               type: 'success',
