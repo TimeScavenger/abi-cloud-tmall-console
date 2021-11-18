@@ -2,8 +2,8 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="仓库">
-        <el-select style="width:160px;" v-model="dataForm.wareId" placeholder="请选择仓库" clearable>
-          <el-option :label="w.wareName" :value="w.wareId" v-for="w in wareList" :key="w.wareName"></el-option>
+        <el-select style="width:160px;" v-model="dataForm.wareCode" placeholder="请选择仓库" clearable>
+          <el-option :label="w.wareName" :value="w.wareCode" v-for="w in wareList" :key="w.wareName"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="商品名称">
@@ -11,22 +11,22 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('ware:waresku:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button
-          v-if="isAuth('ware:waresku:delete')"
-          type="danger"
-          @click="deleteHandle()"
-          :disabled="dataListSelections.length <= 0"
-        >批量删除
-        </el-button>
+        <!--        <el-button v-if="isAuth('ware:waresku:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
+        <!--        <el-button-->
+        <!--          v-if="isAuth('ware:waresku:delete')"-->
+        <!--          type="danger"-->
+        <!--          @click="deleteHandle()"-->
+        <!--          :disabled="dataListSelections.length <= 0"-->
+        <!--        >批量删除-->
+        <!--        </el-button>-->
       </el-form-item>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="自增ID"></el-table-column>
-      <el-table-column prop="wareId" header-align="center" align="center" label="仓库ID"></el-table-column>
+      <el-table-column prop="wareCode" header-align="center" align="center" label="仓库ID"></el-table-column>
       <el-table-column prop="wareName" header-align="center" align="center" label="仓库名称"></el-table-column>
-      <el-table-column prop="skuId" header-align="center" align="center" label="商品ID"></el-table-column>
+      <el-table-column prop="skuCode" header-align="center" align="center" label="商品ID"></el-table-column>
       <el-table-column prop="skuName" header-align="center" align="center" label="商品名称"></el-table-column>
       <el-table-column prop="stock" header-align="center" align="center" label="库存数"></el-table-column>
       <el-table-column prop="stockLocked" header-align="center" align="center" label="锁定库存"></el-table-column>
@@ -53,7 +53,7 @@ export default {
     return {
       wareList: [],
       dataForm: {
-        wareId: '',
+        wareCode: '',
         skuName: ''
       },
       dataList: [],
@@ -69,9 +69,9 @@ export default {
     AddOrUpdate
   },
   activated () {
-    console.log('接收到', this.$route.query.skuId)
-    if (this.$route.query.skuId) {
-      this.dataForm.skuId = this.$route.query.skuId
+    console.log('接收到', this.$route.query.skuCode)
+    if (this.$route.query.skuCode) {
+      this.dataForm.skuCode = this.$route.query.skuCode
     }
     this.getWares()
     this.getDataList()
@@ -99,7 +99,7 @@ export default {
         data: this.$http.adornData({
           page: this.pageIndex,
           size: this.pageSize,
-          wareId: this.dataForm.wareId,
+          wareCode: this.dataForm.wareCode,
           skuName: this.dataForm.skuName
         })
       }).then(({data}) => {

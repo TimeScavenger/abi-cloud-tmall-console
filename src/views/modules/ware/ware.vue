@@ -15,14 +15,14 @@
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
               style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="wareId" header-align="center" align="center" label="仓库ID"></el-table-column>
+      <el-table-column prop="wareCode" header-align="center" align="center" label="仓库Code"></el-table-column>
       <el-table-column prop="wareName" header-align="center" align="center" label="仓库名"></el-table-column>
       <el-table-column prop="wareAddress" header-align="center" align="center" label="仓库地址"></el-table-column>
-      <el-table-column prop="wareAreacode" header-align="center" align="center" label="区域编码"></el-table-column>
+      <el-table-column prop="areaCode" header-align="center" align="center" label="区域编码"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.wareId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.wareId, scope.row.wareName)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.wareCode)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.wareCode, scope.row.wareName)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -110,7 +110,7 @@ export default {
     // 删除
     deleteHandle (id, name) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
-        return item.wareId
+        return item.wareCode
       })
       var names = name ? [name] : this.dataListSelections.map(item => {
         return item.wareName
@@ -123,7 +123,9 @@ export default {
         this.$http({
           url: this.$http.adornUrl('/ware/console/ware/remove'),
           method: 'post',
-          data: this.$http.adornData(ids, false)
+          data: this.$http.adornData({
+            wareCodes: ids
+          })
         }).then(({data}) => {
           if (data && data.code === 200000) {
             console.log('删除 -----> 仓库信息 -----> 请求路径: /ware/console/ware/remove')

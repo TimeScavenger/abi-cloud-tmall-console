@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="!dataForm.wareId ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible">
+  <el-dialog :title="!dataForm.wareCode ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
              label-width="120px">
       <el-form-item label="仓库名" prop="wareName">
@@ -8,8 +8,8 @@
       <el-form-item label="仓库地址" prop="wareAddress">
         <el-input v-model="dataForm.wareAddress" placeholder="仓库地址"></el-input>
       </el-form-item>
-      <el-form-item label="区域编码" prop="wareAreacode">
-        <el-input v-model="dataForm.wareAreacode" placeholder="区域编码"></el-input>
+      <el-form-item label="区域编码" prop="areaCode">
+        <el-input v-model="dataForm.areaCode" placeholder="区域编码"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -25,10 +25,10 @@ export default {
     return {
       visible: false,
       dataForm: {
-        wareId: 0,
+        wareCode: 0,
         wareName: '',
         wareAddress: '',
-        wareAreacode: ''
+        areaCode: ''
       },
       dataRule: {
         wareName: [
@@ -37,24 +37,24 @@ export default {
         wareAddress: [
           {required: true, message: '仓库地址不能为空', trigger: 'blur'}
         ],
-        wareAreacode: [
+        areaCode: [
           {required: true, message: '区域编码不能为空', trigger: 'blur'}
         ]
       }
     }
   },
   methods: {
-    init (wareId) {
-      this.dataForm.wareId = wareId || 0
+    init (wareCode) {
+      this.dataForm.wareCode = wareCode || 0
       this.visible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
-        if (this.dataForm.wareId) {
+        if (this.dataForm.wareCode) {
           this.$http({
             url: this.$http.adornUrl(`/ware/console/ware/info`),
             method: 'post',
             data: this.$http.adornData({
-              'wareId': this.dataForm.wareId
+              'wareCode': this.dataForm.wareCode
             })
           }).then(({data}) => {
             console.log('查看 -----> 仓库信息 -----> 请求路径: /ware/console/ware/info')
@@ -62,7 +62,7 @@ export default {
             if (data && data.code === 200000) {
               this.dataForm.wareName = data.data.wareName
               this.dataForm.wareAddress = data.data.wareAddress
-              this.dataForm.wareAreacode = data.data.wareAreacode
+              this.dataForm.areaCode = data.data.areaCode
             }
           })
         }
@@ -73,13 +73,13 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/ware/console/ware/${!this.dataForm.wareId ? 'save' : 'modify'}`),
+            url: this.$http.adornUrl(`/ware/console/ware/${!this.dataForm.wareCode ? 'save' : 'modify'}`),
             method: 'post',
             data: this.$http.adornData({
-              'wareId': this.dataForm.wareId || undefined,
+              'wareCode': this.dataForm.wareCode || undefined,
               'wareName': this.dataForm.wareName,
               'wareAddress': this.dataForm.wareAddress,
-              'wareAreacode': this.dataForm.wareAreacode
+              'areaCode': this.dataForm.areaCode
             })
           }).then(({data}) => {
             console.log('新增或修改 -----> 仓库信息 -----> 请求路径: /ware/console/ware/save or modify')
