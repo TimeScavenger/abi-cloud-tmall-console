@@ -15,8 +15,8 @@
           <el-option label="采购失败" :value="4"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="关键字">
-        <el-input style="width:120px;" v-model="dataForm.skuName" placeholder="参数名" clearable></el-input>
+      <el-form-item label="商品名称">
+        <el-input style="width:200px;" v-model="dataForm.skuName" placeholder="请输入商品名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
