@@ -2,7 +2,7 @@
   <el-dialog :title="!dataForm.purchaseDetailCode ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
              label-width="120px">
-      <el-form-item label="采购商品Code" prop="skuCode">
+      <el-form-item label="商品Code" prop="skuCode">
         <el-input v-model="dataForm.skuCode" placeholder="采购商品Code"></el-input>
       </el-form-item>
       <el-form-item label="采购数量" prop="skuNum">
@@ -47,12 +47,8 @@ export default {
         status: 0
       },
       dataRule: {
-        skuCode: [
-          {required: true, message: '采购商品Code不能为空', trigger: 'blur'}
-        ],
-        skuNum: [
-          {required: true, message: '采购数量不能为空', trigger: 'blur'}
-        ],
+        skuCode: [{required: true, message: '采购商品Code不能为空', trigger: 'blur'}],
+        skuNum: [{required: true, message: '采购数量不能为空', trigger: 'blur'}],
         wareCode: [{required: true, message: '仓库Code不能为空', trigger: 'blur'}]
       }
     }

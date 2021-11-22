@@ -2,7 +2,7 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="状态">
-        <el-select style="width:120px;" v-model="dataForm.status" placeholder="请选择状态" clearable>
+        <el-select style="width:200px;" v-model="dataForm.status" placeholder="请选择状态" clearable>
           <el-option label="新建" :value="0"></el-option>
           <el-option label="已分配" :value="1"></el-option>
           <el-option label="已领取" :value="2"></el-option>
@@ -10,8 +10,8 @@
           <el-option label="有异常" :value="4"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="关键字">
-        <el-input style="width:120px;" v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+      <el-form-item label="采购单名">
+        <el-input style="width:200px;" v-model="dataForm.purchaseName" placeholder="请输入采购单名" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -25,8 +25,9 @@
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
               style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="purchaseId" header-align="center" align="center" label="采购单ID"></el-table-column>
-      <el-table-column prop="assigneeId" header-align="center" align="center" label="采购人ID"></el-table-column>
+      <el-table-column prop="purchaseCode" header-align="center" align="center" label="采购单Code"></el-table-column>
+      <el-table-column prop="purchaseName" header-align="center" align="center" label="采购单名"></el-table-column>
+      <el-table-column prop="assigneeCode" header-align="center" align="center" label="采购人Code"></el-table-column>
       <el-table-column prop="assigneeName" header-align="center" align="center" label="采购人名"></el-table-column>
       <el-table-column prop="assigneePhone" header-align="center" align="center" label="采购人联系方式"></el-table-column>
       <el-table-column prop="priority" header-align="center" align="center" label="优先级"></el-table-column>
@@ -39,17 +40,17 @@
           <el-tag type="danger" v-if="scope.row.status === 4">有异常</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="wareId" header-align="center" align="center" label="仓库id"></el-table-column>
+      <el-table-column prop="wareCode" header-align="center" align="center" label="仓库Code"></el-table-column>
       <el-table-column prop="allAmount" header-align="center" align="center" label="总金额"></el-table-column>
       <el-table-column prop="createTime" header-align="center" align="center" label="创建日期"></el-table-column>
       <el-table-column prop="modifyTime" header-align="center" align="center" label="更新日期"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" v-if="scope.row.status===0||scope.row.status===1"
+          <el-button type="text" size="small" v-if="scope.row.status === 0 || scope.row.status === 1"
                      @click="opendrawer(scope.row)">分配
           </el-button>
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.purchaseCode)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.purchaseCode)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -78,7 +79,7 @@ export default {
     return {
       currentRow: {},
       dataForm: {
-        key: '',
+        purchaseName: '',
         status: ''
       },
       dataList: [],
@@ -121,8 +122,8 @@ export default {
         url: this.$http.adornUrl(`/ware/console/purchase/modify`),
         method: 'post',
         data: this.$http.adornData({
-          purchaseId: this.currentRow.purchaseId || undefined,
-          assigneeId: user.userId,
+          purchaseCode: this.currentRow.purchaseCode || undefined,
+          assigneeCode: user.userId,
           assigneeName: user.username,
           assigneePhone: user.mobile,
           status: 1
@@ -164,7 +165,8 @@ export default {
         data: this.$http.adornData({
           page: this.pageIndex,
           size: this.pageSize,
-          name: this.dataForm.key
+          status: this.dataForm.status,
+          purchaseName: this.dataForm.purchaseName
         })
       }).then(({data}) => {
         console.log('查询 -----> 采购单分页列表 -----> 请求路径: /ware/console/purchase/page')

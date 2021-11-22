@@ -2,12 +2,12 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="仓库">
-        <el-select style="width:120px;" v-model="dataForm.wareCode" placeholder="请选择仓库" clearable>
+        <el-select style="width:200px;" v-model="dataForm.wareCode" placeholder="请选择仓库" clearable>
           <el-option :label="w.wareName" :value="w.wareCode" v-for="w in wareList" :key="w.wareCode"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="状态">
-        <el-select style="width:120px;" v-model="dataForm.status" placeholder="请选择状态" clearable>
+        <el-select style="width:200px;" v-model="dataForm.status" placeholder="请选择状态" clearable>
           <el-option label="新建" :value="0"></el-option>
           <el-option label="已分配" :value="1"></el-option>
           <el-option label="正在采购" :value="2"></el-option>
