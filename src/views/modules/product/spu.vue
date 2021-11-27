@@ -47,7 +47,7 @@
             <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
               <template slot-scope="scope">
                 <el-button v-if="scope.row.publishStatus === 0" type="text" size="small"
-                           @click="productUp(scope.row.id)">上架
+                           @click="productUp(scope.row.spuCode)">上架
                 </el-button>
                 <el-button type="text" size="small" @click="attrUpdateShow(scope.row)">规格</el-button>
               </template>
@@ -113,10 +113,13 @@ export default {
       console.log('搜索条件', this.dataForm)
       this.PubSub.publish('dataForm', this.dataForm)
     },
-    productUp (id) {
+    productUp (spuCode) {
       this.$http({
-        url: this.$http.adornUrl('/product/console/spu-info/' + id + '/up'),
-        method: 'post'
+        url: this.$http.adornUrl('/product/console/spu-info/up'),
+        method: 'post',
+        data: this.$http.adornData({
+          spuCode: spuCode
+        })
       }).then(({data}) => {
         if (data && data.code === 0) {
           this.$message({
@@ -135,9 +138,9 @@ export default {
     attrUpdateShow (row) {
       console.log(row)
       this.$router.push({
-        path: '/product-attrupdate',
+        path: '/spu-attribute-update',
         query: {
-          spuCode: row.id,
+          spuCode: row.spuCode,
           categoryCode: row.categoryCode
         }
       })
